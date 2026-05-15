@@ -1,0 +1,394 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-11">
+
+            <!-- Main Card -->
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+                <!-- Header -->
+                <div class="bg-primary text-white p-4">
+
+                    <div class="row align-items-center">
+
+                        <!-- Profile -->
+                        <div class="col-md-3 text-center">
+
+                            {% if mechanic.profile_pic %}
+
+                                <img src="{{ mechanic.profile_pic.url }}"
+                                     class="rounded-circle border border-4 border-white shadow"
+                                     style="width:120px;height:120px;object-fit:cover;">
+
+                            {% else %}
+
+                                <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center mx-auto shadow"
+                                     style="width:120px;height:120px;font-size:50px;">
+
+                                    <i class="bi bi-person-fill"></i>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                        <!-- Customer Info -->
+                        <div class="col-md-9 mt-4 mt-md-0">
+
+                            <h2 class="fw-bold mb-2">
+                                {{ mechanic.name }}
+                            </h2>
+
+                            <p class="mb-2">
+                                <i class="bi bi-envelope-fill"></i>
+                                {{ mechanic.email }}
+                            </p>
+
+                            <div class="d-flex flex-wrap gap-2">
+
+                                <span class="badge bg-light text-dark px-3 py-2 rounded-pill">
+                                    <i class="bi bi-person-badge"></i>
+                                    Mechanic
+                                </span>
+
+                                {% if mechanic.is_valid %}
+
+                                    <span class="badge bg-success px-3 py-2 rounded-pill">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger px-3 py-2 rounded-pill">
+                                        <i class="bi bi-x-circle-fill"></i>
+                                        Not Active
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Body -->
+                <div class="card-body p-4">
+
+                    <!-- Info Cards -->
+                    <div class="row g-4 mb-4">
+
+                        <!-- Phone -->
+                        <div class="col-md-6 col-lg-3">
+
+                            <div class="card border-0 bg-light rounded-4 h-100 shadow-sm">
+
+                                <div class="card-body text-center">
+
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                                         style="width:55px;height:55px;">
+
+                                        <i class="bi bi-telephone-fill"></i>
+
+                                    </div>
+
+                                    <small class="text-muted">
+                                        Phone Number
+                                    </small>
+
+                                    <h6 class="fw-bold mt-2 mb-0">
+                                        {{ mechanic.number }}
+                                    </h6>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- City -->
+                        <div class="col-md-6 col-lg-3">
+
+                            <div class="card border-0 bg-light rounded-4 h-100 shadow-sm">
+
+                                <div class="card-body text-center">
+
+                                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                                         style="width:55px;height:55px;">
+
+                                        <i class="bi bi-geo-alt-fill"></i>
+
+                                    </div>
+
+                                    <small class="text-muted">
+                                        City
+                                    </small>
+
+                                    <h6 class="fw-bold mt-2 mb-0">
+                                        {{ mechanic.city }}
+                                    </h6>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Joined -->
+                        <div class="col-md-6 col-lg-3">
+
+                            <div class="card border-0 bg-light rounded-4 h-100 shadow-sm">
+
+                                <div class="card-body text-center">
+
+                                    <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                                         style="width:55px;height:55px;">
+
+                                        <i class="bi bi-calendar-check-fill"></i>
+
+                                    </div>
+
+                                    <small class="text-muted">
+                                        Joined Date
+                                    </small>
+
+                                    <h6 class="fw-bold mt-2 mb-0">
+                                        {{ mechanic.created_at|date:"d M Y" }}
+                                    </h6>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Last Login -->
+                        <div class="col-md-6 col-lg-3">
+
+                            <div class="card border-0 bg-light rounded-4 h-100 shadow-sm">
+
+                                <div class="card-body text-center">
+
+                                    <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                                         style="width:55px;height:55px;">
+
+                                        <i class="bi bi-clock-history"></i>
+
+                                    </div>
+
+                                    <small class="text-muted">
+                                        Last Login
+                                    </small>
+
+                                    <h6 class="fw-bold mt-2 mb-0">
+
+                                        {{ mechanic.last_login_date|default:"Never Logged In" }}
+
+                                    </h6>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Address -->
+                    <div class="card border-0 bg-light rounded-4 shadow-sm mb-4">
+
+                        <div class="card-body">
+
+                            <div class="d-flex align-items-center">
+
+                                <div class="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                     style="width:55px;height:55px;">
+
+                                    <i class="bi bi-house-door-fill"></i>
+
+                                </div>
+
+                                <div>
+
+                                    <small class="text-muted">
+                                        Address
+                                    </small>
+
+                                    <h6 class="fw-bold mb-0 mt-1">
+                                        {{ mechanic.address }}
+                                    </h6>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Vehicles Section -->
+                    <div class="card border-0 shadow-sm rounded-4">
+
+                        <div class="card-header bg-white border-0 py-3">
+
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                                <div>
+
+                                    <h5 class="fw-bold mb-1">
+
+                                        <i class="bi bi-car-front-fill text-primary"></i>
+                                        Available Vehicles Parts
+
+                                    </h5>
+
+                                    <small class="text-muted">
+                                        Total Vehicle Parts : {{ vehicle_parts|length }}
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            {% if vehicle_parts %}
+
+                            <div class="table-responsive">
+
+                                <table class="table table-hover align-middle">
+
+                                    <thead class="table-light">
+
+                                        <tr>
+
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+
+                                        </tr>
+
+                                    </thead>
+
+                                    <tbody>
+
+                                        {% for vp in vehicle_parts %}
+
+                                        <tr>
+
+                                            <td class="fw-bold">
+                                                {{ forloop.counter }}
+                                            </td>
+
+                                            <td>
+
+                                                <div class="d-flex align-items-center">
+
+                                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3"
+                                                         style="width:45px;height:45px;">
+
+                                                        <i class="bi bi-car-front-fill"></i>
+
+                                                    </div>
+
+                                                    <div>
+
+                                                        <h6 class="mb-0 fw-bold">
+                                                            {{ vp.item_name }}
+                                                        </h6>
+
+                                                        <small class="text-muted">
+                                                            Vehicle Parts Details
+                                                        </small>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </td>
+
+                                            <td>
+
+                                                <span class="badge bg-dark px-3 py-2 rounded-pill">
+                                                    {{ vp.price }}
+                                                </span>
+
+                                            </td>
+
+                                            <td>
+
+                                                <span class="fw-semibold">
+                                                    {{ vp.quantity }}
+                                                </span>
+
+                                            </td>
+
+                                        </tr>
+
+                                        {% endfor %}
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                            {% else %}
+
+                            <div class="text-center py-5">
+
+                                <i class="bi bi-wrench text-muted"
+                                   style="font-size:70px;"></i>
+
+                                <h5 class="fw-bold mt-3">
+                                    No Vehicles Parts Found
+                                </h5>
+
+                                <p class="text-muted">
+                                    This mechanic has not added any vehicles parts yet.
+                                </p>
+
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="text-center mt-4">
+
+                        <a href="{% url 'all_mechanic_details' %}"
+                           class="btn btn-outline-primary px-4 py-2 rounded-3">
+
+                            <i class="bi bi-arrow-left"></i>
+                            Back
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

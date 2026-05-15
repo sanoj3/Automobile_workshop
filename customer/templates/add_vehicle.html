@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Vehicle{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .vehicle-wrapper{
+        min-height:90vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        padding:30px 15px;
+    }
+
+    .vehicle-card{
+        width:100%;
+        max-width:550px;
+        background:#fff;
+        border-radius:25px;
+        overflow:hidden;
+        box-shadow:0 15px 40px rgba(0,0,0,0.12);
+        animation:fadeIn 0.5s ease;
+    }
+
+    .vehicle-header{
+        background:linear-gradient(135deg,#4f46e5,#7c3aed);
+        color:#fff;
+        text-align:center;
+        padding:35px 20px;
+    }
+
+    .vehicle-header i{
+        font-size:65px;
+        margin-bottom:12px;
+    }
+
+    .vehicle-header h2{
+        font-weight:700;
+        margin-bottom:5px;
+    }
+
+    .vehicle-header p{
+        margin:0;
+        opacity:0.9;
+    }
+
+    .vehicle-body{
+        padding:35px;
+    }
+
+    .form-label{
+        font-weight:600;
+        margin-bottom:8px;
+    }
+
+    .form-control{
+        border-radius:14px;
+        padding:13px;
+        border:1px solid #d1d5db;
+        transition:0.3s;
+    }
+
+    .form-control:focus{
+        border-color:#6366f1;
+        box-shadow:0 0 0 0.2rem rgba(99,102,241,0.2);
+    }
+
+    .btn-add{
+        background:linear-gradient(135deg,#4f46e5,#7c3aed);
+        color:white;
+        border:none;
+        border-radius:14px;
+        padding:13px;
+        font-size:17px;
+        font-weight:600;
+        transition:0.3s;
+    }
+
+    .btn-add:hover{
+        transform:translateY(-2px);
+        opacity:0.95;
+        color:white;
+    }
+
+    .back-link{
+        text-align:center;
+        margin-top:20px;
+    }
+
+    .back-link a{
+        text-decoration:none;
+        color:#4f46e5;
+        font-weight:600;
+    }
+
+    .back-link a:hover{
+        text-decoration:underline;
+    }
+
+    .alert{
+        border-radius:12px;
+    }
+
+    @keyframes fadeIn{
+        from{
+            opacity:0;
+            transform:translateY(20px);
+        }
+        to{
+            opacity:1;
+            transform:translateY(0);
+        }
+    }
+
+</style>
+
+<div class="vehicle-wrapper">
+
+    <div class="vehicle-card">
+
+        <!-- Header -->
+        <div class="vehicle-header">
+            <i class="bi bi-car-front-fill"></i>
+            <h2>Add Vehicle</h2>
+            <p>Register your vehicle details</p>
+        </div>
+
+        <!-- Body -->
+        <div class="vehicle-body">
+
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success shadow-sm">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Form -->
+            <form method="POST">
+                {% csrf_token %}
+
+                <!-- Vehicle Name -->
+                <div class="mb-3">
+                    <label class="form-label">
+                        <i class="bi bi-car-front me-1 text-primary"></i>
+                        Vehicle Name
+                    </label>
+
+                    <input type="text"
+                           name="vehicle_name"
+                           class="form-control"
+                           placeholder="Enter vehicle name"
+                           required>
+                </div>
+
+                <!-- Vehicle Model -->
+                <div class="mb-3">
+                    <label class="form-label">
+                        <i class="bi bi-tools me-1 text-primary"></i>
+                        Vehicle Model
+                    </label>
+
+                    <input type="text"
+                           name="vehicle_model"
+                           class="form-control"
+                           placeholder="Enter vehicle model"
+                           required>
+                </div>
+
+                <!-- Vehicle Year -->
+                <div class="mb-3">
+                    <label class="form-label">
+                        <i class="bi bi-calendar-event me-1 text-primary"></i>
+                        Manufacturing Year
+                    </label>
+
+                    <input type="number"
+                           name="vehicle_year"
+                           class="form-control"
+                           placeholder="Enter year"
+                           min="1930"
+                           max="2026"
+                           value="2025"
+                           required>
+                </div>
+
+                <!-- Vehicle Number -->
+                <div class="mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-upc-scan me-1 text-primary"></i>
+                        Vehicle Number
+                    </label>
+
+                    <input type="text"
+                           name="vehicle_number"
+                           class="form-control text-uppercase"
+                           placeholder="KL07AB1234"
+                           minlength="10"
+                           maxlength="15"
+                           required>
+                </div>
+
+                <!-- Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-add">
+                        <i class="bi bi-plus-circle me-1"></i>
+                        Add Vehicle
+                    </button>
+                </div>
+
+            </form>
+
+            <!-- Back -->
+            <div class="back-link">
+                <a href="{% url 'vehicle_list' %}">
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Vehicles
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

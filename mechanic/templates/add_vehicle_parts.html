@@ -1,0 +1,278 @@
+{% extends 'base_mechanic.html' %}
+
+{% block title %}Add Vehicle Parts{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .parts-wrapper{
+        min-height:90vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        padding:30px 15px;
+    }
+
+    .parts-card{
+        width:100%;
+        max-width:600px;
+        background:#fff;
+        border-radius:25px;
+        overflow:hidden;
+        box-shadow:0 15px 40px rgba(0,0,0,0.12);
+        animation:fadeIn 0.5s ease;
+    }
+
+    .parts-header{
+        background:linear-gradient(135deg,#dc2626,#ef4444);
+        color:#fff;
+        text-align:center;
+        padding:35px 20px;
+    }
+
+    .parts-header i{
+        font-size:65px;
+        margin-bottom:12px;
+    }
+
+    .parts-header h2{
+        font-weight:700;
+        margin-bottom:5px;
+    }
+
+    .parts-header p{
+        margin:0;
+        opacity:0.9;
+    }
+
+    .parts-body{
+        padding:35px;
+    }
+
+    .form-label{
+        font-weight:600;
+        margin-bottom:8px;
+    }
+
+    .form-control{
+        border-radius:14px;
+        padding:13px;
+        border:1px solid #d1d5db;
+        transition:0.3s;
+    }
+
+    .form-control:focus{
+        border-color:#dc2626;
+        box-shadow:0 0 0 0.2rem rgba(220,38,38,0.15);
+    }
+
+    .btn-add{
+        background:linear-gradient(135deg,#dc2626,#ef4444);
+        color:white;
+        border:none;
+        border-radius:14px;
+        padding:13px;
+        font-size:17px;
+        font-weight:600;
+        transition:0.3s;
+    }
+
+    .btn-add:hover{
+        transform:translateY(-2px);
+        opacity:0.95;
+        color:white;
+    }
+
+    .back-link{
+        text-align:center;
+        margin-top:20px;
+    }
+
+    .back-link a{
+        text-decoration:none;
+        color:#dc2626;
+        font-weight:600;
+    }
+
+    .back-link a:hover{
+        text-decoration:underline;
+    }
+
+    .alert{
+        border-radius:12px;
+    }
+
+    .preview-img{
+        width:100%;
+        max-height:220px;
+        object-fit:cover;
+        border-radius:15px;
+        margin-top:10px;
+        display:none;
+        border:2px dashed #ddd;
+        padding:5px;
+    }
+
+    @keyframes fadeIn{
+        from{
+            opacity:0;
+            transform:translateY(20px);
+        }
+        to{
+            opacity:1;
+            transform:translateY(0);
+        }
+    }
+
+</style>
+
+<div class="parts-wrapper">
+
+    <div class="parts-card">
+
+        <!-- Header -->
+        <div class="parts-header">
+
+            <i class="bi bi-tools"></i>
+
+            <h2>Add Vehicle Parts</h2>
+
+            <p>Add new spare parts to your stock inventory</p>
+
+        </div>
+
+        <!-- Body -->
+        <div class="parts-body">
+
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success shadow-sm">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Form -->
+            <form method="POST"
+                  enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <!-- Item Name -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        <i class="bi bi-tools me-1 text-danger"></i>
+                        Vehicle Part Name
+                    </label>
+
+                    <input type="text"
+                           name="item_name"
+                           class="form-control"
+                           placeholder="Enter vehicle part name"
+                           required>
+
+                </div>
+
+                <!-- Price -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        <i class="bi bi-currency-rupee me-1 text-danger"></i>
+                        Price
+                    </label>
+
+                    <input type="number"
+                           name="price"
+                           class="form-control"
+                           placeholder="Enter price"
+                           step="0.01"
+                           required>
+
+                </div>
+
+                <!-- Quantity -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        <i class="bi bi-box-seam me-1 text-danger"></i>
+                        Quantity
+                    </label>
+
+                    <input type="number"
+                           name="quantity"
+                           class="form-control"
+                           placeholder="Enter quantity"
+                           min="0"
+                           required>
+
+                </div>
+
+                <!-- Stock Image -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        <i class="bi bi-image me-1 text-danger"></i>
+                        Vehicle Part Image
+                    </label>
+
+                    <input type="file"
+                           name="stock_pic"
+                           class="form-control"
+                           accept="image/*"
+                           onchange="previewImage(event)">
+
+                    <img id="preview"
+                         class="preview-img">
+
+                </div>
+
+                <!-- Button -->
+                <div class="d-grid">
+
+                    <button type="submit"
+                            class="btn btn-add">
+
+                        <i class="bi bi-plus-circle me-1"></i>
+                        Add Vehicle Part
+
+                    </button>
+
+                </div>
+
+            </form>
+
+            <!-- Back -->
+            <div class="back-link">
+
+                <a href="{% url 'vehicle_parts_list' %}">
+
+                    <i class="bi bi-arrow-left"></i>
+                    Back to Vehicle Parts
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function previewImage(event){
+
+        const preview = document.getElementById('preview');
+
+        preview.src = URL.createObjectURL(event.target.files[0]);
+
+        preview.style.display = 'block';
+    }
+
+</script>
+
+{% endblock %}

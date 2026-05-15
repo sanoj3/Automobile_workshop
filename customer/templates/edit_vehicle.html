@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Vehicle{% endblock %}
+
+{% block header %}Edit Vehicle{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+                <!-- Header -->
+                <div class="bg-primary text-white p-4">
+                    <h3 class="mb-1">
+                        <i class="bi bi-car-front-fill me-2"></i>
+                        Update Vehicle
+                    </h3>
+                    <p class="mb-0 small">
+                        Edit your vehicle details below
+                    </p>
+                </div>
+
+                <!-- Form -->
+                <div class="card-body p-4">
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- Vehicle Name -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-car-front me-1 text-primary"></i>
+                                Vehicle Name
+                            </label>
+
+                            <input type="text"
+                                   name="vehicle_name"
+                                   class="form-control form-control-lg rounded-3"
+                                   value="{{ vehicle.vehicle_name }}"
+                                   placeholder="Enter vehicle name"
+                                   required>
+                        </div>
+
+                        <!-- Model -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-tools me-1 text-primary"></i>
+                                Vehicle Model
+                            </label>
+
+                            <input type="text"
+                                   name="vehicle_model"
+                                   class="form-control form-control-lg rounded-3"
+                                   value="{{ vehicle.vehicle_model }}"
+                                   placeholder="Enter vehicle model"
+                                   required>
+                        </div>
+
+                        <!-- Year -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-calendar-event me-1 text-primary"></i>
+                                Manufacturing Year
+                            </label>
+
+                            <input type="number"
+                                   name="vehicle_year"
+                                   class="form-control form-control-lg rounded-3"
+                                   value="{{ vehicle.vehicle_year }}"
+                                   placeholder="Enter year"
+                                   required>
+                        </div>
+
+                        <!-- Vehicle Number -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-upc-scan me-1 text-primary"></i>
+                                Vehicle Number
+                            </label>
+
+                            <input type="text"
+                                   name="vehicle_number"
+                                   class="form-control form-control-lg rounded-3 text-uppercase"
+                                   value="{{ vehicle.vehicle_number }}"
+                                   placeholder="KL 07 AB 1234"
+                                   required>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex gap-3 mt-4">
+
+                            <button type="submit"
+                                    class="btn btn-success btn-lg px-4 rounded-3">
+                                <i class="bi bi-check-circle me-1"></i>
+                                Update Vehicle
+                            </button>
+
+                            <a href="{% url 'vehicle_list' %}"
+                               class="btn btn-outline-secondary btn-lg px-4 rounded-3">
+                                <i class="bi bi-arrow-left me-1"></i>
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

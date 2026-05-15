@@ -1,0 +1,335 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+{% block header %}My Profile{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .profile-container{
+        max-width: 700px;
+        margin: auto;
+    }
+
+    .profile-card{
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    /* Banner */
+
+    .profile-banner{
+        height: 160px;
+        background: linear-gradient(135deg,#2563eb,#1d4ed8);
+        position: relative;
+    }
+
+    /* Profile Image */
+
+    .profile-image-wrapper{
+        position: absolute;
+        left: 50%;
+        bottom: -45px;
+        transform: translateX(-50%);
+    }
+
+    .profile-image{
+        width: 95px;
+        height: 95px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid white;
+        background: white;
+        box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+    }
+
+    .profile-image img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .profile-placeholder{
+        width: 100%;
+        height: 100%;
+        background: #2563eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    /* Body */
+
+    .profile-body{
+        padding: 60px 25px 25px;
+    }
+
+    .profile-name{
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .profile-email{
+        color: #6b7280;
+        font-size: 13px;
+    }
+
+    .profile-role{
+        display: inline-block;
+        margin-top: 10px;
+        padding: 6px 14px;
+        border-radius: 30px;
+        background: rgba(37,99,235,0.1);
+        color: #2563eb;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* Info Card */
+
+    .info-card{
+        background: #f8fafc;
+        border-radius: 18px;
+        padding: 16px;
+        height: 100%;
+        border: 1px solid #eef2f7;
+    }
+
+    .info-icon{
+        width: 45px;
+        height: 45px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .bg-blue{
+        background: #2563eb;
+    }
+
+    .bg-green{
+        background: #16a34a;
+    }
+
+    .bg-dark{
+        background: #111827;
+    }
+
+    .info-title{
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 3px;
+    }
+
+    .info-value{
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* Buttons */
+
+    .profile-btn{
+        padding: 9px 18px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+</style>
+
+<div class="container py-4">
+
+    <div class="profile-container">
+
+        <div class="profile-card">
+
+            <!-- Banner -->
+
+            <div class="profile-banner">
+
+                <div class="profile-image-wrapper">
+
+                    <div class="profile-image">
+
+                        {% if customer.profile_pic %}
+
+                            <img src="{{ customer.profile_pic.url }}"
+                                 alt="Profile">
+
+                        {% else %}
+
+                            <div class="profile-placeholder">
+                                {{ customer.name|slice:":1"|upper }}
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Body -->
+
+            <div class="profile-body">
+
+                <!-- User -->
+
+                <div class="text-center mb-4">
+
+                    <h3 class="profile-name">
+                        {{ customer.name }}
+                    </h3>
+
+                    <div class="profile-email">
+                        <i class="bi bi-envelope-fill"></i>
+                        {{ user.email }}
+                    </div>
+
+                    <div class="profile-role">
+                        Customer Account
+                    </div>
+
+                </div>
+
+                <!-- Info -->
+
+                <div class="row g-3">
+
+                    <!-- Phone -->
+
+                    <div class="col-md-6">
+
+                        <div class="info-card">
+
+                            <div class="d-flex align-items-center">
+
+                                <div class="info-icon bg-blue">
+                                    <i class="bi bi-telephone-fill"></i>
+                                </div>
+
+                                <div class="ms-3">
+
+                                    <div class="info-title">
+                                        Phone
+                                    </div>
+
+                                    <p class="info-value">
+                                        {{ customer.number }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- City -->
+
+                    <div class="col-md-6">
+
+                        <div class="info-card">
+
+                            <div class="d-flex align-items-center">
+
+                                <div class="info-icon bg-green">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                </div>
+
+                                <div class="ms-3">
+
+                                    <div class="info-title">
+                                        City
+                                    </div>
+
+                                    <p class="info-value">
+                                        {{ customer.city.name|default:"Not Added" }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Address -->
+
+                    <div class="col-12">
+
+                        <div class="info-card">
+
+                            <div class="d-flex align-items-start">
+
+                                <div class="info-icon bg-dark">
+                                    <i class="bi bi-house-door-fill"></i>
+                                </div>
+
+                                <div class="ms-3">
+
+                                    <div class="info-title">
+                                        Address
+                                    </div>
+
+                                    <p class="info-value">
+                                        {{ customer.address|default:"Not Added" }}
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+
+                <div class="text-center mt-4">
+
+                    <a href="{% url 'edit_profile_user' customer.id %}"
+                       class="btn btn-primary profile-btn me-2">
+
+                        <i class="bi bi-pencil-square"></i>
+                        Edit
+
+                    </a>
+
+                    <a href="{% url 'profile_user_change_password' %}"
+                       class="btn btn-outline-dark profile-btn">
+
+                        <i class="bi bi-shield-lock"></i>
+                        Password
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

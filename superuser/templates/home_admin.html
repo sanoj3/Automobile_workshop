@@ -1,0 +1,228 @@
+{% extends 'base_admin.html' %}
+
+{% block header %}Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+    .dashboard-card{
+        border: none;
+        border-radius: 18px;
+        transition: 0.3s ease;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .dashboard-card:hover{
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .dashboard-icon{
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: white;
+        margin-bottom: 15px;
+    }
+
+    .bg-blue{
+        background: linear-gradient(135deg,#4e73df,#224abe);
+    }
+
+    .bg-green{
+        background: linear-gradient(135deg,#1cc88a,#13855c);
+    }
+
+    .bg-orange{
+        background: linear-gradient(135deg,#f6c23e,#dda20a);
+    }
+
+    .bg-red{
+        background: linear-gradient(135deg,#e74a3b,#be2617);
+    }
+
+    .bg-purple{
+        background: linear-gradient(135deg,#6f42c1,#4e2b8a);
+    }
+
+    .dashboard-title{
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .dashboard-text{
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .dashboard-btn{
+        border-radius: 10px;
+        padding: 6px 15px;
+        font-size: 14px;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <div class="row mb-4">
+        <div class="col">
+            <h3 class="fw-bold">🚗 Super Admin Dashboard</h3>
+            <p class="text-muted">Manage services, mechanics and customers</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Pending Service -->
+        <div class="col-md-3">
+            <div class="card dashboard-card shadow-sm p-4">
+                <div class="dashboard-icon bg-blue">
+                    <i class="bi bi-tools"></i>
+                </div>
+
+                <h5 class="dashboard-title">Pending Service</h5>
+                <p class="dashboard-text">New service requests waiting for approval.</p>
+
+                <a href="#" class="btn btn-primary dashboard-btn">
+                    View Requests
+                </a>
+            </div>
+        </div>
+
+        <!-- Active Service -->
+        <div class="col-md-3">
+            <div class="card dashboard-card shadow-sm p-4">
+                <div class="dashboard-icon bg-green">
+                    <i class="bi bi-gear-wide-connected"></i>
+                </div>
+
+                <h5 class="dashboard-title">Active Service</h5>
+                <p class="dashboard-text">Track ongoing vehicle services.</p>
+
+                <a href="#" class="btn btn-success dashboard-btn">
+                    Track Service
+                </a>
+            </div>
+        </div>
+
+        <!-- Online Mechanic -->
+        <div class="col-md-3">
+            <div class="card dashboard-card shadow-sm p-4">
+                <div class="dashboard-icon bg-orange">
+                    <i class="bi bi-person-workspace"></i>
+                </div>
+
+                <h5 class="dashboard-title">Online Mechanic</h5>
+                <p class="dashboard-text">Manage available online mechanics.</p>
+
+                <a href="#" class="btn btn-warning dashboard-btn text-white">
+                    Manage
+                </a>
+            </div>
+        </div>
+
+        <!-- Available Mechanic -->
+        <div class="col-md-3">
+            <div class="card dashboard-card shadow-sm p-4">
+                <div class="dashboard-icon bg-red">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <h5 class="dashboard-title">Available Mechanic</h5>
+                <p class="dashboard-text">View all active mechanics.</p>
+
+                <a href="#" class="btn btn-danger dashboard-btn">
+                    View Details
+                </a>
+            </div>
+        </div>
+
+        <!-- Mechanic Applications -->
+        <div class="col-md-3">
+            <div class="card dashboard-card shadow-sm p-4">
+                <div class="dashboard-icon bg-purple">
+                    <i class="bi bi-file-earmark-person"></i>
+                </div>
+
+                <h5 class="dashboard-title">Mechanic Applications</h5>
+                <p class="dashboard-text">Review mechanic approval requests.</p>
+
+                <a href="{% url 'all_mechanic_applications' %}" class="btn btn-dark dashboard-btn">
+                    Review
+                </a>
+            </div>
+        </div>
+
+        <!-- Rejected Mechanic -->
+        <div class="col-md-3">
+            <div class="card dashboard-card shadow-sm p-4">
+                <div class="dashboard-icon bg-red">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <h5 class="dashboard-title">Rejected Mechanics</h5>
+                <p class="dashboard-text">View all application rejected mechanics.</p>
+
+                <a href="{% url 'rejected_mechanics' %}" class="btn btn-danger dashboard-btn">
+                    View Details
+                </a>
+            </div>
+        </div>
+
+        <!-- Customer Details -->
+        <div class="col-md-3">
+            <div class="card dashboard-card shadow-sm p-4">
+                <div class="dashboard-icon bg-green">
+                    <i class="bi bi-person-lines-fill"></i>
+                </div>
+
+                <h5 class="dashboard-title">Customer Details</h5>
+                <p class="dashboard-text">Manage registered customers.</p>
+
+                <a href="{% url 'all_customer_detail' %}" class="btn btn-success dashboard-btn">
+                    Customers
+                </a>
+            </div>
+        </div>
+
+        <!-- Mechanic Details -->
+        <div class="col-md-3">
+            <div class="card dashboard-card shadow-sm p-4">
+                <div class="dashboard-icon bg-blue">
+                    <i class="bi bi-person-badge-fill"></i>
+                </div>
+
+                <h5 class="dashboard-title">Mechanic Details</h5>
+                <p class="dashboard-text">View and manage mechanics.</p>
+
+                <a href="{% url 'all_mechanic_details' %}" class="btn btn-primary dashboard-btn">
+                    Mechanics
+                </a>
+            </div>
+        </div>
+
+        <!-- Profile -->
+        <div class="col-md-3">
+            <div class="card dashboard-card shadow-sm p-4">
+                <div class="dashboard-icon bg-orange">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+
+                <h5 class="dashboard-title">Profile</h5>
+                <p class="dashboard-text">Manage your admin account.</p>
+
+                <a href="#" class="btn btn-warning dashboard-btn text-white">
+                    Open Profile
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

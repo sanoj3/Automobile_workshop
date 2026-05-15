@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block header %}Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .dashboard-card{
+        border: none;
+        border-radius: 22px;
+        overflow: hidden;
+        transition: 0.3s ease;
+        position: relative;
+        background: white;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+    }
+
+    .dashboard-card:hover{
+        transform: translateY(-6px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+    }
+
+    .card-icon{
+        width: 65px;
+        height: 65px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        color: white;
+        margin-bottom: 18px;
+    }
+
+    .bg-blue{
+        background: linear-gradient(135deg,#2563eb,#3b82f6);
+    }
+
+    .bg-green{
+        background: linear-gradient(135deg,#16a34a,#22c55e);
+    }
+
+    .bg-orange{
+        background: linear-gradient(135deg,#ea580c,#f97316);
+    }
+
+    .bg-purple{
+        background: linear-gradient(135deg,#7c3aed,#9333ea);
+    }
+
+    .dashboard-title{
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .dashboard-text{
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 18px;
+    }
+
+    .dashboard-btn{
+        border-radius: 12px;
+        padding: 8px 18px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .welcome-banner{
+        background: linear-gradient(135deg,#2563eb,#1d4ed8);
+        border-radius: 24px;
+        padding: 35px;
+        color: white;
+        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .welcome-banner::after{
+        content: '';
+        position: absolute;
+        right: -40px;
+        top: -40px;
+        width: 180px;
+        height: 180px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 50%;
+    }
+
+    .welcome-banner h3{
+        font-weight: 700;
+    }
+
+    .welcome-banner p{
+        opacity: 0.9;
+        margin-bottom: 0;
+    }
+
+</style>
+
+<!-- Welcome Banner -->
+
+<div class="welcome-banner">
+
+    <h3>
+        Welcome Back, {{ request.user.customer.name }} 👋
+    </h3>
+
+    
+</div>
+
+<!-- Dashboard Cards -->
+
+<div class="row g-4">
+
+    <!-- Book Service -->
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card dashboard-card p-4 h-100">
+
+            <div class="card-icon bg-blue">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+
+            <h5 class="dashboard-title">
+                Book Service
+            </h5>
+
+            <p class="dashboard-text">
+                Request a new vehicle service easily.
+            </p>
+
+            <a href="{% url 'servicebooking' %}"
+               class="btn btn-primary dashboard-btn">
+                Book Now
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Orders -->
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card dashboard-card p-4 h-100">
+
+            <div class="card-icon bg-green">
+                <i class="bi bi-box-seam"></i>
+            </div>
+
+            <h5 class="dashboard-title">
+                Orders
+            </h5>
+
+            <p class="dashboard-text">
+                Track your service and repair requests.
+            </p>
+
+            <a href="#"
+               class="btn btn-success dashboard-btn">
+                View Orders
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Vehicles -->
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card dashboard-card p-4 h-100">
+
+            <div class="card-icon bg-orange">
+                <i class="bi bi-car-front-fill"></i>
+            </div>
+
+            <h5 class="dashboard-title">
+                Vehicles
+            </h5>
+
+            <p class="dashboard-text">
+                Add, edit and manage your vehicles.
+            </p>
+
+            <a href="{% url 'vehicle_list' %}"
+               class="btn btn-warning text-white dashboard-btn">
+                Manage
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- Profile -->
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card dashboard-card p-4 h-100">
+
+            <div class="card-icon bg-purple">
+                <i class="bi bi-person-circle"></i>
+            </div>
+
+            <h5 class="dashboard-title">
+                Profile
+            </h5>
+
+            <p class="dashboard-text">
+                View and update your account details.
+            </p>
+
+            <a href="{% url 'profile_user' %}"
+               class="btn btn-info text-white dashboard-btn">
+                Open Profile
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
