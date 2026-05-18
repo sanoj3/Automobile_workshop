@@ -12,6 +12,7 @@ from customer.views import name_validation, email_validation, number_validation,
 
 # Create your views here.
 
+#::::::::::::::::::::::Mechanic Session Access::::::::::::::::::::::
 def check_mechanic_access(request):
     mechanic_id = request.session.get('mechanic_id')
 
@@ -31,8 +32,8 @@ def check_mechanic_access(request):
     
     except Mechanic.DoesNotExist:
         return None
-    
-# .............Apply Mechanic.............
+
+#::::::::::::::::::::::Apply Mechanic::::::::::::::::::::::
 def apply_mechanic(request):
     cities = City.objects.all()
     if request.method == 'POST':
@@ -132,6 +133,7 @@ def apply_mechanic(request):
     return render(request, 'apply.html', {'cities':cities})
 
 
+#::::::::::::::::::::::Login Mechanic::::::::::::::::::::::
 def login_mechanic(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -160,17 +162,15 @@ def login_mechanic(request):
             
         except Mechanic.DoesNotExist:
             messages.error(request, 'Invalid credentials.')
-            return redirect('login_mechanic')
-        
+            return redirect('login_mechanic')  
     
     return render(request, 'login_mechanic.html')
 
 
+#::::::::::::::::::::::Logout Mechanic::::::::::::::::::::::
 def logout_view_mechanic(request):
     mechanic_id = request.session.get('mechanic_id')
-
     if mechanic_id:
-
         mech = Active_mechanic.objects.filter(mechanic_id=mechanic_id).first()
 
         if mech:
@@ -182,16 +182,14 @@ def logout_view_mechanic(request):
         del request.session['mechanic_id']
     return redirect('login_mechanic')
 
-
+#::::::::::::::::::::::Home Page Mechanic::::::::::::::::::::::
 def home_page_mechanic(request):
     mechanic = check_mechanic_access(request)
 
     if mechanic is None:
         return redirect('login_mechanic')
-    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
-    
     if mechanic == 'reject':
         return render(request, 'application_rejected.html')
 
@@ -201,15 +199,14 @@ def home_page_mechanic(request):
         'mechanic': mech
     })
  
+ #::::::::::::::::::::::Profile Page Mechanic::::::::::::::::::::::
 def profile_page_mechanic(request):
     mechanic = check_mechanic_access(request)
 
     if mechanic is None:
         return redirect('login_mechanic')
-    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
-    
     if mechanic == 'reject':
         return render(request, 'application_rejected.html')
 
@@ -217,55 +214,67 @@ def profile_page_mechanic(request):
         'mechanic': mechanic
     })
 
+#::::::::::::::::::::::Edit Profile Mechanic::::::::::::::::::::::
 def profile_page_edit_mechanic(request, id):
 
     mechanic = check_mechanic_access(request)
 
     if mechanic is None:
         return redirect('login_mechanic')
-    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
-    
     if mechanic == 'reject':
         return render(request, 'application_rejected.html')
 
     if request.method == 'POST':
+        email = request.POST.get('email')
+        number = request.POST.get('number')
 
-        mechanic.email = request.POST.get('email')
-        mechanic.number = request.POST.get('number')
+        # .............Email Validation.............
+        email_error = email_validation(email)
+        if email_error:
+            messages.error(request, email_error)
+            return redirect('profile_page_edit_mechanic', id=mechanic.id)
+        
+        # .............Number Validation.............
+        number_error = number_validation(number)
+        if number_error:
+            messages.error(request, number_error)
+            return redirect('profile_page_edit_mechanic', id=mechanic.id)
 
-
-        if Mechanic.objects.filter(email=mechanic.email).exclude(id=mechanic.id).exists():
+        # .............Duplicate Email Check.............
+        if Mechanic.objects.filter(email=email).exclude(id=mechanic.id).exists():
             messages.error(request, 'Email already exists.')
-            return redirect('edit_profile_user', id=mechanic.id)
-
-
-        if Mechanic.objects.filter(number=mechanic.number).exclude(id=mechanic.id).exists():
+            return redirect('profile_page_edit_mechanic', id=mechanic.id)
+        
+        # .............Duplicate Number Check.............
+        if Mechanic.objects.filter(number=number).exclude(id=mechanic.id).exists():
             messages.error(request, 'Number already exists.')
-            return redirect('edit_profile_user', id=mechanic.id)
+            return redirect('profile_page_edit_mechanic', id=mechanic.id)
 
+        # .............Profile Pic.............
         if request.FILES.get('profile_pic'):
             mechanic.profile_pic = request.FILES.get('profile_pic')
 
-        mechanic.save()
+        # .............Save Data.............
+        mechanic.email = email
+        mechanic.number = number
 
+        mechanic.save()
         messages.success(request, 'Profile updated successfully.')
         return redirect('profile_page_mechanic')
 
     return render(request, 'edit_profile_mechanic.html', {'mechanic': mechanic})
 
 
-
+#::::::::::::::::::::::Change Password(Profile Page)::::::::::::::::::::::
 def profile_mechanic_change_password(request):
     mechanic = check_mechanic_access(request)
 
     if mechanic is None:
         return redirect('login_mechanic')
-    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
-    
     if mechanic == 'reject':
         return render(request, 'application_rejected.html')
     
@@ -274,34 +283,48 @@ def profile_mechanic_change_password(request):
         new_password = request.POST.get('new_password')
         confirm_password = request.POST.get('confirm_password')
 
+        # .............Password Validations.............
+        old_password_error = password_validation(old_password)
+        if old_password_error:
+            messages.error(request, old_password_error)
+            return redirect('profile_mechanic_change_password')
+        
+        new_password_error = password_validation(new_password)
+        if new_password_error:
+            messages.error(request, new_password_error)
+            return redirect('profile_mechanic_change_password')
+        
+        confirm_password_error = password_validation(confirm_password)
+        if confirm_password_error:
+            messages.error(request, confirm_password_error)
+            return redirect('profile_mechanic_change_password')
+
+
         if not check_password(old_password, mechanic.password):
             messages.error(request, 'Old password is incorrected')
-
-        elif new_password != confirm_password:
+        if new_password != confirm_password:
             messages.error(request, "New passwords do not match.")
-
-        elif old_password == new_password:
+        if old_password == new_password:
             messages.error(request, 'Use different password.')
         
-        else:
-            mechanic.password = make_password(new_password)
-            mechanic.save()
+        # .............Save Data.............
+        mechanic.password = make_password(new_password)
+        mechanic.save()
 
-            messages.success(request, 'Password changed successfully.')
-            return redirect('login_mechanic')
+        messages.success(request, 'Password changed successfully.')
+        return redirect('login_mechanic')
     
     return render(request, 'profile_mechanic_change_password.html')
 
 
+#::::::::::::::::::::::Spareparts List::::::::::::::::::::::
 def vehicle_parts_list(request):
     mechanic = check_mechanic_access(request)
 
     if mechanic is None:
         return redirect('login_mechanic')
-    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
-    
     if mechanic == 'reject':
         return render(request, 'application_rejected.html')
     
@@ -313,15 +336,14 @@ def vehicle_parts_list(request):
     })
 
 
+#::::::::::::::::::::::Add Spareparts::::::::::::::::::::::
 def add_vehicle_parts(request):
     mechanic = check_mechanic_access(request)
 
     if mechanic is None:
         return redirect('login_mechanic')
-    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
-    
     if mechanic == 'reject':
         return render(request, 'application_rejected.html')
     
@@ -332,18 +354,38 @@ def add_vehicle_parts(request):
         stock_pic = request.FILES.get('stock_pic')
 
         required_fields = [item_name, price, quantity]
-
         if not all(required_fields):
             messages.error(request, 'required fields are must be entered.')
             return redirect('vehicle_parts_list')
         
+        # .............Item Name Validation.............
+        item_name_error = name_validation(item_name)
+        if item_name_error:
+            messages.error(request, item_name_error)
+            return redirect('add_vehicle_parts')
+        
+        # .............Price Validation.............
         try:
             price = float(price)
+        except ValueError:
+            messages.error(request, 'Price must be a valid number.')
+            return redirect('add_vehicle_parts')
+        if price<=0:
+            messages.error(request, 'Price must be greater than 0')
+            return redirect('add_vehicle_parts')
+        
+        # .............Quantity Validation.............
+        try:
             quantity = int(quantity)
         except ValueError:
-            messages.error(request, 'Invalid price or quantity.')
-            return redirect('vehicle_parts_list')
-        
+            messages.error(request, 'Quantity must be a valid integer.')
+            return redirect('add_vehicle_parts')
+        if quantity<=0:
+            messages.error(request, 'Quantity must be greater than 0')
+            return redirect('add_vehicle_parts')
+
+        # .............Data Save.............
+        created_at = timezone.datetime.now()
         StockManagement.objects.create(
             mechanic = mechanic,
             item_name = item_name,
@@ -357,15 +399,15 @@ def add_vehicle_parts(request):
     
     return render(request, 'add_vehicle_parts.html')
 
+
+#::::::::::::::::::::::Delete Spareparts::::::::::::::::::::::
 def delete_vehicle_parts(request, id):
     mechanic = check_mechanic_access(request)
 
     if mechanic is None:
         return redirect('login_mechanic')
-    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
-    
     if mechanic == 'reject':
         return render(request, 'application_rejected.html')
     
@@ -379,16 +421,14 @@ def delete_vehicle_parts(request, id):
     return redirect('vehicle_parts_list')
 
 
-
+#::::::::::::::::::::::Edit Spareparts::::::::::::::::::::::
 def modify_vehicle_parts(request, id):
     mechanic = check_mechanic_access(request)
 
     if mechanic is None:
         return redirect('login_mechanic')
-    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
-    
     if mechanic == 'reject':
         return render(request, 'application_rejected.html')
     
@@ -398,7 +438,6 @@ def modify_vehicle_parts(request, id):
         mechanic=mechanic
     )
 
-    # Update Vehicle Part
     if request.method == 'POST':
 
         item_name = request.POST.get('item_name')
@@ -406,25 +445,37 @@ def modify_vehicle_parts(request, id):
         quantity = request.POST.get('quantity')
         stock_pic = request.FILES.get('stock_pic')
 
-        # Validation
-        if not item_name or not price or not quantity:
-            messages.error(request, 'All required fields must be entered.')
+        # .............Item Name Validation.............
+        item_name_error = name_validation(item_name)
+        if item_name_error:
+            messages.error(request, item_name_error)
             return redirect('modify_vehicle_parts', id=id)
-
+        
+        # .............Price Validation.............
         try:
             price = float(price)
-            quantity = int(quantity)
-
         except ValueError:
-            messages.error(request, 'Invalid price or quantity.')
+            messages.error(request, 'Price must be a valid number.')
+            return redirect('modify_vehicle_parts', id=id)
+        if price<=0:
+            messages.error(request, 'Price must be greater than 0')
+            return redirect('modify_vehicle_parts', id=id)
+        
+        # .............Quantity Validation.............
+        try:
+            quantity = int(quantity)
+        except ValueError:
+            messages.error(request, 'Quantity must be a valid integer.')
+            return redirect('modify_vehicle_parts', id=id)
+        if quantity<=0:
+            messages.error(request, 'Quantity must be greater than 0')
             return redirect('modify_vehicle_parts', id=id)
 
-        # Update Data
+        # .............Udate Data.............
         parts.item_name = item_name
         parts.price = price
         parts.quantity = quantity
 
-        # Update Image Only If Uploaded
         if stock_pic:
             parts.stock_pic = stock_pic
 
@@ -442,6 +493,7 @@ def modify_vehicle_parts(request, id):
     })
 
 
+#::::::::::::::::::::::Toggle Button(Mechanic Online)::::::::::::::::::::::
 def toggle_mechanic_status(request):
 
     if request.method != "POST":
@@ -451,10 +503,8 @@ def toggle_mechanic_status(request):
 
     if mechanic is None:
         return redirect('login_mechanic')
-
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
-
     if mechanic == 'reject':
         return render(request, 'application_rejected.html')
 

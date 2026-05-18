@@ -9,7 +9,7 @@ import re
 from datetime import datetime
 # Create your views here.
 
-#..............................................................................................
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #............. Main Email Validation.............
 def email_validation(email):
     if not email:
@@ -36,6 +36,14 @@ def name_validation(name):
     if not re.match(r'^[A-Za-z]+$', name):
         return 'Name should contain only letters.'
     return None
+
+#.............Main UserName Validation.............
+def username_validation(username):   
+    if not username:
+        return 'Username is required.'
+    if len(username) < 3:
+        return 'Userame must be at least 3 characters.'
+    return None
     
 #.............Main Number Validation.............
 def number_validation(number):
@@ -46,9 +54,9 @@ def number_validation(number):
     if len(number) != 10:
         return 'Phone number must be 10 digits.'
     return None
- #..............................................................................................            
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::          
 
-#.............User Registration.............
+#::::::::::::::::::::::User Registration::::::::::::::::::::::
 def registration(request):
     cities = City.objects.all()
     if request.method == 'POST':
@@ -101,7 +109,7 @@ def registration(request):
         
         #.............Save Data.............
         try :
-            if transaction.atomic():
+            with transaction.atomic():
                 user = User.objects.create_user(
                     username= email,
                     email =email,
@@ -124,7 +132,8 @@ def registration(request):
         
     return render(request, 'register.html', {'city': cities})
 
-#.............User Login.............
+
+#::::::::::::::::::::::User Login::::::::::::::::::::::
 def user_login(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -154,7 +163,7 @@ def user_login(request):
     
     return render(request, 'login.html')
 
-#..............................................................................................
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #.............Main Vehicle Name Validation.............
 def vehicle_name_validation(vehicle_name):
     vehicle_name = vehicle_name.strip()
@@ -190,9 +199,10 @@ def vehicle_number_validation(vehicle_number):
     if not re.match(pattern, vehicle_number):
         return 'Enter a valid vehicle number.'
     return None
-#..............................................................................................
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-#.............User Vehicle Add.............
+
+#::::::::::::::::::::::User Vehicle Add::::::::::::::::::::::
 @login_required
 def vehicle_add(request):
     if request.method == 'POST':
@@ -248,13 +258,15 @@ def vehicle_add(request):
         return redirect('vehicle_list')
     return render(request, 'add_vehicle.html')
 
-#.............User All Vehicle List.............
+
+#::::::::::::::::::::::User All Vehicle List::::::::::::::::::::::
 @login_required
 def vehicle_list(request):
     vehicles = request.user.customer.vehicles.all()
     return render(request, 'vehicle_list.html', {'vehicles': vehicles})
 
-#.............User Vehicle Edit.............
+
+#::::::::::::::::::::::User Vehicle Edit::::::::::::::::::::::
 @login_required
 def edit_vehicle(request, id):
     vehicle = get_object_or_404(Vehicle, id=id, customer=request.user.customer)
@@ -302,7 +314,7 @@ def edit_vehicle(request, id):
     return render(request, 'edit_vehicle.html', {'vehicle': vehicle})
 
 
-#.............User Vehicle Delete.............
+#::::::::::::::::::::::User Vehicle Delete::::::::::::::::::::::
 @login_required
 def delete_vehicle(request, id):
     vehicle = get_object_or_404(Vehicle, id=id, customer=request.user.customer)
@@ -314,14 +326,16 @@ def delete_vehicle(request, id):
 
     return redirect('vehicle_list')
 
-#.............User Logout.............
+
+#::::::::::::::::::::::User Logout::::::::::::::::::::::
 @login_required
 def logout_page(request):
     logout(request) 
     messages.success(request, "Logged out successfully 👋")
     return redirect('login')
 
-#.............User Home Page.............
+
+#::::::::::::::::::::::User Home Page::::::::::::::::::::::
 @login_required
 def home_page(request):
     customer = request.user.customer
@@ -332,7 +346,8 @@ def home_page(request):
         'vehicles':vehicle
     })
 
-#.............User Profile Page.............
+
+#::::::::::::::::::::::User Profile Page::::::::::::::::::::::
 @login_required
 def profile_user(request):
     customer = request.user.customer
@@ -343,7 +358,8 @@ def profile_user(request):
         'vehicles': vehicles
     })
 
-#.............User Edit Profile.............
+
+#::::::::::::::::::::::User Edit Profile::::::::::::::::::::::
 @login_required
 def profile_user_edit(request,id):
     customer = get_object_or_404(
@@ -403,7 +419,8 @@ def profile_user_edit(request,id):
         'customer':customer
     })
 
-#.............User Password Change(Profile Page).............
+
+#::::::::::::::::::::::User Password Change(Profile Page)::::::::::::::::::::::
 @login_required
 def profile_user_change_password(request):
     if request.method == "POST":
@@ -411,7 +428,7 @@ def profile_user_change_password(request):
         new_password = request.POST.get('new_password')
         confirm_password = request.POST.get('confirm_password')
 
-        # .............OLD PASSWORD CHECK.............
+        # .............Password Null Check.............
         if not old_password:
             messages.error(request, 'Old password is required.')
             return redirect('profile_user_change_password')

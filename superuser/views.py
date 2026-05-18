@@ -6,6 +6,10 @@ from django.contrib.auth.hashers import check_password, make_password
 from mechanic.models import Mechanic, StockManagement, Active_mechanic
 from customer.models import Customer, Vehicle
 
+from customer.views import username_validation, password_validation, email_validation, number_validation
+
+
+#::::::::::::::::::::::Speruser Session(Check)::::::::::::::::::::::
 def check_superuser_access(request):
     super_user_id = request.session.get('super_user_id')
 
@@ -17,18 +21,24 @@ def check_superuser_access(request):
     except Superadmin.DoesNotExist:
         return None
 
+
+#::::::::::::::::::::::Login Superuser::::::::::::::::::::::
 def login_superuser(request):
-
-    if request.session.get("super_user_id"):
-        return redirect("home_page_superuser")
-
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        if not username or not password:
-            messages.error(request, "Username and password are required.")
-            return redirect("login_superuser")
+        # .............Username Validation.............
+        username_error = username_validation(username)
+        if username_error:
+            messages.error(request, username_error)
+            return redirect('login_superuser')
+        
+        # .............Password Validation.............
+        password_error = password_validation(password)
+        if password_error:
+            messages.error(request, password_error)
+            return redirect('login_superuser')
 
         try:
             super_user = Superadmin.objects.get(username=username)
@@ -39,7 +49,6 @@ def login_superuser(request):
 
             request.session["super_user_id"] = super_user.id
            
-
             messages.success(request, "Login successfully.")
             return redirect("home_page_superuser")
 
@@ -50,12 +59,14 @@ def login_superuser(request):
     return render(request, "login_superuser.html")
 
 
+#::::::::::::::::::::::Logout Superuser::::::::::::::::::::::
 def logout_view_superuser(request):
     if 'super_user_id' in request.session:
         del request.session['super_user_id']
     return redirect('login_superuser')
 
 
+#::::::::::::::::::::::Home Page Superuser::::::::::::::::::::::
 def home_page_superuser(request):
     superuser = check_superuser_access(request)
 
@@ -67,6 +78,7 @@ def home_page_superuser(request):
     })
 
 
+#::::::::::::::::::::::Mechanic All Application Pending Page::::::::::::::::::::::
 def all_mechanic_applications(request):
     superuser = check_superuser_access(request)
 
@@ -79,6 +91,8 @@ def all_mechanic_applications(request):
         'mechanics':mechanics
     })
 
+
+#::::::::::::::::::::::View Mechanic Application::::::::::::::::::::::
 def mechanic_application(request, id):
     superuser = check_superuser_access(request)
 
@@ -91,6 +105,8 @@ def mechanic_application(request, id):
         'mechanic':mechanic
     })
 
+
+#::::::::::::::::::::::Approve Mechanic(Button)::::::::::::::::::::::
 def approve_mechanic(request,id):
     superuser = check_superuser_access(request)
 
@@ -104,6 +120,8 @@ def approve_mechanic(request,id):
     messages.success(request, 'Application Successfully Approved.')
     return redirect('all_mechanic_applications')
 
+
+#::::::::::::::::::::::Reject Mechanic(Button)::::::::::::::::::::::
 def reject_mechanic(request, id):
     superuser = check_superuser_access(request)
 
@@ -115,7 +133,9 @@ def reject_mechanic(request, id):
     mechanic.save()
     messages.success(request, 'Application Successfully Rejected!')
     return redirect('all_mechanic_applications')
-    
+
+
+#::::::::::::::::::::::All Customer List::::::::::::::::::::::   
 def all_customer_detail(request):
     superuser = check_superuser_access(request)
 
@@ -128,7 +148,7 @@ def all_customer_detail(request):
         'customers':customers
     })
 
-
+#::::::::::::::::::::::View Customer Details::::::::::::::::::::::
 def customer_detail(request, id):
     superuser = check_superuser_access(request)
 
@@ -143,6 +163,8 @@ def customer_detail(request, id):
         'vehicle': vehicle
     })
 
+
+#::::::::::::::::::::::All Mechanic List::::::::::::::::::::::
 def all_mechanic_details(request):
     superuser = check_superuser_access(request)
 
@@ -155,6 +177,8 @@ def all_mechanic_details(request):
         'mechanic':mechanic
     })
 
+
+#::::::::::::::::::::::View Customer Details::::::::::::::::::::::
 def mechanic_deatail(request, id):
     superuser = check_superuser_access(request)
 
@@ -169,6 +193,8 @@ def mechanic_deatail(request, id):
         'vehicle_parts': vehicle_parts
     })
 
+
+#::::::::::::::::::::::All Rejected Mechanic List::::::::::::::::::::::
 def rejected_mechanics(request):
     superuser = check_superuser_access(request)
 
@@ -181,6 +207,8 @@ def rejected_mechanics(request):
         'mechanic': mechanic
     })
 
+
+#::::::::::::::::::::::Rejected Customer Details::::::::::::::::::::::
 def view_rejected_mechanic(request,id):
     superuser = check_superuser_access(request)
 
@@ -193,6 +221,8 @@ def view_rejected_mechanic(request,id):
         'mechanic': mechanic
     })
 
+
+#::::::::::::::::::::::Profile Page::::::::::::::::::::::
 def profile_page_superuser(request):
     superuser =  check_superuser_access(request)
 
@@ -202,6 +232,7 @@ def profile_page_superuser(request):
         'superuser' : superuser
     })
 
+#::::::::::::::::::::::Edit Profile::::::::::::::::::::::
 def profile_page_edit_superuser(request, id):
     superuser = check_superuser_access(request)
 
@@ -209,18 +240,33 @@ def profile_page_edit_superuser(request, id):
         return redirect('login_superuser')
     
     if request.method == 'POST':
-        superuser.email = request.POST.get('email')
-        superuser.number = request.POST.get('number')
+        email = request.POST.get('email')
+        number = request.POST.get('number')
 
+        # .............Email Validation.............
+        email_error = email_validation(email)
+        if email_error:
+            messages.error(request, email_error)
+            return redirect('edit_profile_superuser', id=superuser.id)
+        
+        # .............Password Validation.............
+        number_error = number_validation(number)
+        if number_error:
+            messages.error(request, number_error)
+            return redirect('edit_profile_superuser', id=superuser.id)
 
-        if Superadmin.objects.filter(email=superuser.email).exclude(id=superuser.id).exists():
+        # .............Duplicate Email Check.............
+        if Superadmin.objects.filter(email=email).exclude(id=superuser.id).exists():
             messages.error(request, 'Email already exists.')
             return redirect('edit_profile_superuser', id=superuser.id)
 
-
-        if Superadmin.objects.filter(number=superuser.number).exclude(id=superuser.id).exists():
+        # .............Duplicate Number Check.............
+        if Superadmin.objects.filter(number=number).exclude(id=superuser.id).exists():
             messages.error(request, 'Number already exists.')
             return redirect('edit_profile_superuser', id=superuser.id)
+
+        superuser.email = email
+        superuser.number = number
 
         if request.FILES.get('profile_pic'):
             superuser.profile_pic = request.FILES.get('profile_pic')
@@ -233,6 +279,7 @@ def profile_page_edit_superuser(request, id):
     return render(request, 'edit_profile_superuser.html', {'superuser': superuser})
 
 
+#::::::::::::::::::::::Change Password(Profile Page)::::::::::::::::::::::
 def profile_superuser_change_password(request):
     superuser= check_superuser_access(request)
 
@@ -244,24 +291,50 @@ def profile_superuser_change_password(request):
         new_password = request.POST.get('new_password')
         confirm_password = request.POST.get('confirm_password')
 
-        if not check_password(old_password, superuser.password):
-            messages.error(request, 'Old password is incorrected')
-
-        elif new_password != confirm_password:
-            messages.error(request, "New passwords do not match.")
-
-        elif old_password == new_password:
-            messages.error(request, 'Use different password.')
+        # .............Password Null Check.............
+        if not old_password:
+            messages.error(request, 'Old password is required.')
+            return redirect('profile_superuser_change_password')
         
-        else:
-            superuser.password = make_password(new_password)
-            superuser.save()
+        if not new_password:
+            messages.error(request, 'New password is required.')
+            return redirect('profile_superuser_change_password')
+        
+        if not confirm_password:
+            messages.error(request, 'Confirm password is required.')
+            return redirect('profile_superuser_change_password')
 
-            messages.success(request, 'Password changed successfully.')
-            return redirect('login_superuser')
+        # .............Old Password Check.............
+        if not check_password(old_password, superuser.password):
+            messages.error(request, 'Old password is incorrect.')
+            return redirect('profile_superuser_change_password')
+
+        # .............New and Confirm Password Check.............
+        if new_password != confirm_password:
+            messages.error(request, "New passwords do not match.")
+            return redirect('profile_superuser_change_password')
+
+        # .............Same Password Check.............
+        if old_password == new_password:
+            messages.error(request, 'Use different password.')
+            return redirect('profile_superuser_change_password')
+        
+        # .............Password Length Check.............
+        if len(new_password)<6:
+            messages.error(request, 'Password must be at least 6 characters.')
+            return redirect('profile_superuser_change_password')
+  
+        # .............Update Password.............
+        superuser.password = make_password(new_password)
+        superuser.save()
+
+        messages.success(request, 'Password changed successfully.')
+        return redirect('login_superuser')
     
     return render(request, 'profile_superuser_change_password.html')
 
+
+#::::::::::::::::::::::View Mechanic Availabe For Work::::::::::::::::::::::
 def available_mechanic(request):
     superuser= check_superuser_access(request)
 
@@ -277,6 +350,8 @@ def available_mechanic(request):
 
     })
 
+
+#::::::::::::::::::::::View All Online Mechanics::::::::::::::::::::::
 def available_online(request):
     superuser= check_superuser_access(request)
 
