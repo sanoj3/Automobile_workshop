@@ -130,15 +130,6 @@
         <!-- Body -->
         <div class="vehicle-body">
 
-            <!-- Messages -->
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-success shadow-sm">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-
             <!-- Form -->
             <form method="POST">
                 {% csrf_token %}
@@ -178,13 +169,10 @@
                         Manufacturing Year
                     </label>
 
-                    <input type="number"
+                    <input type="text"
                            name="vehicle_year"
                            class="form-control"
-                           placeholder="Enter year"
-                           min="1930"
-                           max="2026"
-                           value="2025"
+                           placeholder="2026"
                            required>
                 </div>
 
@@ -199,7 +187,6 @@
                            name="vehicle_number"
                            class="form-control text-uppercase"
                            placeholder="KL07AB1234"
-                           minlength="10"
                            maxlength="15"
                            required>
                 </div>

@@ -7,51 +7,49 @@
 
 <div class="row g-4">
 
-    <!-- Mechanic Status -->
+<!-- Mechanic Status -->
+<div class="col-lg-4 col-md-6">
 
-    <div class="col-lg-4 col-md-6">
+    <div class="status-card">
 
-        <div class="status-card">
+        <div class="d-flex justify-content-between align-items-center">
 
-            <div class="d-flex justify-content-between align-items-center">
-
-                <div>
-
-                    <h6 class="fw-bold mb-1">
-                        Mechanic Status
-                    </h6>
-
-                    <small class="text-muted">
-                        Change availability
-                    </small>
-
-                </div>
-
-                <div class="form-check form-switch">
-
-                    <input class="form-check-input"
-                           type="checkbox"
-                           id="onlineToggle"
-                           checked>
-
-                </div>
-
+            <div>
+                <h6 class="fw-bold mb-1">Mechanic Status</h6>
+                <small class="text-muted">Change availability</small>
             </div>
 
-            <div class="mt-4">
+            <div class="form-check form-switch">
 
-                <span class="badge bg-success status-badge"
-                      id="statusBadge">
-
-                    ● Online
-
-                </span>
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="onlineToggle"
+                       data-initial="{{ mechanic.is_online|yesno:'true,false' }}"
+                       {% if mechanic.is_online %}checked{% endif %}>
 
             </div>
 
         </div>
 
+        <div class="mt-4">
+
+            <span class="badge status-badge"
+                  id="statusBadge"
+                  data-status="{{ mechanic.is_online|yesno:'online,offline' }}">
+
+                {% if mechanic.is_online %}
+                    ● Online
+                {% else %}
+                    ● Offline
+                {% endif %}
+
+            </span>
+
+        </div>
+
     </div>
+
+</div>
 
     <!-- Pending Jobs -->
 
@@ -198,36 +196,75 @@
 
     </div>
 
-
 </div>
 
 <!-- Toggle Script -->
-
 <script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
-    const toggle = document.getElementById("onlineToggle");
-    const badge = document.getElementById("statusBadge");
+const csrftoken = getCookie('csrftoken');
 
-    toggle.addEventListener("change", function(){
+const toggle = document.getElementById("onlineToggle");
+const badge = document.getElementById("statusBadge");
 
-        if(this.checked){
+/* ✅ 1. SYNC UI ON PAGE LOAD */
+window.addEventListener("load", function () {
+    updateBadge(toggle.checked);
+});
 
-            badge.classList.remove("bg-danger");
-            badge.classList.add("bg-success");
+/* ✅ 2. HANDLE TOGGLE CHANGE */
+toggle.addEventListener("change", function () {
 
-            badge.innerHTML = "● Online";
+    fetch("{% url 'toggle_mechanic_status' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": csrftoken,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            is_online: toggle.checked
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
 
-        }else{
-
-            badge.classList.remove("bg-success");
-            badge.classList.add("bg-danger");
-
-            badge.innerHTML = "● Offline";
-
+        if (data.status) {
+            updateBadge(toggle.checked);
         }
 
+    })
+    .catch(error => {
+        console.log("Error:", error);
     });
 
+});
+
+/* ✅ 3. CENTRAL UI UPDATE FUNCTION */
+function updateBadge(isOnline) {
+
+    if (isOnline) {
+        badge.classList.remove("bg-danger");
+        badge.classList.add("bg-success");
+        badge.innerHTML = "● Online";
+    } else {
+        badge.classList.remove("bg-success");
+        badge.classList.add("bg-danger");
+        badge.innerHTML = "● Offline";
+    }
+}
 </script>
 
 {% endblock %}

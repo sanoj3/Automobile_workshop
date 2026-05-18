@@ -14,4 +14,5 @@ urlpatterns = [
     path('add-vehicle-part/', views.add_vehicle_parts, name='add_vehicle_parts'),
     path('delete-vehicle-part/<int:id>/', views.delete_vehicle_parts, name='delete_vehicle_parts'),
     path('modify-vehicle-part/<int:id>/', views.modify_vehicle_parts, name='modify_vehicle_parts'),
+    path('mechanic/toggle-status/', views.toggle_mechanic_status, name='toggle_mechanic_status'),
 ]

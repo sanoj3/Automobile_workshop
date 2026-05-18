@@ -1,14 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
-
+# .............City Database.............
 class City(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
+# .............Customer Database.............
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
@@ -20,7 +20,7 @@ class Customer(models.Model):
     def __str__(self):
         return self.name
     
-    
+ # .............Customer Vehicle Database.............  
 class Vehicle(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="vehicles")
     vehicle_name = models.CharField(max_length=255)

@@ -211,12 +211,12 @@ setTimeout(() => {
             <span>Active Service</span>
         </a>
 
-        <a href="#">
+        <a href="{% url 'available_online' %}">
             <i class="bi bi-wifi"></i>
             <span>Online Mechanic</span>
         </a>
 
-        <a href="#">
+        <a href="{% url 'available_mechanic' %}">
             <i class="bi bi-person-workspace"></i>
             <span>Available Mechanic</span>
         </a>
@@ -231,12 +231,12 @@ setTimeout(() => {
             <span>Customer Details</span>
         </a>
 
-        <a href="#">
+        <a href="{% url 'all_mechanic_details' %} ">
             <i class="bi bi-person-badge-fill"></i>
             <span>Mechanic Details</span>
         </a>
 
-        <a href="#">
+        <a href="{% url 'profile_page_superuser' %}">
             <i class="bi bi-person-circle"></i>
             <span>Profile</span>
         </a>

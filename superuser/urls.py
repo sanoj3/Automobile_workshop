@@ -15,4 +15,9 @@ urlpatterns = [
     path('rejected-mechanic/', views.rejected_mechanics, name='rejected_mechanics'),
     path('rejected-mechanic/<int:id>/', views.view_rejected_mechanic, name='view_rejected_mechanic'),
     path('logout/', views.logout_view_superuser, name='logout_view_superuser'),
+    path('profile/', views.profile_page_superuser, name='profile_page_superuser'),
+    path('edit-profile/<int:id>/', views.profile_page_edit_superuser, name='edit_profile_superuser'),
+    path('change-password/', views.profile_superuser_change_password, name='profile_superuser_change_password'),
+    path('avalable-mechanic/', views.available_mechanic, name='available_mechanic'),
+    path('online-mechanic/', views.available_online, name='available_online'),
 ]

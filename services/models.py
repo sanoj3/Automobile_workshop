@@ -30,15 +30,13 @@ class ServiceBooking(models.Model):
     problem_description = models.TextField()
     status = models.CharField(max_length=200, choices=STATUS_CHOICES, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
-    mechanic = models.ForeignKey(Mechanic, on_delete=models.CASCADE, blank=True, null=True)
+    mechanic = models.ForeignKey(Mechanic, on_delete=models.SET_NULL, blank=True, null=True)
     labour_charge = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     def __str__(self):
-        complaint_name = ", ".join(
-            complaint.name for complaint in self.complaints
-        )
-        return f"{self.customer.name} - {complaint_name} - {self.status}"
+        
+        return f"{self.customer.name} - {self.complaints.all()} - {self.status}"
 
 
     

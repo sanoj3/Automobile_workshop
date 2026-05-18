@@ -46,41 +46,40 @@
                                 </option>
 
                                 {% for v in vehicles %}
+
                                 <option value="{{ v.id }}">
-                                    {{ v.vehicle_name }}
+
+                                    {{ v.vehicle_name }} - {{ v.vehicle_number }}
+
                                 </option>
+
                                 {% endfor %}
 
                             </select>
 
                         </div>
 
-                        <!-- City Dropdown -->
+                        <!-- City -->
                         <div class="mb-3">
 
                             <label class="form-label fw-semibold">
                                 City
                             </label>
 
-                            <select name="city"
-                                    class="form-select rounded-3"
-                                    required>
+                            <!-- Visible city -->
+                            <input type="text"
+                                   class="form-control rounded-3"
+                                   value="{{ city.name }}"
+                                   readonly>
 
-                                <option value="">
-                                    Select City
-                                </option>
-
-                                {% for i in city %}
-                                <option value="{{ i.name }}">
-                                    {{ i.name }}
-                                </option>
-                                {% endfor %}
-
-                            </select>
+                            <!-- Hidden city id -->
+                            <input type="hidden"
+                                   name="city"
+                                   value="{{ city.id }}">
 
                         </div>
 
-                        <!-- Complaints (Checkbox Multiple) -->
+                        <!-- Complaints -->
                         <div class="mb-3">
 
                             <label class="form-label fw-semibold">
@@ -91,15 +90,19 @@
 
                                 {% for c in complaints %}
 
-                                <div class="form-check">
+                                <div class="form-check mb-2">
 
                                     <input class="form-check-input"
                                            type="checkbox"
                                            name="complaints"
-                                           value="{{ c.name }}">
+                                           value="{{ c.id }}"
+                                           id="c{{ c.id }}">
 
-                                    <label class="form-check-label">
+                                    <label class="form-check-label"
+                                           for="complaint{{ c.id }}">
+
                                         {{ c.complaint_name }}
+
                                     </label>
 
                                 </div>
@@ -110,7 +113,7 @@
 
                         </div>
 
-                        <!-- Description -->
+                        <!-- Problem Description -->
                         <div class="mb-4">
 
                             <label class="form-label fw-semibold">
@@ -120,7 +123,7 @@
                             <textarea name="problem_description"
                                       rows="5"
                                       class="form-control rounded-3"
-                                      placeholder="Describe your problem..."
+                                      placeholder="Describe your vehicle problem..."
                                       required></textarea>
 
                         </div>

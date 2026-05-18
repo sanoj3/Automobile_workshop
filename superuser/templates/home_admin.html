@@ -118,9 +118,9 @@
                 </div>
 
                 <h5 class="dashboard-title">Online Mechanic</h5>
-                <p class="dashboard-text">Manage available online mechanics.</p>
+                <p class="dashboard-text">View all available online mechanics.</p>
 
-                <a href="#" class="btn btn-warning dashboard-btn text-white">
+                <a href="{% url 'available_online' %}" class="btn btn-warning dashboard-btn text-white">
                     Manage
                 </a>
             </div>
@@ -134,9 +134,9 @@
                 </div>
 
                 <h5 class="dashboard-title">Available Mechanic</h5>
-                <p class="dashboard-text">View all active mechanics.</p>
+                <p class="dashboard-text">View all available mechanics.</p>
 
-                <a href="#" class="btn btn-danger dashboard-btn">
+                <a href="{% url 'available_mechanic' %}" class="btn btn-danger dashboard-btn">
                     View Details
                 </a>
             </div>
@@ -216,7 +216,7 @@
                 <h5 class="dashboard-title">Profile</h5>
                 <p class="dashboard-text">Manage your admin account.</p>
 
-                <a href="#" class="btn btn-warning dashboard-btn text-white">
+                <a href="{% url 'profile_page_superuser' %}" class="btn btn-warning dashboard-btn text-white">
                     Open Profile
                 </a>
             </div>

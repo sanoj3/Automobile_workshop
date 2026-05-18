@@ -3,12 +3,14 @@ from customer.models import City
 from django.utils import timezone
 # Create your models here.
 
+# .............Mechanic Database.............
 class Mechanic(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
     number = models.CharField(max_length=15)
     address = models.TextField()
     certificate = models.FileField(upload_to='mechanic_certificate/')
+    aadhaar = models.TextField(max_length=12)
     experience_certificate = models.FileField(upload_to='mechanic_experience_certificate/', blank=True, null=True)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     password = models.CharField(max_length=255)
@@ -29,11 +31,11 @@ class Mechanic(models.Model):
     def __str__(self):
         return f"{self.name} - {self.email}"
     
-
+# .............Mechanic Active Database.............
 class Active_mechanic(models.Model):
     mechanic = models.OneToOneField(Mechanic, on_delete=models.CASCADE)
-    is_online = models.BooleanField()
-    is_available = models.BooleanField()
+    is_online = models.BooleanField(default=False)
+    is_available = models.BooleanField(default=False)
     is_work_approve = models.BooleanField(blank=True, null=True)
     is_work_reject = models.BooleanField(blank=True, null=True)
 
@@ -41,7 +43,7 @@ class Active_mechanic(models.Model):
         return f"{self.mechanic.name} - {self.is_online} - {self.is_available}"
     
     
-
+# .............Mechanic Stock Management Database.............
 class StockManagement(models.Model):
     mechanic = models.ForeignKey(Mechanic, on_delete=models.CASCADE)
     item_name = models.CharField(max_length=255)
