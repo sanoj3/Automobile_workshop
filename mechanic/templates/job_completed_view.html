@@ -1,0 +1,168 @@
+{% extends 'base_mechanic.html' %}
+{% load static %}
+
+{% block title %}Completed Job Details{% endblock %}
+{% block header %}Completed Job Details{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold text-success">
+                <i class="bi bi-check-circle-fill"></i> Job Details
+            </h2>
+
+            <p class="text-muted mb-0">
+                Completed service job information
+            </p>
+        </div>
+
+        <a href="{% url 'completed_jobs_list' %}" class="btn btn-outline-dark rounded-pill">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+
+    </div>
+
+    <!-- Card -->
+    <div class="card border-0 shadow rounded-4 overflow-hidden">
+
+        <!-- Header -->
+        <div class="bg-success text-white p-4">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-8">
+
+                    <h3 class="fw-bold mb-1">
+                        {{ jobs.vehicle.vehicle_name }}
+                    </h3>
+
+                    <p class="mb-0">
+                        Booking ID : #{{ jobs.id }}
+                    </p>
+
+                </div>
+
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                    <span class="badge bg-light text-success px-4 py-2">
+                        Completed
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Body -->
+        <div class="card-body p-4">
+
+            <div class="row g-4">
+
+                <!-- Customer -->
+                <div class="col-md-6">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <h5 class="fw-bold mb-3 text-primary">
+                            <i class="bi bi-person-fill"></i> Customer Info
+                        </h5>
+
+                        <p><strong>Name:</strong> {{ jobs.customer.name }}</p>
+                        <p><strong>Phone:</strong> {{ jobs.customer.number }}</p>
+
+                    </div>
+
+                </div>
+
+                <!-- Vehicle -->
+                <div class="col-md-6">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <h5 class="fw-bold mb-3 text-dark">
+                            <i class="bi bi-car-front-fill"></i> Vehicle Info
+                        </h5>
+
+                        <p><strong>Vehicle:</strong> {{ jobs.vehicle.vehicle_name }}</p>
+                        <p><strong>City:</strong> {{ jobs.city.name }}</p>
+
+                    </div>
+
+                </div>
+
+                <!-- Complaints -->
+                <div class="col-12">
+
+                    <div class="border rounded-4 p-3">
+
+                        <h5 class="fw-bold mb-3 text-danger">
+                            <i class="bi bi-tools"></i> Complaints
+                        </h5>
+
+                        {% for complaint in jobs.complaints.all %}
+
+                            <span class="badge bg-info text-dark m-1">
+                                {{ complaint.complaint_name }}
+                            </span>
+
+                        {% empty %}
+
+                            <span class="text-muted">No complaints</span>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+                <!-- Description -->
+                <div class="col-12">
+
+                    <div class="border rounded-4 p-3">
+
+                        <h5 class="fw-bold mb-3 text-secondary">
+                            <i class="bi bi-file-text-fill"></i> Problem Description
+                        </h5>
+
+                        <p class="mb-0">
+                            {{ jobs.problem_description }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <!-- Payment -->
+                <div class="col-12">
+
+                    <div class="border rounded-4 p-3">
+
+                        <h5 class="fw-bold mb-3 text-success">
+                            <i class="bi bi-cash-coin"></i> Payment Summary
+                        </h5>
+
+                        <p><strong>Total Amount:</strong> ₹ {{ jobs.total_price }}</p>
+
+                        {% if jobs.labour_charge %}
+                            <p><strong>Labour Charge:</strong> ₹ {{ jobs.labour_charge }}</p>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

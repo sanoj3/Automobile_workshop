@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 from customer.models import City
 # Create your models here.
 
-
+# .............Superuser Model.............
 class Superadmin(models.Model):
     username = models.CharField(max_length=200)
     password = models.CharField(max_length=255)
@@ -15,7 +15,6 @@ class Superadmin(models.Model):
 
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
-
 
     def __str__(self):
         return self.username

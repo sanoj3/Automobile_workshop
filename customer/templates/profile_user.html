@@ -314,6 +314,7 @@
 
                     </a>
 
+                    {% if user.has_usable_password %}
                     <a href="{% url 'profile_user_change_password' %}"
                        class="btn btn-outline-dark profile-btn">
 
@@ -321,7 +322,9 @@
                         Password
 
                     </a>
-
+                    
+                    {% endif %}
+                
                 </div>
 
             </div>

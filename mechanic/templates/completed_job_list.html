@@ -1,0 +1,113 @@
+{% extends 'base_mechanic.html' %}
+{% load static %}
+
+{% block title %}Completed Jobs{% endblock %}
+{% block header %}Completed Jobs{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold text-success">
+                <i class="bi bi-check-circle-fill"></i> Completed Jobs
+            </h2>
+
+            <p class="text-muted mb-0">
+                All successfully completed service jobs
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Table -->
+    <div class="card border-0 shadow-sm rounded-4">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover table-bordered align-middle text-center">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Complaints</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for job in jobs %}
+
+                        <tr style="cursor:pointer;"
+                            onclick="window.location.href='/mechanic/completed-job/{{ job.id }}/'">
+
+                            <td>{{ forloop.counter }}</td>
+
+                            <td>
+                                {{ job.customer.name }}
+                            </td>
+
+                            <td>
+                                {{ job.vehicle.vehicle_name }}
+                            </td>
+
+                            <td>
+
+                                {% for complaint in job.complaints.all %}
+
+                                    <span class="badge bg-info text-dark m-1">
+                                        {{ complaint.complaint_name }}
+                                    </span>
+
+                                {% empty %}
+
+                                    <span class="text-muted">No Complaints</span>
+
+                                {% endfor %}
+
+                            </td>
+
+                            <td>
+                                {{ job.created_at|date:"d M Y" }}
+                            </td>
+
+                            <td>
+                                ₹ {{ job.total_price }}
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td colspan="6" class="text-muted py-4">
+                                No completed jobs found
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

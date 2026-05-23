@@ -1,0 +1,130 @@
+{% extends 'base_mechanic.html' %}
+{% load static %}
+
+{% block title %}Edit Work{% endblock %}
+{% block header %}Edit Work{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <!-- MAIN CARD -->
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+                <!-- HEADER -->
+                <div class="card-header bg-primary text-white p-4">
+
+                    <h4 class="mb-1 fw-bold">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Edit Work Details
+                    </h4>
+
+                    <small class="opacity-75">
+                        Update problem description and complaints before generating bill
+                    </small>
+
+                </div>
+
+                <!-- BODY -->
+                <div class="card-body p-4 p-md-5">
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- PROBLEM DESCRIPTION -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold text-secondary mb-2">
+                                Problem Description
+                            </label>
+
+                            <textarea name="problem_description"
+                                      class="form-control form-control-lg border-0 shadow-sm rounded-3 p-3"
+                                      rows="4"
+                                      placeholder="Describe the vehicle issue clearly...">{{ booking.problem_description }}</textarea>
+
+                        </div>
+
+                        <!-- COMPLAINTS SECTION -->
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold text-secondary mb-3">
+                                Select Complaints
+                            </label>
+
+                            <div class="row g-3">
+
+                                {% for c in complaints %}
+
+                                <div class="col-md-6">
+
+                                    <label class="d-flex align-items-center justify-content-between p-3 border rounded-4 bg-light shadow-sm">
+
+                                        <div class="d-flex align-items-center gap-2">
+
+                                            <input class="form-check-input"
+                                                   type="checkbox"
+                                                   name="complaints"
+                                                   value="{{ c.id }}"
+                                                   {% if c in booking.complaints.all %}checked{% endif %}>
+
+                                            <div>
+                                                <div class="fw-semibold">
+                                                    {{ c.complaint_name }}
+                                                </div>
+
+                                                <small class="text-danger fw-bold">
+                                                    ₹ {{ c.basic_sevice_price }}
+                                                </small>
+                                            </div>
+
+                                        </div>
+
+                                    </label>
+
+                                </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="d-flex justify-content-between align-items-center mt-5">
+
+                            <a href="{% url 'pending_job' job.id %}"
+                               class="btn btn-outline-secondary rounded-pill px-4">
+
+                                <i class="bi bi-arrow-left me-1"></i>
+                                Back
+
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-success rounded-pill px-5 shadow-sm">
+
+                                <i class="bi bi-check-circle me-1"></i>
+                                Save Changes
+
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -15,4 +15,9 @@ urlpatterns = [
     path('delete-vehicle-part/<int:id>/', views.delete_vehicle_parts, name='delete_vehicle_parts'),
     path('modify-vehicle-part/<int:id>/', views.modify_vehicle_parts, name='modify_vehicle_parts'),
     path('mechanic/toggle-status/', views.toggle_mechanic_status, name='toggle_mechanic_status'),
+    path('pending-job/', views.pending_jobs_list, name='pending_jobs_list'),
+    path('job/<int:id>/', views.pending_job, name='pending_job'),
+    path('inprogress/<int:id>/', views.inprogress_status, name='inprogress_status'),
+    path('completed-job/', views.completed_jobs_list, name='completed_jobs_list'),
+    path('completed-job/<int:id>/', views.job_completed_view, name='job_completed_view'),
 ]

@@ -1,16 +1,20 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Mechanic, StockManagement, Active_mechanic
-from customer.models import City
-from django.db import transaction
 from django.contrib import messages
 from django.utils import timezone
 from django.contrib.auth.hashers import make_password, check_password
-from django.utils import timezone
+from django.db import transaction
 from django.http import JsonResponse
+
 import json
+from decimal import Decimal
+
+from .models import Mechanic, StockManagement, Active_mechanic
+from customer.models import City
+from services.models import MechanicRequest, Bill, BookingSparePart, ServiceBooking
+
 from customer.views import name_validation, email_validation, number_validation, password_validation
 
-# Create your views here.
+
 
 #::::::::::::::::::::::Mechanic Session Access::::::::::::::::::::::
 def check_mechanic_access(request):
@@ -45,6 +49,14 @@ def apply_mechanic(request):
         experience_certificate = request.FILES.get('experience_certificate')
         city_id = request.POST.get('city')
         password = request.POST.get('password','').strip()
+
+        # .............City Validate.............
+        try:
+            city = City.objects.get(id=city_id)
+        
+        except City.DoesNotExist:
+            messages.error(request, 'Invalid city selected.')
+            return redirect('apply')
 
         # .............Name Validate.............
         name_error = name_validation(name)
@@ -100,13 +112,7 @@ def apply_mechanic(request):
             messages.error(request, 'Certificate is required.')
             return redirect('apply')
         
-        # .............City Validate.............
-        try:
-            city = City.objects.get(id=city_id)
         
-        except City.DoesNotExist:
-            messages.error(request, 'Invalid city selected.')
-            return redirect('apply')
 
         # .............Save Data.............
         try:
@@ -195,8 +201,14 @@ def home_page_mechanic(request):
 
     mech = Active_mechanic.objects.filter(mechanic=mechanic).first()
 
+    requests = MechanicRequest.objects.filter(
+        mechanic=mechanic,
+        status='Pending'
+    ).order_by('-created_at')
+
     return render(request, 'home_mechanic.html', {
-        'mechanic': mech
+        'mechanic': mech,
+        'requests': requests
     })
  
  #::::::::::::::::::::::Profile Page Mechanic::::::::::::::::::::::
@@ -526,4 +538,184 @@ def toggle_mechanic_status(request):
 
     return JsonResponse({
         'status': 'online' if mech.is_online else 'offline'
+    })
+
+
+#::::::::::::::::::::::Pending Jobs List::::::::::::::::::::::
+def pending_jobs_list(request):
+    mechanic = check_mechanic_access(request)
+    jobs = MechanicRequest.objects.filter(mechanic=mechanic, 
+                                          status__in = ["Accepted", "In_progress"]
+                                          ).exclude(booking__status="Completed"
+                                                    ).exclude(booking__status="Cancelled"
+                                                              ).exclude(status="Expired"
+                                                                        ).order_by('-id')
+    return render(request, 'pending_job_list.html', {
+        'jobs': jobs,
+        'mechanic': mechanic
+    })
+
+
+#::::::::::::::::::::::Pending Job::::::::::::::::::::::
+def pending_job(request, id):
+    mechanic = check_mechanic_access(request)
+    job = get_object_or_404(MechanicRequest, id=id, mechanic=mechanic,
+        status__in = ["Accepted", "In_progress"]
+    )
+
+    booking = job.booking
+
+    stocks = StockManagement.objects.filter(
+        mechanic=mechanic,
+        quantity__gt=0
+    )
+
+    if request.method == 'POST':
+
+        # .............Complaint Total.............
+        complaint_total = Decimal('0.00')
+
+        for complaint in booking.complaints.all():
+
+            complaint_total += complaint.basic_sevice_price
+
+
+        # .............Labour Charge.............
+        labour_charge = request.POST.get('labour_charge') or 0
+        labour_charge = Decimal(str(labour_charge))
+
+        
+        # .............Totals.............
+        spare_parts_total = Decimal('0.00')
+
+        extra_parts_total = Decimal('0.00')
+
+        grand_total = Decimal('0.00')
+
+        # .............Create Bill.............
+        bill, created = Bill.objects.get_or_create(
+            booking=booking,
+            defaults={
+                "complaint_total": complaint_total,
+                "labour_charge": labour_charge,
+                "payment_status": "Pending"
+            }
+        )
+
+        # .............update bill already exists.............
+        if not created:
+            bill.complaint_total = complaint_total
+            bill.labour_charge = labour_charge
+            bill.save()
+
+
+        # .............Used Stock Parts.............
+        stock_ids = request.POST.getlist('stock_id')
+
+        quantities = request.POST.getlist('quantity')
+
+        for stock_id, qty in zip(stock_ids, quantities):
+
+            if qty and int(qty) > 0:
+
+                qty = int(qty)
+
+                stock = StockManagement.objects.get(
+                    id=stock_id,
+                    mechanic=mechanic
+                )
+
+                total = stock.price * qty
+
+                # .............Save used spare part.............
+                BookingSparePart.objects.create(bill=bill, stock=stock, part_name=stock.item_name,
+                                                quantity=qty, price=stock.price, total_price=total,
+                                                is_extra=False)
+
+                # .............Reduce stock quantity.............
+                stock.quantity -= qty
+                stock.save()
+                spare_parts_total += total
+
+        # .............Extra Spare Parts.............
+        extra_names = request.POST.getlist('extra_part_name')
+        extra_prices = request.POST.getlist('extra_part_price')
+
+        for name, price in zip(extra_names, extra_prices):
+
+            if name and price:
+                price = Decimal(price)
+
+                BookingSparePart.objects.create(bill=bill, part_name=name, quantity=1,
+                                                price=price, total_price=price, is_extra=True)
+                extra_parts_total += price
+
+        # .............Final Bill Calculation.............
+        grand_total = (complaint_total + spare_parts_total + extra_parts_total + labour_charge)
+
+        # .............Update Bill.............
+        bill.spare_parts_total = spare_parts_total
+        bill.extra_parts_total = extra_parts_total
+        bill.grand_total = grand_total
+        bill.save()
+
+        # .............Update Booking.............
+        booking.labour_charge = labour_charge
+        booking.total_price = grand_total
+        booking.status = "Completed"
+        booking.save()
+        job.status = "Completed"
+        job.save()
+        active_mechanic, created = Active_mechanic.objects.get_or_create(mechanic=mechanic)
+        active_mechanic.is_available = True
+        active_mechanic.save()
+
+        messages.success(request, f'Bill Generated Successfully ₹{grand_total}')
+        return redirect('pending_jobs_list')
+
+    return render(request, 'pending_job.html', {
+        'job': job,
+        'mechanic': mechanic,
+        'stocks': stocks,
+    })
+
+
+#::::::::::::::::::::::Inprogress Status::::::::::::::::::::::
+def inprogress_status(request, id):
+    mechanic = check_mechanic_access(request)
+
+    job = get_object_or_404(MechanicRequest, id=id, mechanic=mechanic, status='Accepted')
+    
+    job.status = 'In_progress'
+    job.save()
+
+    booking = job.booking
+    booking.status = 'In_progress'
+    booking.save()
+
+    messages.success(request, 'Work is In Progress')
+    return redirect('pending_job', id=job.id)
+
+
+#::::::::::::::::::::::Completed Job List::::::::::::::::::::::
+def completed_jobs_list(request):
+    mechanic = check_mechanic_access(request)
+
+    job = ServiceBooking.objects.filter(mechanic=mechanic, status='Completed')
+
+    return render(request, 'completed_job_list.html', {
+        'mechanic' : mechanic,
+       'jobs' : job 
+    })
+
+
+#::::::::::::::::::::::Completed Job View::::::::::::::::::::::
+def job_completed_view(request, id):
+    mechanic = check_mechanic_access(request)
+
+    job = get_object_or_404(ServiceBooking, id=id, mechanic=mechanic)
+
+    return render(request, 'job_completed_view.html', {
+        'mechanic' : mechanic,
+        'jobs' : job
     })

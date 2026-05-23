@@ -1,3 +1,5 @@
+{% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -312,6 +314,38 @@ setTimeout(() => {
                 Login
 
             </button>
+
+
+            <!-- Google Login Divider -->
+<div class="text-center my-4">
+
+    <div class="d-flex align-items-center">
+
+        <hr class="flex-grow-1">
+
+        <span class="px-3 text-muted">
+            OR
+        </span>
+
+        <hr class="flex-grow-1">
+
+    </div>
+
+</div>
+
+<!-- Google Login Button -->
+<a href="{% provider_login_url 'google' %}"
+   class="btn btn-light border w-100 py-3 rounded-4 shadow-sm d-flex align-items-center justify-content-center gap-2">
+
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+         width="22"
+         height="22">
+
+    <span class="fw-semibold text-dark">
+        Continue with Google
+    </span>
+
+</a>
 
         </form>
 

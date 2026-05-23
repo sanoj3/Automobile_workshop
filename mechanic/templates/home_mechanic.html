@@ -69,11 +69,11 @@
                 Track pending repair requests.
             </p>
 
-            <a href="#"
-               class="btn btn-warning btn-sm text-white">
+            <a href="{% url 'pending_jobs_list' %}"
+                class="btn btn-warning btn-sm text-white"
+                >
 
-                View Jobs
-
+                    View Jobs
             </a>
 
         </div>
@@ -127,7 +127,7 @@
                 View completed service history.
             </p>
 
-            <a href="#"
+            <a href="{% url 'completed_jobs_list' %}"
                class="btn btn-success btn-sm">
 
                 Open History
@@ -196,7 +196,63 @@
 
     </div>
 
+    <!-- JOB REQUEST MODAL -->
+    {% if requests %}
+
+    <div class="modal fade show" id="jobModal" tabindex="-1" style="display:block; background:rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+        <div class="modal-header">
+            <h5 class="modal-title">New Work Request</h5>
+        </div>
+
+        <div class="modal-body">
+
+            {% for req in requests %}
+            <p><b>Customer:</b> {{ req.booking.customer.name }}</p>
+            <p><b>Problem:</b> {{ req.booking.problem_description }}</p>
+            <p><b>Expires:</b> {{ req.expires_at }}</p>
+
+            <hr>
+            {% endfor %}
+
+        </div>
+
+        <div class="modal-footer">
+
+            {% for req in requests %}
+
+            <a href="{% url 'accept_booking' req.id %}"
+            class="btn btn-success">
+            Accept
+            </a>
+
+            <a href="{% url 'reject_booking' req.id %}"
+            class="btn btn-danger">
+            Reject
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+        </div>
+    </div>
+    </div>
+
+    {% endif %}
+
 </div>
+
+<script>
+setTimeout(() => {
+    let modal = document.getElementById("jobModal");
+    if (modal) {
+        modal.style.display = "none";
+    }
+}, 1000000); // 10 seconds auto close
+</script>
 
 <!-- Toggle Script -->
 <script>

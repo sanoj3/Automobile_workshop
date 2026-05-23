@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Details{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold text-primary">
+                <i class="bi bi-eye-fill"></i> Order Details
+            </h2>
+
+            <p class="text-muted mb-0">
+                Complete information about your booking
+            </p>
+        </div>
+
+        <a href="{% url 'order_details' %}" class="btn btn-outline-dark rounded-pill">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+
+    </div>
+
+    <!-- Order Card -->
+    <div class="card border-0 shadow rounded-4 overflow-hidden">
+
+        <!-- Card Header -->
+        <div class="bg-dark text-white p-4">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-8">
+                    <h3 class="fw-bold mb-1">
+                        {{ order.vehicle.vehicle_name }}
+                    </h3>
+
+                    <p class="mb-0 text-light">
+                        Booking ID : #{{ order.id }}
+                    </p>
+                </div>
+
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                    {% if order.status == 'Pending' %}
+                        <span class="badge bg-warning text-dark px-4 py-2">Pending</span>
+
+                    {% elif order.status == 'Completed' %}
+                        <span class="badge bg-success px-4 py-2">Completed</span>
+
+                    {% elif order.status == 'Cancelled' %}
+                        <span class="badge bg-danger px-4 py-2">Cancelled</span>
+
+                    {% else %}
+                        <span class="badge bg-secondary px-4 py-2">{{ order.status }}</span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body p-4">
+
+            <div class="row g-4">
+
+                <!-- Vehicle -->
+                <div class="col-md-6">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <h5 class="fw-bold mb-3 text-primary">
+                            <i class="bi bi-car-front-fill"></i> Vehicle Details
+                        </h5>
+
+                        <p><strong>Vehicle:</strong> {{ order.vehicle.vehicle_name }}</p>
+                        <p><strong>City:</strong> {{ order.city.name }}</p>
+
+                    </div>
+
+                </div>
+
+                <!-- Booking -->
+                <div class="col-md-6">
+
+                    <div class="border rounded-4 p-3 h-100">
+
+                        <h5 class="fw-bold mb-3 text-success">
+                            <i class="bi bi-calendar-check-fill"></i> Booking Info
+                        </h5>
+
+                        <p><strong>Date:</strong> {{ order.created_at|date:"d M Y" }}</p>
+                        <p><strong>Total Price:</strong> ₹ {{ order.total_price }}</p>
+
+                    </div>
+
+                </div>
+
+                <!-- Complaints -->
+                <div class="col-12">
+
+                    <div class="border rounded-4 p-3">
+
+                        <h5 class="fw-bold mb-3 text-danger">
+                            <i class="bi bi-tools"></i> Complaints
+                        </h5>
+
+                        {% for complaint in order.complaints.all %}
+
+                            <span class="badge bg-info text-dark px-3 py-2 m-1">
+                                {{ complaint.complaint_name }}
+                            </span>
+
+                        {% empty %}
+
+                            <span class="text-muted">No complaints added</span>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+                <!-- Problem Description -->
+                <div class="col-12">
+
+                    <div class="border rounded-4 p-3">
+
+                        <h5 class="fw-bold mb-3 text-secondary">
+                            <i class="bi bi-file-text-fill"></i> Problem Description
+                        </h5>
+
+                        <p>{{ order.problem_description }}</p>
+
+                    </div>
+
+                </div>
+
+                <!-- Mechanic -->
+                <div class="col-12">
+
+                    <div class="border rounded-4 p-3">
+
+                        <h5 class="fw-bold mb-3 text-warning">
+                            <i class="bi bi-person-workspace"></i> Mechanic
+                        </h5>
+
+                        {% if order.mechanic %}
+
+                            <p><strong>Name:</strong> {{ order.mechanic.name }}</p>
+                            <p><strong>Labour Charge:</strong> ₹ {{ order.labour_charge }}</p>
+
+                        {% else %}
+
+                            <span class="text-muted">Not assigned yet</span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <!-- BILL SECTION -->
+                <div class="col-12">
+
+                    <div class="border rounded-4 p-3">
+
+                        <h5 class="fw-bold mb-3 text-primary">
+                            <i class="bi bi-receipt"></i> Bill Details
+                        </h5>
+
+                        {% if bill %}
+
+                            <p><strong>Complaint Total:</strong> ₹ {{ bill.complaint_total }}</p>
+                            <p><strong>Spare Parts:</strong> ₹ {{ bill.spare_parts_total }}</p>
+                            <p><strong>Extra Parts:</strong> ₹ {{ bill.extra_parts_total }}</p>
+                            <p><strong>Labour Charge:</strong> ₹ {{ bill.labour_charge }}</p>
+
+                            <hr>
+
+                            <h5 class="text-success">
+                                Grand Total: ₹ {{ bill.grand_total }}
+                            </h5>
+
+                            <p class="mt-2">
+                                <strong>Payment Status:</strong>
+
+                                {% if bill.payment_status == 'Paid' %}
+                                    <span class="badge bg-success">Paid</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% endif %}
+                            </p>
+
+                        {% else %}
+
+                            <span class="text-muted">
+                                Bill not generated yet
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

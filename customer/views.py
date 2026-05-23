@@ -1,13 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from .models import Customer, Vehicle, City
 from django.contrib import messages
 from django.db import transaction
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
+
 import re
 from datetime import datetime
-# Create your views here.
+
+from .models import Customer, Vehicle, City
+from services.models import ServiceBooking, Bill
+
+
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #............. Main Email Validation.............
@@ -54,7 +59,13 @@ def number_validation(number):
     if len(number) != 10:
         return 'Phone number must be 10 digits.'
     return None
-#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::          
+#:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  
+
+
+def index(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+    return render(request, 'index.html')
 
 #::::::::::::::::::::::User Registration::::::::::::::::::::::
 def registration(request):
@@ -135,6 +146,21 @@ def registration(request):
 
 #::::::::::::::::::::::User Login::::::::::::::::::::::
 def user_login(request):
+    if request.user.is_authenticated:
+
+        # Create customer automatically if not exists
+        customer, created = Customer.objects.get_or_create(
+            user=request.user,
+            defaults={
+                'name': request.user.username or "Google User",
+                'number': '0000000000',
+                'address': 'Google Account',
+                'city': City.objects.first()
+            }
+        )
+
+        return redirect('home')
+
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -155,6 +181,18 @@ def user_login(request):
         user = authenticate(username=email, password=password)
         if user is not None:
             login(request, user)
+
+            # Create Customer if missing
+            Customer.objects.get_or_create(
+                user=user,
+                defaults={
+                    'name': user.username,
+                    'number': '0000000000',
+                    'address': 'Default Address',
+                    'city': City.objects.first()
+                }
+            )
+
             messages.success(request, 'Login successfull')
             return redirect('home')
         else:
@@ -340,10 +378,16 @@ def logout_page(request):
 def home_page(request):
     customer = request.user.customer
     vehicle = customer.vehicles.all()
+    bookings = ServiceBooking.objects.filter(
+        customer=customer
+    ).exclude(
+        status__in=['Cancelled', 'Completed']
+    ).order_by('-id')
 
     return render(request, 'home.html', {
         'customer':customer,
-        'vehicles':vehicle
+        'vehicles':vehicle,
+        'bookings': bookings
     })
 
 
@@ -471,8 +515,24 @@ def profile_user_change_password(request):
     return render(request, 'profile_user_change_password.html')
 
 
+#::::::::::::::::::::::Order List::::::::::::::::::::::
+def order_details(request):
+    customer = request.user.customer
+    order = ServiceBooking.objects.filter(customer=customer)
 
-        
+    return render(request, 'order_details_list.html', {
+        'orders' : order
+    })   
 
-        
+
+#::::::::::::::::::::::Order View::::::::::::::::::::::
+def order_view(request, id):
+    customer = request.user.customer
+    order = get_object_or_404(ServiceBooking, id=id, customer=customer)
+    bill = Bill.objects.filter(booking=order).first()
+
+    return render(request, 'order_view.html', {
+        'order': order,
+        'bill': bill
+    })  
         
