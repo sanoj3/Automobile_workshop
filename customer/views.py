@@ -38,7 +38,7 @@ def name_validation(name):
         return 'Name is required.'
     if len(name) < 3:
         return 'Name must be at least 3 characters.'
-    if not re.match(r'^[A-Za-z]+$', name):
+    if not re.match(r'^[A-Za-z ]+$', name):
         return 'Name should contain only letters.'
     return None
 
@@ -518,7 +518,7 @@ def profile_user_change_password(request):
 #::::::::::::::::::::::Order List::::::::::::::::::::::
 def order_details(request):
     customer = request.user.customer
-    order = ServiceBooking.objects.filter(customer=customer)
+    order = ServiceBooking.objects.filter(customer=customer).order_by('-id')
 
     return render(request, 'order_details_list.html', {
         'orders' : order
