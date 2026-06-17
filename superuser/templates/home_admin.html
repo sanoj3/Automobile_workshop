@@ -88,7 +88,7 @@
                 <h5 class="dashboard-title">Pending Service</h5>
                 <p class="dashboard-text">New service requests waiting for approval.</p>
 
-                <a href="#" class="btn btn-primary dashboard-btn">
+                <a href="{% url 'service_not_assign' %}" class="btn btn-primary dashboard-btn">
                     View Requests
                 </a>
             </div>
@@ -104,7 +104,7 @@
                 <h5 class="dashboard-title">Active Service</h5>
                 <p class="dashboard-text">Track ongoing vehicle services.</p>
 
-                <a href="#" class="btn btn-success dashboard-btn">
+                <a href="{% url 'active_service_booking' %}" class="btn btn-success dashboard-btn">
                     Track Service
                 </a>
             </div>
@@ -221,6 +221,23 @@
                 </a>
             </div>
         </div>
+
+        <!-- Add Services -->
+        <div class="col-md-3">
+            <div class="card dashboard-card shadow-sm p-4">
+                <div class="dashboard-icon bg-blue">
+                    <i class="bi bi-tools"></i>
+                </div>
+
+                <h5 class="dashboard-title">Services</h5>
+                <p class="dashboard-text">New service add or view.</p>
+
+                <a href="{% url 'complaint_list_view' %}" class="btn btn-primary dashboard-btn">
+                    View Services
+                </a>
+            </div>
+        </div>
+
 
     </div>
 </div>

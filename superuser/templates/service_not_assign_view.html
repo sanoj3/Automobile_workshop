@@ -1,0 +1,132 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Assign Mechanic{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow border-0">
+
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        Assign Mechanic
+                    </h4>
+                </div>
+
+                <div class="card-body">
+
+                    <!-- Booking Details -->
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-6">
+                            <label class="fw-bold">Customer</label>
+                            <p>{{ service.customer.name }}</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="fw-bold">Vehicle</label>
+                            <p>{{ service.vehicle }}</p>
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-3">
+
+                        <div class="col-md-6">
+                            <label class="fw-bold">City</label>
+                            <p>{{ service.city }}</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="fw-bold">Status</label>
+                            <p>
+                                <span class="badge bg-warning">
+                                    {{ service.status }}
+                                </span>
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Location</label>
+                        <p>{{ service.location }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Problem Description</label>
+                        <div class="border rounded p-3 bg-light">
+                            {{ service.problem_description }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-bold">Complaints</label>
+
+                        <ul class="list-group">
+                            {% for complaint in service.complaints.all %}
+                            <li class="list-group-item">
+                                {{ complaint.complaint_name }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <hr>
+
+                    <!-- Assign Mechanic Form -->
+
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                Select Mechanic
+                            </label>
+
+                            <select name="mechanic" class="form-select" required>
+                                <option value="">
+                                    Choose Mechanic
+                                </option>
+
+                                {% for mechanic in mechanics %}
+                                <option value="{{ mechanic.id }}">
+                                    {{ mechanic.mechanic.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="d-flex gap-2">
+
+                            <button type="submit"
+                                    class="btn btn-success">
+                                Assign Mechanic
+                            </button>
+
+                            <a href="{% url 'service_not_assign' %}"
+                               class="btn btn-secondary">
+                                Back
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

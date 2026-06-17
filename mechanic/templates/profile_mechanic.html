@@ -6,330 +6,535 @@
 {% block content %}
 
 <style>
-
-    .profile-container{
-        max-width: 700px;
-        margin: auto;
+    .profile-wrap {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 15px;
     }
 
-    .profile-card{
+    /* Main Profile Card */
+    .profile-card {
         background: white;
         border-radius: 24px;
-        overflow: hidden;
-        border: none;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        padding: 30px;
+        box-shadow: 0 2px 12px rgba(106, 13, 173, 0.06);
+        border: 1px solid #e9d9ff;
+        transition: all 0.3s ease;
     }
 
-    /* Banner */
-
-    .profile-banner{
-        height: 160px;
-        background: linear-gradient(135deg,#2563eb,#1d4ed8);
-        position: relative;
+    .profile-card:hover {
+        box-shadow: 0 8px 25px rgba(106, 13, 173, 0.1);
     }
 
-    /* Profile Image */
-
-    .profile-image-wrapper{
-        position: absolute;
-        left: 50%;
-        bottom: -45px;
-        transform: translateX(-50%);
+    /* Header Section */
+    .profile-header-row {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        padding-bottom: 25px;
+        border-bottom: 2px solid #f0e8ff;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
     }
 
-    .profile-image{
+    .profile-avatar {
         width: 95px;
         height: 95px;
         border-radius: 50%;
         overflow: hidden;
-        border: 4px solid white;
-        background: white;
-        box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+        border: 4px solid #8e44ad;
+        flex-shrink: 0;
+        background: #f3e9ff;
+        transition: 0.3s;
+        cursor: pointer;
     }
 
-    .profile-image img{
+    .profile-avatar:hover {
+        transform: scale(1.03);
+        box-shadow: 0 8px 20px rgba(142, 68, 173, 0.2);
+    }
+
+    .profile-avatar img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .profile-placeholder{
+    .profile-avatar .placeholder {
         width: 100%;
         height: 100%;
-        background: #2563eb;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-size: 32px;
+        font-size: 38px;
         font-weight: 700;
+        color: #8e44ad;
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
     }
 
-    /* Body */
-
-    .profile-body{
-        padding: 60px 25px 25px;
-    }
-
-    .profile-name{
+    .profile-name h2 {
         font-size: 24px;
         font-weight: 700;
-        margin-bottom: 5px;
+        color: #1e293b;
+        margin: 0 0 4px;
     }
 
-    .profile-email{
-        color: #6b7280;
-        font-size: 13px;
+    .profile-name .email-text {
+        color: #94a3b8;
+        font-size: 14px;
+        margin: 0 0 6px;
     }
 
-    .profile-role{
-        display: inline-block;
-        margin-top: 10px;
-        padding: 6px 14px;
-        border-radius: 30px;
-        background: rgba(37,99,235,0.1);
-        color: #2563eb;
+    .profile-name .role-tag {
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+        color: #6c3483;
+        padding: 3px 14px;
+        border-radius: 50px;
         font-size: 12px;
         font-weight: 600;
+        display: inline-block;
     }
 
-    /* Info Card */
+    /* Stats Grid - 3 columns with equal width */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
 
-    .info-card{
-        background: #f8fafc;
-        border-radius: 18px;
+    .stat-item {
+        background: #faf5ff;
+        border-radius: 16px;
         padding: 16px;
-        height: 100%;
-        border: 1px solid #eef2f7;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 80px;
     }
 
-    .info-icon{
-        width: 45px;
-        height: 45px;
+    .stat-item:hover {
+        transform: translateY(-3px);
+        background: #f3e9ff;
+        border-color: #c39bd3;
+        box-shadow: 0 4px 15px rgba(106, 13, 173, 0.08);
+    }
+
+    .stat-number {
+        font-size: 26px;
+        font-weight: 800;
+        color: #8e44ad;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        font-size: 11px;
+        color: #94a3b8;
+        font-weight: 500;
+        margin-top: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Rating Row */
+    .rating-row {
+        background: #faf5ff;
+        border-radius: 16px;
+        padding: 16px 20px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        border: 1px solid #f0e8ff;
+        transition: 0.3s;
+    }
+
+    .rating-row:hover {
+        background: #f3e9ff;
+        border-color: #c39bd3;
+    }
+
+    .rating-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .rating-stars {
+        display: flex;
+        gap: 4px;
+    }
+
+    .rating-stars i {
+        font-size: 22px;
+    }
+
+    .star-filled { color: #fbbf24; }
+    .star-half { color: #fbbf24; }
+    .star-empty { color: #d1d5db; }
+
+    .rating-number {
+        font-size: 20px;
+        font-weight: 800;
+        color: #f59e0b;
+    }
+
+    .rating-total {
+        font-size: 13px;
+        color: #94a3b8;
+    }
+
+    .rating-count {
+        font-size: 13px;
+        color: #94a3b8;
+    }
+
+    .rating-count i {
+        color: #8e44ad;
+        margin-right: 4px;
+    }
+
+    /* Info Grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        background: #faf5ff;
         border-radius: 14px;
+        border: 1px solid #f0e8ff;
+        transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+        background: #f3e9ff;
+        border-color: #c39bd3;
+        transform: translateX(4px);
+    }
+
+    .info-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: white;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: white;
-        font-size: 18px;
         flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(106, 13, 173, 0.06);
     }
 
-    .bg-blue{
-        background: #2563eb;
+    .info-icon i {
+        font-size: 18px;
+        color: #8e44ad;
     }
 
-    .bg-green{
-        background: #16a34a;
+    .info-content .label {
+        font-size: 10px;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
     }
 
-    .bg-dark{
-        background: #111827;
-    }
-
-    .info-title{
-        font-size: 12px;
-        color: #6b7280;
-        margin-bottom: 3px;
-    }
-
-    .info-value{
-        margin: 0;
+    .info-content .value {
         font-size: 14px;
         font-weight: 600;
+        color: #1e293b;
+        margin: 0;
     }
 
     /* Buttons */
-
-    .profile-btn{
-        padding: 9px 18px;
-        border-radius: 12px;
-        font-size: 14px;
-        font-weight: 500;
+    .btn-group {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
     }
 
+    .btn-profile {
+        padding: 10px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn-profile-primary {
+        background: linear-gradient(135deg, #8e44ad, #a569bd);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 12px rgba(142, 68, 173, 0.25);
+    }
+
+    .btn-profile-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(142, 68, 173, 0.35);
+        color: white;
+    }
+
+    .btn-profile-outline {
+        background: transparent;
+        border: 2px solid #e9d9ff;
+        color: #6c3483;
+    }
+
+    .btn-profile-outline:hover {
+        background: #f3e9ff;
+        border-color: #c39bd3;
+        transform: translateY(-2px);
+        color: #4a1d6d;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .profile-wrap {
+            padding: 0;
+        }
+
+        .profile-card {
+            padding: 20px;
+        }
+
+        .profile-header-row {
+            flex-direction: column;
+            text-align: center;
+            gap: 15px;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .stats-grid .stat-item:last-child {
+            grid-column: span 2;
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .rating-row {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .rating-left {
+            flex-direction: column;
+        }
+
+        .btn-group {
+            justify-content: center;
+        }
+
+        .btn-profile {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+        }
+
+        .profile-name h2 {
+            font-size: 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stats-grid .stat-item:last-child {
+            grid-column: span 1;
+        }
+
+        .profile-card {
+            padding: 15px;
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+        }
+    }
 </style>
 
-<div class="container py-4">
+<div class="profile-wrap">
+    <div class="profile-card">
 
-    <div class="profile-container">
+        <!-- Header -->
+        <div class="profile-header-row">
+            <div class="profile-avatar">
+                {% if mechanic.profile_pic %}
+                    <img src="{{ mechanic.profile_pic.url }}" alt="Profile">
+                {% else %}
+                    <div class="placeholder">{{ mechanic.name|slice:":1"|upper }}</div>
+                {% endif %}
+            </div>
+            <div class="profile-name">
+                <h2>{{ mechanic.name }}</h2>
+                <p class="email-text"><i class="bi bi-envelope"></i> {{ mechanic.email }}</p>
+                <span class="role-tag"><i class="bi bi-tools"></i> Professional Mechanic</span>
+            </div>
+        </div>
 
-        <div class="profile-card">
+        <!-- Stats - 3 columns aligned -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">{{ total_jobs|default:"0" }}</div>
+                <div class="stat-label">Jobs Done</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">₹{{ total_earnings|default:"0"|floatformat:2 }}</div>
+                <div class="stat-label">Earnings</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ member_since|date:"Y"|default:"New" }}</div>
+                <div class="stat-label">Member Since</div>
+            </div>
+        </div>
 
-            <!-- Banner -->
-
-            <div class="profile-banner">
-
-                <div class="profile-image-wrapper">
-
-                    <div class="profile-image">
-
-                        {% if mechanic.profile_pic %}
-
-                            <img src="{{ mechanic.profile_pic.url }}"
-                                 alt="Profile">
-
+        <!-- Rating -->
+        <div class="rating-row">
+            <div class="rating-left">
+                <div class="rating-stars">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= average_rating %}
+                            <i class="bi bi-star-fill star-filled"></i>
+                        {% elif forloop.counter <= average_rating|add:0.4 %}
+                            <i class="bi bi-star-half star-half"></i>
                         {% else %}
-
-                            <div class="profile-placeholder">
-                                {{ mechanic.name|slice:":1"|upper }}
-                            </div>
-
+                            <i class="bi bi-star star-empty"></i>
                         {% endif %}
-
-                    </div>
-
+                    {% endfor %}
                 </div>
-
+                <div>
+                    <span class="rating-number">{{ average_rating|floatformat:1|default:"0.0" }}</span>
+                    <span class="rating-total">/ 5.0</span>
+                </div>
             </div>
-
-            <!-- Body -->
-
-            <div class="profile-body">
-
-                <!-- User -->
-
-                <div class="text-center mb-4">
-
-                    <h3 class="profile-name">
-                        {{ mechanic.name }}
-                    </h3>
-
-                    <div class="profile-email">
-                        <i class="bi bi-envelope-fill"></i>
-                        {{ mechanic.email }}
-                    </div>
-
-                    <div class="profile-role">
-                        Mechanic Account
-                    </div>
-
-                </div>
-
-                <!-- Info -->
-
-                <div class="row g-3">
-
-                    <!-- Phone -->
-
-                    <div class="col-md-6">
-
-                        <div class="info-card">
-
-                            <div class="d-flex align-items-center">
-
-                                <div class="info-icon bg-blue">
-                                    <i class="bi bi-telephone-fill"></i>
-                                </div>
-
-                                <div class="ms-3">
-
-                                    <div class="info-title">
-                                        Phone
-                                    </div>
-
-                                    <p class="info-value">
-                                        {{ mechanic.number }}
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- City -->
-
-                    <div class="col-md-6">
-
-                        <div class="info-card">
-
-                            <div class="d-flex align-items-center">
-
-                                <div class="info-icon bg-green">
-                                    <i class="bi bi-geo-alt-fill"></i>
-                                </div>
-
-                                <div class="ms-3">
-
-                                    <div class="info-title">
-                                        City
-                                    </div>
-
-                                    <p class="info-value">
-                                        {{ mechanic.city.name|default:"Not Added" }}
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- Address -->
-
-                    <div class="col-12">
-
-                        <div class="info-card">
-
-                            <div class="d-flex align-items-start">
-
-                                <div class="info-icon bg-dark">
-                                    <i class="bi bi-house-door-fill"></i>
-                                </div>
-
-                                <div class="ms-3">
-
-                                    <div class="info-title">
-                                        Address
-                                    </div>
-
-                                    <p class="info-value">
-                                        {{ mechanic.address|default:"Not Added" }}
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- Buttons -->
-
-                <div class="text-center mt-4">
-
-                    <a href="{% url 'profile_page_edit_mechanic' mechanic.id %}"
-                       class="btn btn-primary profile-btn me-2">
-
-                        <i class="bi bi-pencil-square"></i>
-                        Edit
-
-                    </a>
-
-                    <a href="{% url 'profile_mechanic_change_password' %}"
-                       class="btn btn-outline-dark profile-btn">
-
-                        <i class="bi bi-shield-lock"></i>
-                        Password
-
-                    </a>
-
-                </div>
-
+            <div class="rating-count">
+                <i class="bi bi-chat-dots"></i> {{ review_count|default:"0" }} Review{{ review_count|pluralize }}
             </div>
+        </div>
 
+        <!-- Info -->
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="bi bi-telephone-fill"></i>
+                </div>
+                <div class="info-content">
+                    <div class="label">Phone</div>
+                    <div class="value">{{ mechanic.number|default:"Not Added" }}</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+                <div class="info-content">
+                    <div class="label">City</div>
+                    <div class="value">{{ mechanic.city.name|default:"Not Added" }}</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="bi bi-house-door-fill"></i>
+                </div>
+                <div class="info-content">
+                    <div class="label">Address</div>
+                    <div class="value">{{ mechanic.address|default:"Not Added" }}</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="bi bi-calendar3"></i>
+                </div>
+                <div class="info-content">
+                    <div class="label">Joined</div>
+                    <div class="value">{{ member_since|date:"d M Y"|default:"Recently" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="btn-group">
+            <a href="{% url 'profile_page_edit_mechanic' mechanic.id %}" class="btn-profile btn-profile-primary">
+                <i class="bi bi-pencil-square"></i> Edit Profile
+            </a>
+            <a href="{% url 'profile_mechanic_change_password' %}" class="btn-profile btn-profile-outline">
+                <i class="bi bi-shield-lock"></i> Change Password
+            </a>
         </div>
 
     </div>
-
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate stat numbers
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(stat => {
+            let text = stat.innerText.trim();
+            let cleanText = text.replace(/[₹,]/g, '').trim();
+            let num = parseFloat(cleanText);
+            
+            if (!isNaN(num) && num > 0) {
+                let current = 0;
+                const target = num;
+                const steps = 30;
+                const increment = target / steps;
+                let counter = 0;
+                const isCurrency = text.includes('₹');
+                
+                const timer = setInterval(() => {
+                    counter++;
+                    current += increment;
+                    
+                    if (counter >= steps) {
+                        if (isCurrency) {
+                            stat.innerText = '₹' + target.toFixed(2);
+                        } else if (Number.isInteger(target)) {
+                            stat.innerText = target;
+                        } else {
+                            stat.innerText = target.toFixed(1);
+                        }
+                        clearInterval(timer);
+                    } else {
+                        if (isCurrency) {
+                            stat.innerText = '₹' + current.toFixed(2);
+                        } else {
+                            stat.innerText = Math.round(current);
+                        }
+                    }
+                }, 20);
+            }
+        });
+    });
+</script>
 
 {% endblock %}

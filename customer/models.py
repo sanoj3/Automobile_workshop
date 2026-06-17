@@ -16,14 +16,14 @@ class Customer(models.Model):
     number = models.CharField(max_length=15)
     address = models.TextField()
     profile_pic = models.ImageField(upload_to='profile_pic/',null=True, blank=True)
-    city = models.ForeignKey(City, on_delete=models.CASCADE)
+    city = models.ForeignKey('customer.City', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
     
  # .............Customer Vehicle Database.............  
 class Vehicle(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name="vehicles")
+    customer = models.ForeignKey('customer.Customer', on_delete=models.CASCADE, related_name="vehicles")
     vehicle_name = models.CharField(max_length=255)
     vehicle_model = models.CharField(max_length=200)
     vehicle_year = models.IntegerField()
@@ -31,4 +31,7 @@ class Vehicle(models.Model):
 
     def __str__(self):
         return f"{self.customer.name} - {self.vehicle_number}"
+    
+
+
     

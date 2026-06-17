@@ -5,214 +5,588 @@
 {% block content %}
 
 <style>
-
-    .vehicle-wrapper{
-        min-height:90vh;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        padding:30px 15px;
-    }
-
-    .vehicle-card{
-        width:100%;
-        max-width:550px;
-        background:#fff;
-        border-radius:25px;
-        overflow:hidden;
-        box-shadow:0 15px 40px rgba(0,0,0,0.12);
-        animation:fadeIn 0.5s ease;
-    }
-
-    .vehicle-header{
-        background:linear-gradient(135deg,#4f46e5,#7c3aed);
-        color:#fff;
-        text-align:center;
-        padding:35px 20px;
-    }
-
-    .vehicle-header i{
-        font-size:65px;
-        margin-bottom:12px;
-    }
-
-    .vehicle-header h2{
-        font-weight:700;
-        margin-bottom:5px;
-    }
-
-    .vehicle-header p{
-        margin:0;
-        opacity:0.9;
-    }
-
-    .vehicle-body{
-        padding:35px;
-    }
-
-    .form-label{
-        font-weight:600;
-        margin-bottom:8px;
-    }
-
-    .form-control{
-        border-radius:14px;
-        padding:13px;
-        border:1px solid #d1d5db;
-        transition:0.3s;
-    }
-
-    .form-control:focus{
-        border-color:#6366f1;
-        box-shadow:0 0 0 0.2rem rgba(99,102,241,0.2);
-    }
-
-    .btn-add{
-        background:linear-gradient(135deg,#4f46e5,#7c3aed);
-        color:white;
-        border:none;
-        border-radius:14px;
-        padding:13px;
-        font-size:17px;
-        font-weight:600;
-        transition:0.3s;
-    }
-
-    .btn-add:hover{
-        transform:translateY(-2px);
-        opacity:0.95;
-        color:white;
-    }
-
-    .back-link{
-        text-align:center;
-        margin-top:20px;
-    }
-
-    .back-link a{
-        text-decoration:none;
-        color:#4f46e5;
-        font-weight:600;
-    }
-
-    .back-link a:hover{
-        text-decoration:underline;
-    }
-
-    .alert{
-        border-radius:12px;
-    }
-
-    @keyframes fadeIn{
-        from{
-            opacity:0;
-            transform:translateY(20px);
+    /* Animation Keyframes */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
         }
-        to{
-            opacity:1;
-            transform:translateY(0);
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
     }
-
+    
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.4;
+        }
+        50% {
+            transform: scale(1.05);
+            opacity: 0.2;
+        }
+    }
+    
+    @keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+    
+    .vehicle-wrapper {
+        min-height: 90vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    .vehicle-card {
+        width: 100%;
+        max-width: 580px;
+        background: white;
+        border-radius: 32px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(106, 13, 173, 0.12);
+        transition: all 0.3s ease;
+        animation: scaleIn 0.5s ease-out;
+    }
+    
+    .vehicle-card:hover {
+        box-shadow: 0 25px 50px rgba(106, 13, 173, 0.18);
+        transform: translateY(-5px);
+    }
+    
+    /* Header - Purple Theme */
+    .vehicle-header {
+        background: linear-gradient(135deg, #6c3483, #8e44ad, #a569bd);
+        color: white;
+        text-align: center;
+        padding: 40px 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .vehicle-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -30%;
+        width: 250px;
+        height: 250px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        animation: pulse 8s ease-in-out infinite;
+    }
+    
+    .vehicle-header::after {
+        content: '';
+        position: absolute;
+        bottom: -40%;
+        left: -20%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        animation: pulse 6s ease-in-out infinite reverse;
+    }
+    
+    .vehicle-header i {
+        font-size: 70px;
+        margin-bottom: 15px;
+        position: relative;
+        z-index: 1;
+        filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.1));
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .vehicle-header h2 {
+        font-weight: 800;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .vehicle-header p {
+        margin: 0;
+        opacity: 0.92;
+        font-size: 0.95rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Form Body */
+    .vehicle-body {
+        padding: 40px;
+    }
+    
+    /* Form Groups with Animation */
+    .form-group {
+        margin-bottom: 1.5rem;
+        animation: fadeInRight 0.5s ease-out;
+        animation-fill-mode: both;
+    }
+    
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; }
+    .form-group:nth-child(4) { animation-delay: 0.4s; }
+    
+    .form-label {
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #4a1d6d;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
+    }
+    
+    .form-label i {
+        color: #8e44ad;
+        font-size: 1.1rem;
+    }
+    
+    /* Input Wrapper with Icon */
+    .input-wrapper {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    .form-control-custom {
+        width: 100%;
+        border: 2px solid #e9d9ff;
+        border-radius: 16px;
+        padding: 13px 16px 13px 45px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .form-control-custom:focus {
+        border-color: #8e44ad;
+        box-shadow: 0 0 0 4px rgba(142, 68, 173, 0.1);
+        outline: none;
+    }
+    
+    .form-control-custom:hover {
+        border-color: #c39bd3;
+    }
+    
+    .form-control-custom:focus + .input-icon {
+        color: #8e44ad;
+    }
+    
+    /* Add Button */
+    .btn-add {
+        background: linear-gradient(135deg, #8e44ad, #a569bd);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 14px;
+        font-size: 1rem;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        width: 100%;
+        box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+    }
+    
+    .btn-add:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(142, 68, 173, 0.4);
+        color: white;
+    }
+    
+    .btn-add:active {
+        transform: translateY(0);
+    }
+    
+    /* Back Link */
+    .back-link {
+        text-align: center;
+        margin-top: 25px;
+        animation: fadeInLeft 0.5s ease-out;
+        animation-delay: 0.5s;
+        animation-fill-mode: both;
+    }
+    
+    .back-link a {
+        text-decoration: none;
+        color: #8e44ad;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .back-link a:hover {
+        color: #6c3483;
+        transform: translateX(-5px);
+    }
+    
+    /* Alert Styles */
+    .alert-custom {
+        border-radius: 16px;
+        border: none;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        animation: fadeInUp 0.4s ease-out;
+    }
+    
+    .alert-error {
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        color: #dc2626;
+        border-left: 4px solid #ef4444;
+    }
+    
+    .alert-success {
+        background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+        color: #16a34a;
+        border-left: 4px solid #22c55e;
+    }
+    
+    /* Loading State */
+    .btn-add.loading {
+        position: relative;
+        opacity: 0.7;
+        pointer-events: none;
+    }
+    
+    .btn-add.loading::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        border: 2px solid white;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: translateY(-50%) rotate(360deg); }
+    }
+    
+    /* Tooltip/Hint Text */
+    .field-hint {
+        font-size: 0.75rem;
+        color: #9ca3af;
+        margin-top: 6px;
+        display: block;
+    }
+    
+    .field-hint i {
+        font-size: 0.7rem;
+        margin-right: 4px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 576px) {
+        .vehicle-body {
+            padding: 25px;
+        }
+        
+        .vehicle-header {
+            padding: 30px 20px;
+        }
+        
+        .vehicle-header i {
+            font-size: 50px;
+        }
+        
+        .vehicle-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .form-control-custom {
+            padding: 11px 14px 11px 42px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-add {
+            padding: 12px;
+            font-size: 0.95rem;
+        }
+    }
 </style>
 
 <div class="vehicle-wrapper">
-
     <div class="vehicle-card">
-
+        
         <!-- Header -->
         <div class="vehicle-header">
             <i class="bi bi-car-front-fill"></i>
-            <h2>Add Vehicle</h2>
-            <p>Register your vehicle details</p>
+            <h2>Add New Vehicle</h2>
+            <p>Register your vehicle to start booking services</p>
         </div>
-
+        
         <!-- Body -->
         <div class="vehicle-body">
-
+            
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert-custom {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+                        <i class="bi {% if message.tags == 'error' %}bi-exclamation-circle{% else %}bi-check-circle{% endif %} me-2"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
             <!-- Form -->
-            <form method="POST">
+            <form method="POST" id="addVehicleForm">
                 {% csrf_token %}
-
+                
                 <!-- Vehicle Name -->
-                <div class="mb-3">
+                <div class="form-group">
                     <label class="form-label">
-                        <i class="bi bi-car-front me-1 text-primary"></i>
+                        <i class="bi bi-car-front-fill"></i>
                         Vehicle Name
                     </label>
-
-                    <input type="text"
-                           name="vehicle_name"
-                           class="form-control"
-                           placeholder="Enter vehicle name"
-                           required>
+                    <div class="input-wrapper">
+                        <i class="bi bi-car-front input-icon"></i>
+                        <input type="text"
+                               name="vehicle_name"
+                               class="form-control-custom"
+                               placeholder="e.g., Honda City, Toyota Innova"
+                               required>
+                    </div>
+                    <span class="field-hint">
+                        <i class="bi bi-info-circle"></i> Enter the brand and model name of your vehicle
+                    </span>
                 </div>
-
+                
                 <!-- Vehicle Model -->
-                <div class="mb-3">
+                <div class="form-group">
                     <label class="form-label">
-                        <i class="bi bi-tools me-1 text-primary"></i>
+                        <i class="bi bi-tools"></i>
                         Vehicle Model
                     </label>
-
-                    <input type="text"
-                           name="vehicle_model"
-                           class="form-control"
-                           placeholder="Enter vehicle model"
-                           required>
+                    <div class="input-wrapper">
+                        <i class="bi bi-gear input-icon"></i>
+                        <input type="text"
+                               name="vehicle_model"
+                               class="form-control-custom"
+                               placeholder="e.g., VX, ZX, SX4, Limited"
+                               required>
+                    </div>
                 </div>
-
-                <!-- Vehicle Year -->
-                <div class="mb-3">
+                
+                <!-- Manufacturing Year -->
+                <div class="form-group">
                     <label class="form-label">
-                        <i class="bi bi-calendar-event me-1 text-primary"></i>
+                        <i class="bi bi-calendar-event"></i>
                         Manufacturing Year
                     </label>
-
-                    <input type="text"
-                           name="vehicle_year"
-                           class="form-control"
-                           placeholder="2026"
-                           required>
+                    <div class="input-wrapper">
+                        <i class="bi bi-calendar3 input-icon"></i>
+                        <input type="number"
+                               name="vehicle_year"
+                               class="form-control-custom"
+                               placeholder="e.g., 2020"
+                               min="1980"
+                               max="2026"
+                               required>
+                    </div>
+                    <span class="field-hint">
+                        <i class="bi bi-info-circle"></i> Year should be between 1980 and 2026
+                    </span>
                 </div>
-
+                
                 <!-- Vehicle Number -->
-                <div class="mb-4">
+                <div class="form-group">
                     <label class="form-label">
-                        <i class="bi bi-upc-scan me-1 text-primary"></i>
+                        <i class="bi bi-upc-scan"></i>
                         Vehicle Number
                     </label>
-
-                    <input type="text"
-                           name="vehicle_number"
-                           class="form-control text-uppercase"
-                           placeholder="KL07AB1234"
-                           maxlength="15"
-                           required>
+                    <div class="input-wrapper">
+                        <i class="bi bi-upc-scan input-icon"></i>
+                        <input type="text"
+                               name="vehicle_number"
+                               class="form-control-custom text-uppercase"
+                               placeholder="KL07AB1234"
+                               maxlength="15"
+                               required>
+                    </div>
+                    <span class="field-hint">
+                        <i class="bi bi-info-circle"></i> Enter the complete registration number
+                    </span>
                 </div>
-
-                <!-- Button -->
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-add">
-                        <i class="bi bi-plus-circle me-1"></i>
+                
+                <!-- Submit Button -->
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn-add" id="submitBtn">
+                        <i class="bi bi-plus-circle me-2"></i>
                         Add Vehicle
                     </button>
                 </div>
-
+                
             </form>
-
-            <!-- Back -->
+            
+            <!-- Back Link -->
             <div class="back-link">
                 <a href="{% url 'vehicle_list' %}">
                     <i class="bi bi-arrow-left"></i>
                     Back to Vehicles
                 </a>
             </div>
-
+            
         </div>
-
+        
     </div>
-
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('addVehicleForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const yearInput = document.querySelector('input[name="vehicle_year"]');
+        const vehicleNumberInput = document.querySelector('input[name="vehicle_number"]');
+        
+        // Auto-uppercase vehicle number
+        if (vehicleNumberInput) {
+            vehicleNumberInput.addEventListener('input', function() {
+                this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            });
+        }
+        
+        // Year validation
+        if (yearInput) {
+            yearInput.addEventListener('change', function() {
+                const year = parseInt(this.value);
+                const currentYear = new Date().getFullYear();
+                
+                if (isNaN(year)) {
+                    this.value = '';
+                } else if (year < 1980) {
+                    this.value = 1980;
+                    showTemporaryMessage('Year cannot be before 1980', 'error');
+                } else if (year > currentYear + 1) {
+                    this.value = currentYear;
+                    showTemporaryMessage(`Year cannot be later than ${currentYear}`, 'error');
+                }
+            });
+        }
+        
+        // Form submit with loading state
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                // Validate year again before submit
+                if (yearInput) {
+                    const year = parseInt(yearInput.value);
+                    const currentYear = new Date().getFullYear();
+                    
+                    if (isNaN(year) || year < 1980 || year > currentYear + 1) {
+                        e.preventDefault();
+                        showTemporaryMessage('Please enter a valid manufacturing year (1980-' + (currentYear + 1) + ')', 'error');
+                        return;
+                    }
+                }
+                
+                // Validate vehicle number
+                if (vehicleNumberInput) {
+                    const number = vehicleNumberInput.value.trim();
+                    if (number.length < 5) {
+                        e.preventDefault();
+                        showTemporaryMessage('Please enter a valid vehicle number', 'error');
+                        return;
+                    }
+                }
+                
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> Adding Vehicle...';
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+            });
+        }
+        
+        // Function to show temporary messages
+        function showTemporaryMessage(message, type) {
+            const existingAlert = document.querySelector('.alert-custom');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert-custom ${type === 'error' ? 'alert-error' : 'alert-success'}`;
+            alertDiv.innerHTML = `
+                <i class="bi ${type === 'error' ? 'bi-exclamation-circle' : 'bi-check-circle'} me-2"></i>
+                ${message}
+            `;
+            
+            const formBody = document.querySelector('.vehicle-body');
+            formBody.insertBefore(alertDiv, formBody.firstChild);
+            
+            setTimeout(() => {
+                alertDiv.style.opacity = '0';
+                alertDiv.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => alertDiv.remove(), 300);
+            }, 4000);
+        }
+        
+        // Add input focus effects
+        const inputs = document.querySelectorAll('.form-control-custom');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.01)';
+            });
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    });
+</script>
 
 {% endblock %}

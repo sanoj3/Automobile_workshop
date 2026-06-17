@@ -6,155 +6,403 @@
 
 {% block content %}
 
+<style>
+    .rating-stars-display {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .stars-large {
+        display: inline-flex;
+        gap: 4px;
+    }
+
+    .star-filled-large {
+        color: #fbbf24;
+        font-size: 24px;
+    }
+
+    .star-half-large {
+        color: #fbbf24;
+        font-size: 24px;
+        position: relative;
+    }
+
+    .star-empty-large {
+        color: #d1d5db;
+        font-size: 24px;
+    }
+
+    .rating-number-large {
+        font-size: 28px;
+        font-weight: 800;
+        color: #f59e0b;
+    }
+
+    .rating-total {
+        font-size: 16px;
+        color: #94a3b8;
+    }
+
+    .rating-badge {
+        background: #fef3c7;
+        color: #d97706;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .review-card {
+        background: #faf5ff;
+        border-radius: 16px;
+        padding: 18px;
+        border-left: 4px solid #8e44ad;
+        margin-top: 10px;
+    }
+
+    .review-card .review-text {
+        font-size: 14px;
+        color: #334155;
+        line-height: 1.6;
+        margin-bottom: 8px;
+    }
+
+    .review-card .review-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        font-size: 12px;
+        color: #94a3b8;
+    }
+
+    .review-card .review-meta i {
+        color: #8e44ad;
+    }
+
+    .no-rating {
+        text-align: center;
+        padding: 20px;
+        color: #94a3b8;
+    }
+
+    .no-rating i {
+        font-size: 40px;
+        display: block;
+        margin-bottom: 10px;
+        color: #d1d5db;
+    }
+
+    .info-card {
+        border: 1px solid #e9d9ff;
+        border-radius: 16px;
+        padding: 20px;
+        height: 100%;
+        background: white;
+        transition: all 0.2s ease;
+    }
+
+    .info-card:hover {
+        box-shadow: 0 4px 12px rgba(106,13,173,0.08);
+    }
+
+    .info-card .card-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+    }
+
+    .info-card .card-icon i {
+        font-size: 20px;
+        color: white;
+    }
+
+    .icon-primary { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+    .icon-dark { background: linear-gradient(135deg, #1e293b, #0f172a); }
+    .icon-danger { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .icon-success { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .icon-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+    .icon-purple { background: linear-gradient(135deg, #8e44ad, #a569bd); }
+
+    .complaint-badge {
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+        color: #6c3483;
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-block;
+        margin: 4px;
+    }
+
+    .btn-back {
+        background: linear-gradient(135deg, #64748b, #475569);
+        border: none;
+        border-radius: 50px;
+        padding: 10px 24px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-back:hover {
+        transform: translateX(-3px);
+        box-shadow: 0 4px 12px rgba(100,116,139,0.3);
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .rating-stars-display {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .stars-large {
+            font-size: 20px;
+        }
+        
+        .star-filled-large, .star-half-large, .star-empty-large {
+            font-size: 20px;
+        }
+    }
+</style>
+
 <div class="container py-4">
 
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <div>
             <h2 class="fw-bold text-success">
                 <i class="bi bi-check-circle-fill"></i> Job Details
             </h2>
-
-            <p class="text-muted mb-0">
-                Completed service job information
-            </p>
+            <p class="text-muted mb-0">Completed service job information</p>
         </div>
-
-        <a href="{% url 'completed_jobs_list' %}" class="btn btn-outline-dark rounded-pill">
-            <i class="bi bi-arrow-left"></i> Back
+        <a href="{% url 'completed_jobs_list' %}" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Back to Jobs
         </a>
-
     </div>
 
-    <!-- Card -->
+    <!-- Main Card -->
     <div class="card border-0 shadow rounded-4 overflow-hidden">
 
         <!-- Header -->
         <div class="bg-success text-white p-4">
-
             <div class="row align-items-center">
-
                 <div class="col-md-8">
-
                     <h3 class="fw-bold mb-1">
-                        {{ jobs.vehicle.vehicle_name }}
+                        <i class="bi bi-car-front-fill me-2"></i>
+                        {{ job.vehicle.vehicle_name }}
                     </h3>
-
-                    <p class="mb-0">
-                        Booking ID : #{{ jobs.id }}
+                    <p class="mb-0 opacity-75">
+                        <i class="bi bi-receipt"></i> Booking ID: #{{ job.id }}
                     </p>
-
+                    <p class="mb-0 opacity-75 mt-1">
+                        <i class="bi bi-calendar3"></i> Completed on: {{ job.created_at|date:"d M Y, h:i A" }}
+                    </p>
                 </div>
-
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">
-
-                    <span class="badge bg-light text-success px-4 py-2">
-                        Completed
+                    <span class="badge bg-light text-success px-4 py-2 rounded-pill">
+                        <i class="bi bi-check-circle-fill me-1"></i> Completed
                     </span>
-
                 </div>
-
             </div>
-
         </div>
 
         <!-- Body -->
-        <div class="card-body p-4">
+        <div class="card-body p-4 p-md-5">
 
             <div class="row g-4">
 
-                <!-- Customer -->
+                <!-- Customer Info -->
                 <div class="col-md-6">
-
-                    <div class="border rounded-4 p-3 h-100">
-
-                        <h5 class="fw-bold mb-3 text-primary">
-                            <i class="bi bi-person-fill"></i> Customer Info
-                        </h5>
-
-                        <p><strong>Name:</strong> {{ jobs.customer.name }}</p>
-                        <p><strong>Phone:</strong> {{ jobs.customer.number }}</p>
-
+                    <div class="info-card">
+                        <div class="card-icon icon-primary">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Customer Information</h5>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <span class="text-muted">Name</span>
+                                <p class="fw-bold mb-0">{{ job.customer.name }}</p>
+                            </div>
+                            <div class="col-12">
+                                <span class="text-muted">Phone</span>
+                                <p class="fw-bold mb-0">{{ job.customer.number }}</p>
+                            </div>
+                            <div class="col-12">
+                                <span class="text-muted">Email</span>
+                                <p class="fw-bold mb-0">{{ job.customer.user.email|default:"Not provided" }}</p>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
 
-                <!-- Vehicle -->
+                <!-- Vehicle Info -->
                 <div class="col-md-6">
-
-                    <div class="border rounded-4 p-3 h-100">
-
-                        <h5 class="fw-bold mb-3 text-dark">
-                            <i class="bi bi-car-front-fill"></i> Vehicle Info
-                        </h5>
-
-                        <p><strong>Vehicle:</strong> {{ jobs.vehicle.vehicle_name }}</p>
-                        <p><strong>City:</strong> {{ jobs.city.name }}</p>
-
+                    <div class="info-card">
+                        <div class="card-icon icon-dark">
+                            <i class="bi bi-car-front-fill"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Vehicle Information</h5>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <span class="text-muted">Vehicle</span>
+                                <p class="fw-bold mb-0">{{ job.vehicle.vehicle_name }}</p>
+                            </div>
+                            <div class="col-12">
+                                <span class="text-muted">Number</span>
+                                <p class="fw-bold mb-0">{{ job.vehicle.vehicle_number }}</p>
+                            </div>
+                            <div class="col-12">
+                                <span class="text-muted">City</span>
+                                <p class="fw-bold mb-0">{{ job.city.name }}</p>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
 
                 <!-- Complaints -->
                 <div class="col-12">
-
-                    <div class="border rounded-4 p-3">
-
-                        <h5 class="fw-bold mb-3 text-danger">
-                            <i class="bi bi-tools"></i> Complaints
-                        </h5>
-
-                        {% for complaint in jobs.complaints.all %}
-
-                            <span class="badge bg-info text-dark m-1">
-                                {{ complaint.complaint_name }}
-                            </span>
-
-                        {% empty %}
-
-                            <span class="text-muted">No complaints</span>
-
-                        {% endfor %}
-
+                    <div class="info-card">
+                        <div class="card-icon icon-danger">
+                            <i class="bi bi-tools"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Services Provided</h5>
+                        <div>
+                            {% for complaint in job.complaints.all %}
+                                <span class="complaint-badge">
+                                    <i class="bi bi-wrench me-1"></i> {{ complaint.complaint_name }}
+                                </span>
+                            {% empty %}
+                                <span class="text-muted">No services listed</span>
+                            {% endfor %}
+                        </div>
                     </div>
-
                 </div>
 
-                <!-- Description -->
+                <!-- Problem Description -->
                 <div class="col-12">
-
-                    <div class="border rounded-4 p-3">
-
-                        <h5 class="fw-bold mb-3 text-secondary">
-                            <i class="bi bi-file-text-fill"></i> Problem Description
-                        </h5>
-
-                        <p class="mb-0">
-                            {{ jobs.problem_description }}
-                        </p>
-
+                    <div class="info-card">
+                        <div class="card-icon icon-warning">
+                            <i class="bi bi-file-text-fill"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Problem Description</h5>
+                        <p class="mb-0">{{ job.problem_description }}</p>
                     </div>
-
                 </div>
 
-                <!-- Payment -->
+                <!-- Customer Rating Section (Single Feedback) -->
                 <div class="col-12">
+                    <div class="info-card" style="border-left: 4px solid #fbbf24;">
+                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                            <div>
+                                <h5 class="fw-bold mb-3">
+                                    <i class="bi bi-star-fill" style="color: #fbbf24;"></i> Customer Rating
+                                </h5>
+                            </div>
+                            {% if feedback %}
+                                <span class="rating-badge">
+                                    <i class="bi bi-chat-dots"></i> Reviewed
+                                </span>
+                            {% endif %}
+                        </div>
 
-                    <div class="border rounded-4 p-3">
+                        {% if feedback %}
+                            <!-- Rating Stars -->
+                            <div class="rating-stars-display">
+                                <div class="stars-large">
+                                    {% with rating=feedback.rating|default:0 %}
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= rating %}
+                                                <i class="bi bi-star-fill star-filled-large"></i>
+                                            {% elif forloop.counter <= rating|add:0.4 %}
+                                                <i class="bi bi-star-half star-half-large"></i>
+                                            {% else %}
+                                                <i class="bi bi-star star-empty-large"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endwith %}
+                                </div>
+                                <span class="rating-number-large">{{ feedback.rating|floatformat:1 }}</span>
+                                <span class="rating-total">/ 5.0</span>
+                            </div>
 
-                        <h5 class="fw-bold mb-3 text-success">
-                            <i class="bi bi-cash-coin"></i> Payment Summary
-                        </h5>
-
-                        <p><strong>Total Amount:</strong> ₹ {{ jobs.total_price }}</p>
-
-                        {% if jobs.labour_charge %}
-                            <p><strong>Labour Charge:</strong> ₹ {{ jobs.labour_charge }}</p>
+                            <!-- Review Message -->
+                            <div class="review-card">
+                                <div class="review-text">
+                                    <i class="bi bi-quote" style="color: #8e44ad;"></i>
+                                    {{ feedback.message|default:"No review message provided." }}
+                                </div>
+                                <div class="review-meta">
+                                    <span>
+                                        <i class="bi bi-star-fill" style="color: #fbbf24;"></i> 
+                                        {{ feedback.rating }} / 5
+                                    </span>
+                                    <span>
+                                        <i class="bi bi-calendar3"></i> 
+                                        {{ feedback.created_at|date:"d M Y" }}
+                                    </span>
+                                    <span>
+                                        <i class="bi bi-person"></i> 
+                                        {{ job.customer.name }}
+                                    </span>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="no-rating">
+                                <i class="bi bi-star"></i>
+                                <p class="mb-0">No rating submitted yet</p>
+                                <small class="text-muted">Customer has not provided feedback for this job</small>
+                            </div>
                         {% endif %}
-
                     </div>
+                </div>
 
+                <!-- Payment Summary -->
+                <div class="col-12">
+                    <div class="info-card">
+                        <div class="card-icon icon-success">
+                            <i class="bi bi-cash-coin"></i>
+                        </div>
+                        <h5 class="fw-bold mb-3">Payment Summary</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <span class="text-muted">Total Amount</span>
+                                <p class="fw-bold text-success fs-5 mb-0">₹ {{ job.total_price }}</p>
+                            </div>
+                            {% if job.labour_charge %}
+                            <div class="col-md-4">
+                                <span class="text-muted">Labour Charge</span>
+                                <p class="fw-bold mb-0">₹ {{ job.labour_charge }}</p>
+                            </div>
+                            {% endif %}
+                            <div class="col-md-4">
+                                <span class="text-muted">Payment Status</span>
+                                <p class="fw-bold mb-0">
+                                    {% if job.bill and job.bill.payment_status == 'Paid' %}
+                                        <span class="badge bg-success rounded-pill">
+                                            <i class="bi bi-check-circle-fill"></i> Paid
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-warning rounded-pill">
+                                            <i class="bi bi-clock"></i> Pending
+                                        </span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>

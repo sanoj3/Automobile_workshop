@@ -1,0 +1,98 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Active Service Bookings{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-tools"></i>
+            Active Service Bookings
+        </h2>
+
+        <span class="badge bg-primary fs-6">
+            Total: {{ active_count }}
+        </span>
+    </div>
+
+    <!-- Active Services Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+
+            {% if service %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Booking ID</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Mechanic</th>
+                            <th>Booking Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for booking in service %}
+                        <tr style="cursor:pointer;"
+                            onclick="window.location.href='/superuser/active-service/{{ booking.id }}/'">
+
+                            <td>{{ forloop.counter }}</td>
+                            <td>#{{ booking.id }}</td>
+                            <td>{{ booking.customer }}</td>
+                            <td>{{ booking.vehicle }}</td>
+                            <td>
+                                {% if booking.mechanic %}
+                                    {{ booking.mechanic }}
+                                {% else %}
+                                    <span class="text-muted">Not Assigned</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ booking.created_at }}</td>
+                            <td>
+                                {% if booking.status == 'Assigned' %}
+                                    <span class="badge bg-warning text-dark">
+                                        Assigned
+                                    </span>
+
+                                {% elif booking.status == 'Accepted' %}
+                                    <span class="badge bg-info">
+                                        Accepted
+                                    </span>
+
+                                {% elif booking.status == 'In_progress' %}
+                                    <span class="badge bg-primary">
+                                        In Progress
+                                    </span>
+
+                                {% else %}
+                                    <span class="badge bg-secondary">
+                                        {{ booking.status }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+            {% else %}
+            <div class="alert alert-info text-center">
+                No active service bookings found.
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -111,15 +111,25 @@
         }
 
         .welcome-avatar{
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
+            overflow: hidden;
             background: linear-gradient(135deg,#2563eb,#3b82f6);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 600;
+            font-size: 18px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .profile-img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         /* Alert */
@@ -193,7 +203,7 @@ setTimeout(() => {
     <div class="sidebar">
 
         <div class="sidebar-logo">
-            🚗 AutoCare
+            🚗 FixiGo
         </div>
 
         <a href="{% url 'home_page_superuser' %}" class="active">
@@ -201,12 +211,12 @@ setTimeout(() => {
             <span>Dashboard</span>
         </a>
 
-        <a href="#">
+        <a href="{% url 'service_not_assign' %}">
             <i class="bi bi-hourglass-split"></i>
             <span>Pending Service</span>
         </a>
 
-        <a href="#">
+        <a href="{% url 'active_service_booking' %}">
             <i class="bi bi-tools"></i>
             <span>Active Service</span>
         </a>
@@ -266,10 +276,19 @@ setTimeout(() => {
             <div class="welcome-box">
 
                 <div class="welcome-avatar">
-                    {{ superuser.username|slice:":1"|upper }}
+
+                    {% if superuser.profile_pic %}
+                        <img src="{{ superuser.profile_pic.url }}"
+                            alt="Profile Picture"
+                            class="profile-img">
+                    {% else %}
+                        {{ superuser.name|slice:":1"|upper }}
+                    {% endif %}
+
                 </div>
 
                 <div>
+
                     <div class="fw-semibold">
                         {{ superuser.username }}
                     </div>
@@ -277,6 +296,7 @@ setTimeout(() => {
                     <small class="text-muted">
                         Super Admin
                     </small>
+
                 </div>
 
             </div>

@@ -5,139 +5,687 @@
 
 {% block content %}
 
+<style>
+    /* Animation Keyframes */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+    
+    /* Page Header */
+    .page-header {
+        animation: fadeInLeft 0.5s ease-out;
+        margin-bottom: 2rem;
+    }
+    
+    .page-header h2 {
+        background: linear-gradient(135deg, #6c3483, #8e44ad);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 800;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .page-header h2 i {
+        background: linear-gradient(135deg, #8e44ad, #a569bd);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-right: 10px;
+    }
+    
+    .page-header h2:after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #8e44ad, #c39bd3);
+        border-radius: 3px;
+    }
+    
+    /* Stats Cards */
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 1.2rem;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(142, 68, 173, 0.1);
+        box-shadow: 0 4px 15px rgba(106, 13, 173, 0.05);
+        animation: fadeInUp 0.5s ease-out;
+        animation-fill-mode: both;
+    }
+    
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(106, 13, 173, 0.12);
+        border-color: rgba(142, 68, 173, 0.2);
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+        color: #8e44ad;
+    }
+    
+    /* Main Card */
+    .orders-card {
+        background: white;
+        border-radius: 28px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(106, 13, 173, 0.08);
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+        transition: all 0.3s ease;
+    }
+    
+    .orders-card:hover {
+        box-shadow: 0 15px 40px rgba(106, 13, 173, 0.12);
+    }
+    
+    /* Table Styles */
+    .orders-table {
+        margin-bottom: 0;
+    }
+    
+    .orders-table thead th {
+        background: linear-gradient(135deg, #6c3483, #8e44ad);
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 15px;
+        border: none;
+        letter-spacing: 0.5px;
+    }
+    
+    .orders-table tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #f0e8ff;
+        cursor: pointer;
+    }
+    
+    .orders-table tbody tr:hover {
+        background: linear-gradient(90deg, #faf5ff, #fff);
+        transform: scale(1.01);
+        box-shadow: 0 4px 12px rgba(106, 13, 173, 0.08);
+    }
+    
+    .orders-table tbody td {
+        padding: 16px 15px;
+        vertical-align: middle;
+        color: #374151;
+        font-size: 14px;
+    }
+    
+    /* Vehicle Info */
+    .vehicle-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .vehicle-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #8e44ad;
+        font-size: 20px;
+    }
+    
+    .vehicle-details {
+        text-align: left;
+    }
+    
+    .vehicle-name {
+        font-weight: 700;
+        color: #2c0b3a;
+        margin-bottom: 2px;
+    }
+    
+    .vehicle-number {
+        font-size: 11px;
+        color: #9ca3af;
+    }
+    
+    /* Complaint Badges */
+    .complaint-badge {
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+        color: #6c3483;
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 600;
+        display: inline-block;
+        margin: 3px;
+        transition: all 0.2s ease;
+    }
+    
+    .complaint-badge:hover {
+        transform: scale(1.05);
+        background: linear-gradient(135deg, #e9d9ff, #dcc6f0);
+    }
+    
+    /* Status Badges */
+    .status-badge {
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        letter-spacing: 0.3px;
+        transition: all 0.3s ease;
+    }
+    
+    .status-badge:hover {
+        transform: scale(1.05);
+    }
+    
+    .status-pending {
+        background: #fef3c7;
+        color: #d97706;
+        border-left: 3px solid #f59e0b;
+    }
+    
+    .status-completed {
+        background: #dcfce7;
+        color: #16a34a;
+        border-left: 3px solid #22c55e;
+    }
+    
+    .status-cancelled {
+        background: #fee2e2;
+        color: #dc2626;
+        border-left: 3px solid #ef4444;
+    }
+    
+    .status-in-progress {
+        background: #e0f2fe;
+        color: #0284c7;
+        border-left: 3px solid #0ea5e9;
+    }
+    
+    .status-accepted {
+        background: #dcfce7;
+        color: #16a34a;
+        border-left: 3px solid #22c55e;
+    }
+    
+    /* Amount Styles */
+    .amount {
+        font-weight: 800;
+        color: #8e44ad;
+        font-size: 16px;
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    .empty-state-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+    
+    .empty-state-icon i {
+        font-size: 48px;
+        color: #8e44ad;
+    }
+    
+    /* Search and Filter Section */
+    .filter-section {
+        background: white;
+        border-radius: 20px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        animation: fadeInRight 0.5s ease-out;
+    }
+    
+    .search-input {
+        border-radius: 50px;
+        border: 1px solid #e9d9ff;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+        border-color: #8e44ad;
+        box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1);
+        outline: none;
+    }
+    
+    .filter-select {
+        border-radius: 50px;
+        border: 1px solid #e9d9ff;
+        padding: 10px 20px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-select:focus {
+        border-color: #8e44ad;
+        outline: none;
+    }
+    
+    /* Loading Overlay */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 9999;
+        display: none;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 3px solid #e9d9ff;
+        border-top-color: #8e44ad;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .stat-card {
+            margin-bottom: 1rem;
+        }
+        
+        .orders-table thead th {
+            font-size: 11px;
+            padding: 10px;
+        }
+        
+        .orders-table tbody td {
+            font-size: 12px;
+            padding: 10px;
+        }
+        
+        .vehicle-icon {
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+        }
+        
+        .status-badge {
+            padding: 4px 10px;
+            font-size: 10px;
+        }
+    }
+</style>
+
 <div class="container py-4">
-
-    <!-- Page Heading -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <div>
-            <h2 class="fw-bold text-primary">
-                <i class="bi bi-receipt-cutoff"></i> My Orders
-            </h2>
-
-            <p class="text-muted mb-0">
-                View all your service bookings
-            </p>
-        </div>
-
-    </div>
-
-    <!-- Orders Table -->
-    <div class="card shadow-sm border-0 rounded-4">
-
-        <div class="card-body">
-
-            <div class="table-responsive">
-
-                <table class="table table-hover table-bordered align-middle text-center">
-
-                    <thead class="table-dark">
-
-                        <tr>
-                            <th>#</th>
-                            <th>Vehicle</th>
-                            <th>Complaints</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Amount</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {% for order in orders %}
-
-                        <tr style="cursor:pointer;"
-                            onclick="window.location.href='/orders/{{ order.id }}/'">
-                            <td>
-                                {{ forloop.counter }}
-                            </td>
-
-                            <td>
-                                {{ order.vehicle.vehicle_name }}
-                            </td>
-
-                            <td>
-
-                                {% for complaint in order.complaints.all %}
-
-                                    <span class="badge bg-info text-dark m-1">
-                                        {{ complaint.complaint_name }}
-                                    </span>
-
-                                {% empty %}
-
-                                    <span class="text-muted">
-                                        No Complaints
-                                    </span>
-
-                                {% endfor %}
-
-                            </td>
-
-                            <td>
-                                {{ order.created_at|date:"d M Y" }}
-                            </td>
-
-                            <td>
-
-                                {% if order.status == 'Pending' %}
-
-                                    <span class="badge bg-warning text-dark px-3 py-2">
-                                        Pending
-                                    </span>
-
-                                {% elif order.status == 'Completed' %}
-
-                                    <span class="badge bg-success px-3 py-2">
-                                        Completed
-                                    </span>
-
-                                {% elif order.status == 'Cancelled' %}
-
-                                    <span class="badge bg-danger px-3 py-2">
-                                        Cancelled
-                                    </span>
-
-                                {% else %}
-
-                                    <span class="badge bg-secondary px-3 py-2">
-                                        {{ order.status }}
-                                    </span>
-
-                                {% endif %}
-
-                            </td>
-
-                            <td>
-                                ₹ {{ order.total_price }}
-                            </td>
-
-                        </tr>
-
-                        {% empty %}
-
-                        <tr>
-
-                            <td colspan="6" class="text-center py-4 text-muted">
-                                No orders found
-                            </td>
-
-                        </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2 class="fw-bold mb-2">
+                    <i class="bi bi-receipt-cutoff"></i> My Orders
+                </h2>
+                <p class="text-muted mb-0">
+                    View and track all your service bookings in one place
+                </p>
             </div>
-
+            <div>
+                <a href="{% url 'service_booking' %}" class="btn btn-purple-base rounded-pill">
+                    <i class="bi bi-plus-circle"></i> New Service Booking
+                </a>
+            </div>
         </div>
-
     </div>
-
+    
+    <!-- Statistics Cards - FIXED: Removed length filter with arguments -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted">Total Orders</small>
+                        <h3 class="fw-bold mb-0" style="color: #4a1d6d;">{{ orders|length }}</h3>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted">Pending</small>
+                        <h3 class="fw-bold mb-0" style="color: #d97706;">
+                            {{ pending_count }}
+                        </h3>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted">In Progress</small>
+                        <h3 class="fw-bold mb-0" style="color: #0284c7;">
+                            {{ in_progress_count }}
+                        </h3>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="bi bi-gear-wide-connected"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <small class="text-muted">Completed</small>
+                        <h3 class="fw-bold mb-0" style="color: #16a34a;">
+                            {{ completed_count }}
+                        </h3>
+                    </div>
+                    <div class="stat-icon">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Search and Filter -->
+    <div class="filter-section">
+        <div class="row g-3">
+            <div class="col-md-8">
+                <div class="position-relative">
+                    <i class="bi bi-search position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                    <input type="text" id="searchInput" class="form-control search-input ps-5" 
+                           placeholder="Search by vehicle name, number, or order ID...">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select id="statusFilter" class="form-select filter-select">
+                    <option value="all">All Status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="In_progress">In Progress</option>
+                    <option value="Accepted">Accepted</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Orders Table Card -->
+    <div class="orders-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table orders-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">#</th>
+                            <th style="width: 20%;">Vehicle</th>
+                            <th style="width: 25%;">Services</th>
+                            <th style="width: 12%;">Date</th>
+                            <th style="width: 13%;">Status</th>
+                            <th style="width: 10%;">Amount</th>
+                            <th style="width: 15%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        {% for order in orders %}
+                        <tr class="order-row" 
+                            data-status="{{ order.status }}"
+                            data-search="{{ order.vehicle.vehicle_name }} {{ order.vehicle.vehicle_number }} {{ order.id }}">
+                            <td class="fw-bold" style="color: #8e44ad;">{{ forloop.counter }}</td>
+                            <td>
+                                <div class="vehicle-info">
+                                    <div class="vehicle-icon">
+                                        <i class="bi bi-car-front"></i>
+                                    </div>
+                                    <div class="vehicle-details">
+                                        <div class="vehicle-name">{{ order.vehicle.vehicle_name }}</div>
+                                        <div class="vehicle-number">{{ order.vehicle.vehicle_number }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {% for complaint in order.complaints.all %}
+                                    <span class="complaint-badge">
+                                        <i class="bi bi-wrench me-1"></i> {{ complaint.complaint_name }}
+                                    </span>
+                                {% empty %}
+                                    <span class="text-muted">No services specified</span>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <div>
+                                    <strong>{{ order.created_at|date:"d M Y" }}</strong>
+                                    <div><small class="text-muted">{{ order.created_at|time:"H:i" }}</small></div>
+                                </div>
+                            </td>
+                            <td>
+                                {% if order.status == 'Pending' %}
+                                    <span class="status-badge status-pending">
+                                        <i class="bi bi-hourglass-split"></i> Pending
+                                    </span>
+                                {% elif order.status == 'In_progress' %}
+                                    <span class="status-badge status-in-progress">
+                                        <i class="bi bi-gear-wide-connected"></i> In Progress
+                                    </span>
+                                {% elif order.status == 'Accepted' %}
+                                    <span class="status-badge status-accepted">
+                                        <i class="bi bi-check-circle"></i> Accepted
+                                    </span>
+                                {% elif order.status == 'Completed' %}
+                                    <span class="status-badge status-completed">
+                                        <i class="bi bi-check-circle-fill"></i> Completed
+                                    </span>
+                                {% elif order.status == 'Cancelled' %}
+                                    <span class="status-badge status-cancelled">
+                                        <i class="bi bi-x-circle"></i> Cancelled
+                                    </span>
+                                {% else %}
+                                    <span class="status-badge status-pending">
+                                        <i class="bi bi-clock"></i> {{ order.status }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="amount">₹ {{ order.total_price|floatformat:2 }}</span>
+                            </td>
+                            <td>
+                                <a href="{% url 'order_view' order.id %}" 
+                                   class="btn btn-sm rounded-pill px-3"
+                                   style="background: linear-gradient(135deg, #f3e9ff, #e9d9ff); color: #6c3483; font-weight: 600;">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">
+                                        <i class="bi bi-inbox"></i>
+                                    </div>
+                                    <h5 class="fw-bold mb-2" style="color: #4a1d6d;">No Orders Found</h5>
+                                    <p class="text-muted mb-4">
+                                        You haven't placed any service orders yet.
+                                    </p>
+                                    <a href="{% url 'service_booking' %}" class="btn btn-purple-base rounded-pill">
+                                        <i class="bi bi-calendar-plus"></i> Book Your First Service
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+</div>
+
+<script>
+    // Search and Filter functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const rows = document.querySelectorAll('.order-row');
+        const tbody = document.getElementById('ordersTableBody');
+        
+        function filterOrders() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusValue = statusFilter.value;
+            
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                const searchText = row.getAttribute('data-search').toLowerCase();
+                const orderStatus = row.getAttribute('data-status');
+                
+                const matchesSearch = searchTerm === '' || searchText.includes(searchTerm);
+                const matchesStatus = statusValue === 'all' || orderStatus === statusValue;
+                
+                if (matchesSearch && matchesStatus) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Show empty message if no results
+            const existingEmpty = document.querySelector('.no-results-row');
+            if (visibleCount === 0 && rows.length > 0) {
+                if (!existingEmpty) {
+                    const emptyRow = document.createElement('tr');
+                    emptyRow.className = 'no-results-row';
+                    emptyRow.innerHTML = `
+                        <td colspan="7">
+                            <div class="empty-state py-4">
+                                <div class="empty-state-icon" style="width: 60px; height: 60px;">
+                                    <i class="bi bi-search" style="font-size: 30px;"></i>
+                                </div>
+                                <h6 class="fw-bold mt-2">No matching orders found</h6>
+                                <p class="text-muted small">Try adjusting your search or filter</p>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(emptyRow);
+                }
+            } else if (existingEmpty) {
+                existingEmpty.remove();
+            }
+        }
+        
+        // Debounce search input
+        let debounceTimer;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(filterOrders, 300);
+        });
+        
+        statusFilter.addEventListener('change', filterOrders);
+        
+        // Add click event for table rows
+        rows.forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Don't trigger if clicking on the view button
+                if (e.target.closest('.btn')) {
+                    return;
+                }
+                const viewLink = this.querySelector('.btn');
+                if (viewLink && viewLink.href) {
+                    window.location.href = viewLink.href;
+                }
+            });
+        });
+    });
+</script>
 
 {% endblock %}

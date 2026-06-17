@@ -4,8 +4,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>FixiGo | Create Account</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -13,360 +13,1035 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+
     <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        body{
-            min-height:100vh;
-            background:#f5f7fb;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            font-family:'Segoe UI',sans-serif;
-            padding:20px;
+        body {
+            height: auto;
+            background: linear-gradient(135deg, #1E1B2E 0%, #2D1B4E 50%, #1A1030 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        .register-container{
-            width:100%;
-            max-width:1100px;
-            background:#fff;
-            border-radius:25px;
-            overflow:hidden;
-            box-shadow:0 15px 40px rgba(0,0,0,0.08);
-            display:grid;
-            grid-template-columns:1fr 1fr;
+        body::before {
+            content: '';
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, rgba(124,58,237,0) 70%);
+            top: -200px;
+            left: -200px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(168,85,247,0.12) 0%, rgba(168,85,247,0) 70%);
+            bottom: -250px;
+            right: -250px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .register-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .register-container {
+            width: 100%;
+            background: rgba(255,255,255,0.98);
+            border-radius: 48px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2), 0 0 0 1px rgba(167,139,250,0.2);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            flex-shrink: 0;
         }
 
         /* Left Side */
-
-        .left-side{
-            background:linear-gradient(135deg,#0ea5e9,#2563eb);
-            color:white;
-            padding:60px 45px;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
+        .left-side {
+            background: linear-gradient(145deg, #4C1D95, #7C3AED, #A855F7);
+            color: white;
+            padding: 60px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .left-side i{
-            font-size:90px;
-            margin-bottom:25px;
+        .left-side::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -30%;
+            width: 250px;
+            height: 250px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 50%;
+            pointer-events: none;
         }
 
-        .left-side h1{
-            font-size:42px;
-            font-weight:700;
-            margin-bottom:15px;
+        .left-side::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            pointer-events: none;
         }
 
-        .left-side p{
-            font-size:16px;
-            line-height:1.7;
-            opacity:0.9;
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-icon:hover {
+            transform: translateY(-5px);
+        }
+
+        .logo-icon i {
+            font-size: 48px;
+            color: white;
+        }
+
+        .left-side h1 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -1px;
+        }
+
+        .left-side p {
+            font-size: 16px;
+            line-height: 1.7;
+            opacity: 0.9;
+            color: #E9D5FF;
+        }
+
+        .feature-list {
+            margin-top: 40px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #F3E8FF;
+        }
+
+        .feature-list li i {
+            font-size: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 6px;
+            border-radius: 12px;
         }
 
         /* Right Side */
-
-        .right-side{
-            padding:50px 45px;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
+        .right-side {
+            padding: 50px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: white;
         }
 
-        .form-title{
-            font-size:34px;
-            font-weight:700;
-            color:#111827;
-            margin-bottom:8px;
+        .form-title {
+            font-size: 34px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4C1D95, #A855F7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
         }
 
-        .form-subtitle{
-            color:#6b7280;
-            margin-bottom:30px;
+        .form-subtitle {
+            color: #6B7280;
+            margin-bottom: 30px;
+            font-size: 15px;
         }
 
-        .form-label{
-            font-weight:600;
-            margin-bottom:7px;
-            color:#374151;
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .form-control,
-        .form-select{
-            height:52px;
-            border-radius:14px;
-            border:1px solid #d1d5db;
-            padding-left:15px;
-            transition:0.3s;
+        .form-label i {
+            color: #A855F7;
         }
 
-        textarea.form-control{
-            height:100px;
-            padding-top:12px;
-            resize:none;
+        .form-control {
+            height: 52px;
+            border-radius: 16px;
+            border: 1.5px solid #E5E7EB;
+            padding-left: 16px;
+            transition: all 0.25s;
+            font-size: 14px;
         }
 
-        .form-control:focus,
-        .form-select:focus{
-            border-color:#2563eb;
-            box-shadow:none;
+        textarea.form-control {
+            height: 100px;
+            padding-top: 14px;
+            resize: none;
         }
 
-        .btn-register{
-            width:100%;
-            height:52px;
-            border:none;
-            border-radius:14px;
-            background:linear-gradient(135deg,#0ea5e9,#2563eb);
-            color:white;
-            font-size:16px;
-            font-weight:600;
-            transition:0.3s;
+        .form-control:focus {
+            border-color: #A855F7;
+            box-shadow: 0 0 0 3px rgba(168,85,247,0.15);
+            outline: none;
         }
 
-        .btn-register:hover{
-            transform:translateY(-2px);
-            opacity:0.95;
+        /* City Dropdown Styles */
+        .city-dropdown-container {
+            position: relative;
         }
 
-        .login-link{
-            text-align:center;
-            margin-top:22px;
-            color:#6b7280;
+        .custom-city-select {
+            width: 100%;
+            height: 52px;
+            border-radius: 16px;
+            border: 1.5px solid #E5E7EB;
+            padding: 0 16px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.25s;
         }
 
-        .login-link a{
-            text-decoration:none;
-            color:#2563eb;
-            font-weight:600;
+        .custom-city-select:hover {
+            border-color: #A855F7;
         }
 
-        .login-link a:hover{
-            text-decoration:underline;
+        .custom-city-select.active {
+            border-color: #A855F7;
+            box-shadow: 0 0 0 3px rgba(168,85,247,0.15);
         }
 
-        .alert{
-            border-radius:12px;
+        .custom-city-select.is-invalid {
+            border-color: #dc2626;
         }
 
-        @media(max-width:768px){
+        .custom-city-select.is-valid {
+            border-color: #10b981;
+        }
 
-            .register-container{
-                grid-template-columns:1fr;
+        .selected-city-text {
+            color: #1F2937;
+        }
+
+        .selected-city-text.placeholder {
+            color: #9CA3AF;
+        }
+
+        .dropdown-arrow {
+            color: #9CA3AF;
+            transition: transform 0.2s;
+        }
+
+        .custom-city-select.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .city-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #E5E7EB;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            z-index: 100;
+            display: none;
+            overflow: hidden;
+        }
+
+        .city-dropdown-menu.show {
+            display: block;
+        }
+
+        .city-options {
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .city-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .city-option i {
+            color: #A855F7;
+            font-size: 16px;
+        }
+
+        .city-option:hover {
+            background: #FAF5FF;
+        }
+
+        .city-option.selected {
+            background: #F3E8FF;
+            color: #7C3AED;
+            font-weight: 500;
+        }
+
+        .invalid-feedback {
+            font-size: 12px;
+            margin-top: 6px;
+            color: #dc2626;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            display: none;
+        }
+
+        .invalid-feedback.show {
+            display: flex;
+        }
+
+        .btn-register {
+            width: 100%;
+            height: 54px;
+            border: none;
+            border-radius: 60px;
+            background: linear-gradient(95deg, #7C3AED, #A855F7);
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 8px 20px -6px #7C3AED80;
+            cursor: pointer;
+        }
+
+        .btn-register:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 28px -8px #6D28D9;
+            background: linear-gradient(95deg, #6D28D9, #9333EA);
+        }
+
+        .btn-register:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background: #E5E7EB;
+        }
+
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .divider span {
+            background: white;
+            padding: 0 15px;
+            color: #9CA3AF;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .btn-google {
+            background: white;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 60px;
+            padding: 14px;
+            font-weight: 600;
+            color: #374151;
+            transition: all 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .btn-google:hover {
+            border-color: #A855F7;
+            background: #FAF5FF;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(124,58,237,0.1);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 28px;
+            color: #6B7280;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            text-decoration: none;
+            color: #7C3AED;
+            font-weight: 700;
+            margin-left: 5px;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+            color: #A855F7;
+        }
+
+        .alert {
+            border-radius: 16px;
+            border: none;
+            background: #FEE2E2;
+            color: #991B1B;
+            font-size: 14px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            height: 4px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            transition: background 0.3s ease;
+        }
+
+        .strength-text {
+            font-size: 11px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .copyright-footer {
+            margin-top: 28px;
+            text-align: center;
+            padding: 16px 20px;
+            background: transparent;
+        }
+
+        .copyright-footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 28px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #C4B5FD;
+        }
+
+        .footer-divider {
+            width: 50px;
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+            margin: 12px auto 14px;
+        }
+
+        .city-options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .city-options::-webkit-scrollbar-track {
+            background: #F3F4F6;
+            border-radius: 10px;
+        }
+
+        .city-options::-webkit-scrollbar-thumb {
+            background: #C4B5FD;
+            border-radius: 10px;
+        }
+
+        /* Success/Valid styles - no green border on empty fields initially */
+        .form-control.is-valid {
+            border-color: #10b981;
+        }
+        
+        .form-control.is-invalid {
+            border-color: #dc2626;
+        }
+
+        @media(max-width: 992px) {
+            .register-container {
+                grid-template-columns: 1fr;
+                max-width: 550px;
+                margin: 0 auto;
             }
-
-            .left-side{
-                display:none;
+            .left-side {
+                display: none;
             }
-
-            .right-side{
-                padding:35px 25px;
+            .right-side {
+                padding: 40px 30px;
             }
-
+            .form-title {
+                font-size: 28px;
+            }
         }
 
+        @media(max-width: 480px) {
+            .right-side {
+                padding: 30px 20px;
+            }
+            .footer-links {
+                gap: 14px;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-<div class="register-container">
+<div class="register-wrapper">
+    <div class="register-container">
 
-    <!-- Left Side -->
-    <div class="left-side">
-
-        <i class="bi bi-car-front-fill"></i>
-
-        <h1>Join Our Platform</h1>
-
-        <p>
-            Create your account to manage vehicles,
-            service bookings, and automobile services
-            easily from one dashboard.
-        </p>
-
-    </div>
-
-    <!-- Right Side -->
-    <div class="right-side">
-
-        <h2 class="form-title">
-            Customer Registration
-        </h2>
-
-        <p class="form-subtitle">
-            Fill your details to create an account
-        </p>
-
-        <!-- Messages -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger shadow-sm">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        <!-- Form -->
-        <form method="POST">
-
-            {% csrf_token %}
-
-            <!-- Name -->
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Full Name
-                </label>
-
-                <input type="text"
-                       name="name"
-                       class="form-control"
-                       placeholder="Enter full name"
-                       required>
-
+        <!-- Left Side -->
+        <div class="left-side">
+            <div class="logo-icon">
+                <i class="bi bi-gear-wide-connected"></i>
             </div>
-
-            <!-- Email -->
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Email Address
-                </label>
-
-                <input type="email"
-                       name="email"
-                       class="form-control"
-                       placeholder="Enter email"
-                       required>
-
-            </div>
-
-            <!-- Phone -->
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Phone Number
-                </label>
-
-                <input type="text"
-                       name="number"
-                       class="form-control"
-                       placeholder="Enter phone number"
-                       minlength="10"
-                       maxlength="10"
-                       required>
-
-            </div>
-
-            <!-- Address -->
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Address
-                </label>
-
-                <textarea name="address"
-                          class="form-control"
-                          placeholder="Enter address"
-                          required></textarea>
-
-            </div>
-
-            <!-- City -->
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Select City
-                </label>
-
-                <select name="city"
-                        class="form-select"
-                        required>
-
-                    <option value="" disabled selected>
-                        Choose your city
-                    </option>
-
-                    {% for c in city %}
-                        <option value="{{ c.name }}">
-                            {{ c.name }}
-                        </option>
-                    {% endfor %}
-
-                </select>
-
-            </div>
-
-            <!-- Password -->
-            <div class="mb-4">
-
-                <label class="form-label">
-                    Password
-                </label>
-
-                <input type="password"
-                       name="password"
-                       class="form-control"
-                       placeholder="Enter password"
-                       required>
-
-            </div>
-
-            <!-- Button -->
-            <button type="submit" class="btn-register">
-
-                <i class="bi bi-person-plus-fill me-1"></i>
-
-                Create Account
-
-            </button>
-
-            <!-- Divider -->
-            <div class="text-center my-3 text-muted">
-                OR
-            </div>
-
-            
-
-            <!-- Google Signup -->
-            <div class="text-center">
-
-                <a href="{% provider_login_url 'google' %}" 
-                class="btn btn-light border w-100 py-3 rounded-4 shadow-sm">
-
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
-                        width="22"
-                        class="me-2">
-
-                    Continue with Google
-
-                </a>
-
-            </div>
-
-        </form>
-
-        <!-- Login -->
-        <div class="login-link">
-
-            Already have an account?
-
-            <a href="{% url 'login' %}">
-                Login
-            </a>
-
+            <h1>Welcome to<br>FixiGo</h1>
+            <p>
+                India's smartest automobile workshop management platform. Join thousands of happy customers.
+            </p>
+            <ul class="feature-list">
+                <li><i class="bi bi-check-lg"></i> Book services in 60 seconds</li>
+                <li><i class="bi bi-shield-check"></i> 100% secure & trusted</li>
+                <li><i class="bi bi-headset"></i> 24/7 customer support</li>
+                <li><i class="bi bi-graph-up"></i> Track repair history</li>
+                <li><i class="bi bi-tags"></i> Exclusive member discounts</li>
+            </ul>
         </div>
 
+        <!-- Right Side -->
+        <div class="right-side">
+            <h2 class="form-title">Create Account</h2>
+            <p class="form-subtitle">Join FixiGo and experience hassle-free vehicle service</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger shadow-sm">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" id="registerForm" novalidate>
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-person-fill"></i> Full Name</label>
+                    <input type="text" name="name" id="fullName" class="form-control" placeholder="Enter your full name" required>
+                    <div class="invalid-feedback" id="nameError">
+                        <i class="bi bi-exclamation-circle"></i> Please enter your full name (min 3 characters)
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-envelope-fill"></i> Email Address</label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="you@example.com" required>
+                    <div class="invalid-feedback" id="emailError">
+                        <i class="bi bi-exclamation-circle"></i> Please enter a valid email address
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-telephone-fill"></i> Phone Number</label>
+                    <input type="tel" name="number" id="phone" class="form-control" placeholder="10-digit mobile number" maxlength="10" required>
+                    <div class="invalid-feedback" id="phoneError">
+                        <i class="bi bi-exclamation-circle"></i> Please enter a valid 10-digit mobile number
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-geo-alt-fill"></i> Address</label>
+                    <textarea name="address" id="address" class="form-control" placeholder="Enter your complete address" required></textarea>
+                    <div class="invalid-feedback" id="addressError">
+                        <i class="bi bi-exclamation-circle"></i> Please enter your address
+                    </div>
+                </div>
+
+                <!-- City Dropdown - First City Auto Selected -->
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-building"></i> Select City</label>
+                    <div class="city-dropdown-container">
+                        <div class="custom-city-select" id="citySelectTrigger">
+                            <span class="selected-city-text" id="selectedCityDisplay">Loading...</span>
+                            <i class="bi bi-chevron-down dropdown-arrow"></i>
+                        </div>
+                        <div class="city-dropdown-menu" id="cityDropdown">
+                            <div class="city-options" id="cityOptions">
+                                {% for c in city %}
+                                    <div class="city-option" data-value="{{ c.name }}">
+                                        <i class="bi bi-geo-alt"></i>
+                                        {{ c.name }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="city" id="selectedCity" value="" required>
+                    <div class="invalid-feedback" id="cityError">
+                        <i class="bi bi-exclamation-circle"></i> Please select a city
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label"><i class="bi bi-lock-fill"></i> Password</label>
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Create a strong password (min 6 characters)" required>
+                    <div class="password-strength" id="passwordStrength"></div>
+                    <div class="strength-text" id="strengthText"></div>
+                    <div class="invalid-feedback" id="passwordError">
+                        <i class="bi bi-exclamation-circle"></i> Password must be at least 6 characters
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn-register">
+                    <i class="bi bi-person-plus-fill me-2"></i>
+                    Create Account
+                </button>
+
+                <div class="divider"><span>OR</span></div>
+
+                <a href="{% provider_login_url 'google' %}" class="btn-google text-decoration-none">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" width="22" alt="Google">
+                    Continue with Google
+                </a>
+            </form>
+
+            <div class="login-link">
+                Already have an account?
+                <a href="{% url 'login' %}">Sign in →</a>
+            </div>
+        </div>
     </div>
 
+    <div class="copyright-footer">
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Help Center</a>
+        </div>
+        <div class="footer-divider"></div>
+        <p>© 2026 <strong>FixiGo</strong> — Automobile Workshop Management System. All Rights Reserved.</p>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    (function() {
+        // City Dropdown Functionality with First City Auto-Selected
+        const trigger = document.getElementById('citySelectTrigger');
+        const dropdown = document.getElementById('cityDropdown');
+        const selectedDisplay = document.getElementById('selectedCityDisplay');
+        const selectedHidden = document.getElementById('selectedCity');
+        let selectedValue = '';
+        
+        // Get all city options
+        const cityOptions = document.querySelectorAll('.city-option');
+        
+        // Auto-select first city on page load - NO VALIDATION STYLES ON LOAD
+        if (cityOptions.length > 0) {
+            const firstCity = cityOptions[0];
+            const firstCityValue = firstCity.getAttribute('data-value');
+            const firstCityText = firstCity.textContent.trim();
+            
+            selectedValue = firstCityValue;
+            selectedDisplay.textContent = firstCityText;
+            selectedDisplay.classList.remove('placeholder');
+            selectedHidden.value = firstCityValue;
+            
+            // Mark first city as selected
+            firstCity.classList.add('selected');
+            
+            // DO NOT add validation classes on load - just set value
+            // trigger.classList.add('is-valid'); - REMOVED, no green border on load
+        }
+
+        // Toggle dropdown
+        if (trigger) {
+            trigger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdown.classList.toggle('show');
+                trigger.classList.toggle('active');
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (trigger && dropdown && !trigger.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
+                trigger.classList.remove('active');
+            }
+        });
+
+        // Select city option
+        function selectCity(option, value, text) {
+            document.querySelectorAll('.city-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            option.classList.add('selected');
+            selectedValue = value;
+            selectedDisplay.textContent = text;
+            selectedDisplay.classList.remove('placeholder');
+            selectedHidden.value = value;
+            
+            // Remove invalid class if exists
+            trigger.classList.remove('is-invalid');
+            const cityError = document.getElementById('cityError');
+            if (cityError) cityError.classList.remove('show');
+            
+            dropdown.classList.remove('show');
+            trigger.classList.remove('active');
+            validateForm();
+        }
+
+        // Add click handlers to city options
+        cityOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                const text = this.textContent.trim();
+                selectCity(this, value, text);
+            });
+        });
+
+        // Form elements
+        const fullName = document.getElementById('fullName');
+        const email = document.getElementById('email');
+        const phone = document.getElementById('phone');
+        const address = document.getElementById('address');
+        const password = document.getElementById('password');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Track if fields have been touched/interacted with
+        let touched = {
+            name: false,
+            email: false,
+            phone: false,
+            address: false,
+            password: false,
+            city: false
+        };
+
+        // Validation functions - only show errors if field has been touched
+        function validateName() {
+            const value = fullName.value.trim();
+            const isValid = value.length >= 3;
+            const errorEl = document.getElementById('nameError');
+            
+            if (touched.name) {
+                if (isValid) {
+                    fullName.classList.remove('is-invalid');
+                    fullName.classList.add('is-valid');
+                    if (errorEl) errorEl.classList.remove('show');
+                } else {
+                    fullName.classList.remove('is-valid');
+                    fullName.classList.add('is-invalid');
+                    if (errorEl) errorEl.classList.add('show');
+                }
+            } else {
+                // Not touched yet - remove any validation styling
+                fullName.classList.remove('is-invalid', 'is-valid');
+                if (errorEl) errorEl.classList.remove('show');
+            }
+            return isValid;
+        }
+
+        function validateEmail() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const value = email.value.trim();
+            const isValid = emailRegex.test(value);
+            const errorEl = document.getElementById('emailError');
+            
+            if (touched.email) {
+                if (isValid) {
+                    email.classList.remove('is-invalid');
+                    email.classList.add('is-valid');
+                    if (errorEl) errorEl.classList.remove('show');
+                } else {
+                    email.classList.remove('is-valid');
+                    email.classList.add('is-invalid');
+                    if (errorEl) errorEl.classList.add('show');
+                }
+            } else {
+                email.classList.remove('is-invalid', 'is-valid');
+                if (errorEl) errorEl.classList.remove('show');
+            }
+            return isValid;
+        }
+
+        function validatePhone() {
+            const value = phone.value;
+            const isValid = value.length === 10 && /^\d+$/.test(value);
+            const errorEl = document.getElementById('phoneError');
+            
+            if (touched.phone) {
+                if (isValid) {
+                    phone.classList.remove('is-invalid');
+                    phone.classList.add('is-valid');
+                    if (errorEl) errorEl.classList.remove('show');
+                } else {
+                    phone.classList.remove('is-valid');
+                    phone.classList.add('is-invalid');
+                    if (errorEl) errorEl.classList.add('show');
+                }
+            } else {
+                phone.classList.remove('is-invalid', 'is-valid');
+                if (errorEl) errorEl.classList.remove('show');
+            }
+            return isValid;
+        }
+
+        function validateAddress() {
+            const value = address.value.trim();
+            const isValid = value.length >= 5;
+            const errorEl = document.getElementById('addressError');
+            
+            if (touched.address) {
+                if (isValid) {
+                    address.classList.remove('is-invalid');
+                    address.classList.add('is-valid');
+                    if (errorEl) errorEl.classList.remove('show');
+                } else {
+                    address.classList.remove('is-valid');
+                    address.classList.add('is-invalid');
+                    if (errorEl) errorEl.classList.add('show');
+                }
+            } else {
+                address.classList.remove('is-invalid', 'is-valid');
+                if (errorEl) errorEl.classList.remove('show');
+            }
+            return isValid;
+        }
+
+        function validateCity() {
+            const isValid = selectedValue !== '';
+            const errorEl = document.getElementById('cityError');
+            
+            if (touched.city) {
+                if (isValid) {
+                    trigger.classList.remove('is-invalid');
+                    if (errorEl) errorEl.classList.remove('show');
+                } else {
+                    trigger.classList.add('is-invalid');
+                    if (errorEl) errorEl.classList.add('show');
+                }
+            } else {
+                trigger.classList.remove('is-invalid');
+                if (errorEl) errorEl.classList.remove('show');
+            }
+            return isValid;
+        }
+
+        function validatePassword() {
+            const value = password.value;
+            const isValid = value.length >= 6;
+            const errorEl = document.getElementById('passwordError');
+            const strengthBar = document.getElementById('passwordStrength');
+            const strengthText = document.getElementById('strengthText');
+            
+            if (touched.password) {
+                if (isValid) {
+                    password.classList.remove('is-invalid');
+                    password.classList.add('is-valid');
+                    if (errorEl) errorEl.classList.remove('show');
+                    
+                    // Password strength
+                    let strength = 0;
+                    if (value.length >= 8) strength++;
+                    if (/[A-Z]/.test(value)) strength++;
+                    if (/[0-9]/.test(value)) strength++;
+                    if (/[^A-Za-z0-9]/.test(value)) strength++;
+                    
+                    const percentage = Math.min(100, (strength / 4) * 100);
+                    if (strengthBar) strengthBar.style.background = `linear-gradient(90deg, #10b981 ${percentage}%, #e5e7eb ${percentage}%)`;
+                    
+                    if (strengthText) {
+                        if (strength >= 3) {
+                            strengthText.innerHTML = '<i class="bi bi-shield-check"></i> Strong password';
+                            strengthText.style.color = '#10b981';
+                        } else if (strength >= 2) {
+                            strengthText.innerHTML = '<i class="bi bi-shield"></i> Medium password';
+                            strengthText.style.color = '#f59e0b';
+                        } else {
+                            strengthText.innerHTML = '<i class="bi bi-shield-exclamation"></i> Weak password';
+                            strengthText.style.color = '#ef4444';
+                        }
+                    }
+                } else {
+                    password.classList.remove('is-valid');
+                    password.classList.add('is-invalid');
+                    if (errorEl) errorEl.classList.add('show');
+                    if (strengthBar) strengthBar.style.background = '#e5e7eb';
+                    if (strengthText) strengthText.innerHTML = '';
+                }
+            } else {
+                password.classList.remove('is-invalid', 'is-valid');
+                if (errorEl) errorEl.classList.remove('show');
+                if (strengthBar) strengthBar.style.background = '#e5e7eb';
+                if (strengthText) strengthText.innerHTML = '';
+            }
+            return isValid;
+        }
+
+        function validateForm() {
+            const isNameValid = validateName();
+            const isEmailValid = validateEmail();
+            const isPhoneValid = validatePhone();
+            const isAddressValid = validateAddress();
+            const isCityValid = validateCity();
+            const isPasswordValid = validatePassword();
+            
+            const allValid = isNameValid && isEmailValid && isPhoneValid && 
+                             isAddressValid && isCityValid && isPasswordValid;
+            
+            if (submitBtn) submitBtn.disabled = !allValid;
+            return allValid;
+        }
+
+        // Add event listeners - mark field as touched on first interaction
+        if (fullName) {
+            fullName.addEventListener('focus', function() { touched.name = true; });
+            fullName.addEventListener('input', validateForm);
+        }
+        
+        if (email) {
+            email.addEventListener('focus', function() { touched.email = true; });
+            email.addEventListener('input', validateForm);
+        }
+        
+        if (phone) {
+            phone.addEventListener('focus', function() { touched.phone = true; });
+            phone.addEventListener('input', validateForm);
+        }
+        
+        if (address) {
+            address.addEventListener('focus', function() { touched.address = true; });
+            address.addEventListener('input', validateForm);
+        }
+        
+        if (password) {
+            password.addEventListener('focus', function() { touched.password = true; });
+            password.addEventListener('input', validateForm);
+        }
+        
+        // City dropdown - mark as touched when clicked
+        if (trigger) {
+            trigger.addEventListener('click', function() { 
+                touched.city = true; 
+            });
+        }
+
+        // Phone number - numbers only
+        if (phone) {
+            phone.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+                validateForm();
+            });
+        }
+
+        // Form submission - mark all fields as touched
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.addEventListener('submit', function(e) {
+                touched.name = true;
+                touched.email = true;
+                touched.phone = true;
+                touched.address = true;
+                touched.password = true;
+                touched.city = true;
+                
+                validateForm();
+                
+                if (submitBtn && submitBtn.disabled) {
+                    e.preventDefault();
+                    const firstError = document.querySelector('.is-invalid');
+                    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        }
+
+        // Initial validation (no errors shown on load)
+        validateForm();
+    })();
+</script>
 
 </body>
 </html>

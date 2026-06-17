@@ -5,257 +5,376 @@
 
 {% block content %}
 
+<style>
+    /* Dashboard Cards */
+    .dashboard-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.2s ease;
+        border: 1px solid #e9d9ff;
+        height: 100%;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(106, 13, 173, 0.1);
+        border-color: #c39bd3;
+    }
+
+    .dashboard-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .bg-purple {
+        background: linear-gradient(135deg, #8e44ad, #a569bd);
+    }
+
+    .bg-purple-warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .bg-purple-danger {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .bg-purple-success {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+    }
+
+    .bg-purple-dark {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+
+    .bg-purple-info {
+        background: linear-gradient(135deg, #06b6d4, #0891b2);
+    }
+
+    /* Status Card */
+    .status-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid #e9d9ff;
+        height: 100%;
+    }
+
+    .status-badge {
+        padding: 6px 14px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .status-badge.bg-success {
+        background: #dcfce7 !important;
+        color: #16a34a !important;
+    }
+
+    .status-badge.bg-danger {
+        background: #fee2e2 !important;
+        color: #dc2626 !important;
+    }
+
+    /* Toggle Switch */
+    .form-switch .form-check-input {
+        width: 50px;
+        height: 25px;
+        cursor: pointer;
+        background-color: #e9d9ff;
+        border-color: #c39bd3;
+    }
+
+    .form-switch .form-check-input:checked {
+        background-color: #8e44ad;
+        border-color: #8e44ad;
+    }
+
+    /* Modal */
+    .modal-content {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 20px 40px rgba(106, 13, 173, 0.2);
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #8e44ad, #a569bd);
+        color: white;
+        border-radius: 16px 16px 0 0;
+        padding: 1rem 1.5rem;
+    }
+
+    .modal-header h5 {
+        font-weight: 700;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #e9d9ff;
+        padding: 1rem 1.5rem;
+    }
+
+    .request-detail {
+        padding: 10px 0;
+        border-bottom: 1px solid #f0e8ff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .request-detail:last-child {
+        border-bottom: none;
+    }
+
+    .request-icon {
+        width: 32px;
+        height: 32px;
+        background: #f3e9ff;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .request-icon i {
+        font-size: 16px;
+        color: #8e44ad;
+    }
+
+    .request-text {
+        flex: 1;
+    }
+
+    .request-label {
+        font-size: 11px;
+        color: #94a3b8;
+    }
+
+    .request-value {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .expiry-badge {
+        background: #fee2e2;
+        color: #dc2626;
+        padding: 4px 10px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+</style>
+
 <div class="row g-4">
-
-<!-- Mechanic Status -->
-<div class="col-lg-4 col-md-6">
-
-    <div class="status-card">
-
-        <div class="d-flex justify-content-between align-items-center">
-
-            <div>
-                <h6 class="fw-bold mb-1">Mechanic Status</h6>
-                <small class="text-muted">Change availability</small>
+    {% if mechanic.account_suspend %}
+        <div class="col-12">
+            <div class="alert alert-danger d-flex align-items-center gap-3 p-4 rounded-3">
+                <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+                <div>
+                    <h5 class="fw-bold mb-1">Account Suspended</h5>
+                    <p class="mb-0">Your account has been suspended by the admin. Please contact support for more information.</p>
+                </div>
             </div>
-
-            <div class="form-check form-switch">
-
-                <input class="form-check-input"
-                       type="checkbox"
-                       id="onlineToggle"
-                       data-initial="{{ mechanic.is_online|yesno:'true,false' }}"
-                       {% if mechanic.is_online %}checked{% endif %}>
-
+        </div>
+    {% else %}
+    
+    <!-- Mechanic Status Card -->
+    <div class="col-lg-4 col-md-6">
+        <div class="status-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h6 class="fw-bold mb-1">Mechanic Status</h6>
+                    <small class="text-muted">Change your availability</small>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="onlineToggle" data-initial="{{ mech.is_online|yesno:'true,false' }}" {% if mech.is_online %}checked{% endif %}>
+                </div>
             </div>
-
+            <div class="mt-3">
+                <span class="status-badge {% if mechanic.is_online %}bg-success{% else %}bg-danger{% endif %}" id="statusBadge">
+                    <i class="bi bi-circle-fill" style="font-size: 8px;"></i>
+                    {% if mechanic.is_online %} Online {% else %} Offline {% endif %}
+                </span>
+            </div>
+            <div class="mt-3 pt-2">
+                <small class="text-muted">
+                    <i class="bi bi-info-circle"></i> 
+                    When online, you'll receive new service requests
+                </small>
+            </div>
         </div>
-
-        <div class="mt-4">
-
-            <span class="badge status-badge"
-                  id="statusBadge"
-                  data-status="{{ mechanic.is_online|yesno:'online,offline' }}">
-
-                {% if mechanic.is_online %}
-                    ● Online
-                {% else %}
-                    ● Offline
-                {% endif %}
-
-            </span>
-
-        </div>
-
     </div>
 
-</div>
-
     <!-- Pending Jobs -->
-
     <div class="col-lg-4 col-md-6">
-
         <div class="dashboard-card">
-
-            <div class="dashboard-icon bg-warning">
+            <div class="dashboard-icon bg-purple-warning">
                 <i class="bi bi-clock-history"></i>
             </div>
-
-            <h5 class="fw-bold">
-                Pending Jobs
-            </h5>
-
-            <p class="text-muted mb-3">
-                Track pending repair requests.
-            </p>
-
-            <a href="{% url 'pending_jobs_list' %}"
-                class="btn btn-warning btn-sm text-white"
-                >
-
-                    View Jobs
+            <h5 class="fw-bold mb-2">Pending Jobs</h5>
+            <p class="text-muted mb-3 small">Track and manage pending repair requests from customers.</p>
+            <a href="{% url 'pending_jobs_list' %}" class="btn btn-purple btn-sm">
+                View Jobs <i class="bi bi-arrow-right ms-1"></i>
             </a>
-
         </div>
-
     </div>
 
     <!-- Vehicle Parts -->
-
     <div class="col-lg-4 col-md-6">
-
         <div class="dashboard-card">
-
-            <div class="dashboard-icon bg-danger">
+            <div class="dashboard-icon bg-purple-danger">
                 <i class="bi bi-wrench-adjustable-circle-fill"></i>
             </div>
-
-            <h5 class="fw-bold">
-                Vehicle Parts
-            </h5>
-
-            <p class="text-muted mb-3">
-                Add, edit and manage your vehicles parts.
-            </p>
-
-            <a href="{% url 'vehicle_parts_list' %}"
-               class="btn btn-danger btn-sm">
-
-                Open Vehicle Parts
-
+            <h5 class="fw-bold mb-2">Vehicle Parts</h5>
+            <p class="text-muted mb-3 small">Add, edit and manage vehicle parts inventory.</p>
+            <a href="{% url 'vehicle_parts_list' %}" class="btn btn-purple btn-sm">
+                Open Parts <i class="bi bi-arrow-right ms-1"></i>
             </a>
-
         </div>
-
     </div>
 
     <!-- Completed Jobs -->
-
     <div class="col-lg-4 col-md-6">
-
         <div class="dashboard-card">
-
-            <div class="dashboard-icon bg-success">
+            <div class="dashboard-icon bg-purple-success">
                 <i class="bi bi-check-circle-fill"></i>
             </div>
-
-            <h5 class="fw-bold">
-                Completed Jobs
-            </h5>
-
-            <p class="text-muted mb-3">
-                View completed service history.
-            </p>
-
-            <a href="{% url 'completed_jobs_list' %}"
-               class="btn btn-success btn-sm">
-
-                Open History
-
+            <h5 class="fw-bold mb-2">Completed Jobs</h5>
+            <p class="text-muted mb-3 small">View history of completed service jobs.</p>
+            <a href="{% url 'completed_jobs_list' %}" class="btn btn-purple btn-sm">
+                View History <i class="bi bi-arrow-right ms-1"></i>
             </a>
-
         </div>
-
     </div>
 
     <!-- Earnings -->
-
     <div class="col-lg-4 col-md-6">
-
         <div class="dashboard-card">
-
-            <div class="dashboard-icon bg-dark">
+            <div class="dashboard-icon bg-purple-dark">
                 <i class="bi bi-cash-stack"></i>
             </div>
-
-            <h5 class="fw-bold">
-                Earnings
-            </h5>
-
-            <p class="text-muted mb-3">
-                Track total service earnings.
-            </p>
-
-            <a href="#"
-               class="btn btn-dark btn-sm">
-
-                View Earnings
-
+            <h5 class="fw-bold mb-2">Earnings</h5>
+            <p class="text-muted mb-3 small">Track your total service earnings and payments.</p>
+            <a href="{% url 'earnings' %}" class="btn btn-purple btn-sm">
+                View Earnings <i class="bi bi-arrow-right ms-1"></i>
             </a>
-
         </div>
-
     </div>
 
     <!-- My Profile -->
-
     <div class="col-lg-4 col-md-6">
-
         <div class="dashboard-card">
-
-            <div class="dashboard-icon bg-primary">
+            <div class="dashboard-icon bg-purple-info">
                 <i class="bi bi-person-circle"></i>
             </div>
-
-            <h5 class="fw-bold">
-                My Profile
-            </h5>
-
-            <p class="text-muted mb-3">
-                Manage mechanic profile details.
-            </p>
-
-            <a href="{% url 'profile_page_mechanic' %}"
-               class="btn btn-primary btn-sm">
-
-                Open Profile
-
+            <h5 class="fw-bold mb-2">My Profile</h5>
+            <p class="text-muted mb-3 small">Manage your profile details and settings.</p>
+            <a href="{% url 'profile_page_mechanic' %}" class="btn btn-purple btn-sm">
+                Open Profile <i class="bi bi-arrow-right ms-1"></i>
             </a>
-
         </div>
-
-    </div>
-
-    <!-- JOB REQUEST MODAL -->
-    {% if requests %}
-
-    <div class="modal fade show" id="jobModal" tabindex="-1" style="display:block; background:rgba(0,0,0,0.5);">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-
-        <div class="modal-header">
-            <h5 class="modal-title">New Work Request</h5>
-        </div>
-
-        <div class="modal-body">
-
-            {% for req in requests %}
-            <p><b>Customer:</b> {{ req.booking.customer.name }}</p>
-            <p><b>Problem:</b> {{ req.booking.problem_description }}</p>
-            <p><b>Expires:</b> {{ req.expires_at }}</p>
-
-            <hr>
-            {% endfor %}
-
-        </div>
-
-        <div class="modal-footer">
-
-            {% for req in requests %}
-
-            <a href="{% url 'accept_booking' req.id %}"
-            class="btn btn-success">
-            Accept
-            </a>
-
-            <a href="{% url 'reject_booking' req.id %}"
-            class="btn btn-danger">
-            Reject
-            </a>
-
-            {% endfor %}
-
-        </div>
-
-        </div>
-    </div>
     </div>
 
     {% endif %}
-
 </div>
 
+<!-- JOB REQUEST MODAL -->
+{% if requests %}
+<div class="modal fade show" id="jobModal" tabindex="-1" style="display:block; background:rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-bell-fill me-2"></i> New Work Request
+                </h5>
+            </div>
+            <div class="modal-body">
+                {% for req in requests %}
+                <div class="request-detail">
+                    <div class="request-icon">
+                        <i class="bi bi-car-front"></i>
+                    </div>
+                    <div class="request-text">
+                        <div class="request-label">Vehicle</div>
+                        <div class="request-value">{{ req.booking.vehicle.vehicle_name }}</div>
+                    </div>
+                </div>
+                <div class="request-detail">
+                    <div class="request-icon">
+                        <i class="bi bi-gear"></i>
+                    </div>
+                    <div class="request-text">
+                        <div class="request-label">Model / Year</div>
+                        <div class="request-value">{{ req.booking.vehicle.vehicle_model }} / {{ req.booking.vehicle.vehicle_year }}</div>
+                    </div>
+                </div>
+                <div class="request-detail">
+                    <div class="request-icon">
+                        <i class="bi bi-chat-text"></i>
+                    </div>
+                    <div class="request-text">
+                        <div class="request-label">Problem Description</div>
+                        <div class="request-value">{{ req.booking.problem_description|truncatechars:80 }}</div>
+                    </div>
+                </div>
+                <div class="request-detail">
+                    <div class="request-icon">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div class="request-text">
+                        <div class="request-label">Expires At</div>
+                        <div class="request-value">
+                            <span class="expiry-badge">
+                                <i class="bi bi-hourglass-split"></i> {{ req.expires_at|date:"d M Y, h:i A" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+                {% for req in requests %}
+                <a href="{% url 'accept_booking' req.id %}" class="btn btn-purple">
+                    <i class="bi bi-check-circle me-1"></i> Accept
+                </a>
+                <a href="{% url 'reject_booking' req.id %}" class="btn btn-outline-danger">
+                    <i class="bi bi-x-circle me-1"></i> Reject
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <script>
+// Auto close modal after 30 seconds
 setTimeout(() => {
     let modal = document.getElementById("jobModal");
     if (modal) {
         modal.style.display = "none";
     }
-}, 1000000); // 10 seconds auto close
-</script>
+}, 30000);
 
-<!-- Toggle Script -->
-<script>
+// Toggle Mechanic Status
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -272,54 +391,41 @@ function getCookie(name) {
 }
 
 const csrftoken = getCookie('csrftoken');
-
 const toggle = document.getElementById("onlineToggle");
 const badge = document.getElementById("statusBadge");
 
-/* ✅ 1. SYNC UI ON PAGE LOAD */
-window.addEventListener("load", function () {
-    updateBadge(toggle.checked);
-});
-
-/* ✅ 2. HANDLE TOGGLE CHANGE */
-toggle.addEventListener("change", function () {
-
-    fetch("{% url 'toggle_mechanic_status' %}", {
-        method: "POST",
-        headers: {
-            "X-CSRFToken": csrftoken,
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            is_online: toggle.checked
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-
-        if (data.status) {
-            updateBadge(toggle.checked);
-        }
-
-    })
-    .catch(error => {
-        console.log("Error:", error);
-    });
-
-});
-
-/* ✅ 3. CENTRAL UI UPDATE FUNCTION */
 function updateBadge(isOnline) {
-
     if (isOnline) {
         badge.classList.remove("bg-danger");
         badge.classList.add("bg-success");
-        badge.innerHTML = "● Online";
+        badge.innerHTML = '<i class="bi bi-circle-fill" style="font-size: 8px;"></i> Online';
     } else {
         badge.classList.remove("bg-success");
         badge.classList.add("bg-danger");
-        badge.innerHTML = "● Offline";
+        badge.innerHTML = '<i class="bi bi-circle-fill" style="font-size: 8px;"></i> Offline';
     }
+}
+
+window.addEventListener("load", function () {
+    if (toggle) updateBadge(toggle.checked);
+});
+
+if (toggle) {
+    toggle.addEventListener("change", function () {
+        fetch("{% url 'toggle_mechanic_status' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ is_online: toggle.checked })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status) updateBadge(toggle.checked);
+        })
+        .catch(error => console.log("Error:", error));
+    });
 }
 </script>
 

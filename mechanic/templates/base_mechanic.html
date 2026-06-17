@@ -3,376 +3,502 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>{% block title %}Mechanic Dashboard{% endblock %}</title>
+    <title>{% block title %}FixiGo - Mechanic Dashboard{% endblock %}</title>
 
     <!-- Bootstrap -->
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-          rel="stylesheet">
-
-    <!-- Google Font -->
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-
-        *{
-            font-family: 'Poppins', sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        body{
-            background: #f4f7fc;
-            overflow-x: hidden;
-        }
-
-        /* Sidebar */
-
-        .sidebar{
-            position: fixed;
-            width: 240px;
-            height: 100vh;
-            background: linear-gradient(180deg,#111827,#1e293b);
-            padding-top: 18px;
-            overflow-y: auto;
-            z-index: 999;
-        }
-
-        .sidebar-logo{
-            text-align: center;
-            color: white;
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 25px;
-        }
-
-        .sidebar a{
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f0ff;
+            min-height: 100vh;
             display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #cbd5e1;
-            padding: 12px 18px;
-            text-decoration: none;
-            margin: 5px 10px;
-            border-radius: 12px;
-            transition: 0.3s;
-            font-size: 14px;
-            font-weight: 500;
+            flex-direction: column;
         }
 
-        .sidebar a i{
-            font-size: 18px;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e9d9ff;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8e44ad;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6c3483;
         }
 
-        .sidebar a:hover{
-            background: rgba(255,255,255,0.08);
-            color: white;
+        /* Header - Same as base.html */
+        .navbar-purple {
+            background: linear-gradient(105deg, #6c3483 0%, #8e44ad 45%, #a569bd 100%);
+            backdrop-filter: blur(2px);
+            padding: 0.7rem 2rem;
+            box-shadow: 0 15px 30px -12px rgba(106, 13, 173, 0.3);
+            border-bottom: 1px solid rgba(255,255,240,0.2);
+            transition: all 0.2s;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
         }
 
-        .sidebar a.active{
-            background: linear-gradient(90deg,#2563eb,#3b82f6);
-            color: white;
-            box-shadow: 0 5px 12px rgba(37,99,235,0.3);
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.7rem;
+            background: linear-gradient(125deg, #fff, #ffecb3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
         }
 
-        .logout-btn{
-            background: rgba(239,68,68,0.12);
-            color: #f87171 !important;
+        .navbar-brand i {
+            background: none;
+            color: #ffd966;
+            margin-right: 6px;
         }
 
-        .logout-btn:hover{
-            background: #ef4444 !important;
+        .nav-link-custom {
+            font-weight: 600;
+            margin: 0 5px;
+            padding: 8px 20px !important;
+            border-radius: 40px;
+            color: rgba(255,255,245,0.92) !important;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+        }
+
+        .nav-link-custom i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .nav-link-custom:hover {
+            background: rgba(255, 245, 220, 0.2);
+            transform: translateY(-2px);
             color: white !important;
         }
 
-        /* Main */
-
-        .main{
-            margin-left: 240px;
-            padding: 20px;
+        .nav-link-custom.active {
+            background: rgba(255, 217, 102, 0.22);
+            border-bottom: 2px solid #ffd966;
+            color: #fff3d1 !important;
         }
 
-        /* Topbar */
-
-        .topbar{
-            background: white;
-            border-radius: 18px;
-            padding: 16px 22px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        .topbar h5{
-            margin: 0;
-            font-weight: 700;
-            font-size: 22px;
-        }
-
-        .welcome-box{
+        .profile-header {
+            background: rgba(255,255,240,0.15);
+            border-radius: 60px;
+            padding: 4px 15px 4px 8px;
+            backdrop-filter: blur(4px);
+            cursor: pointer;
+            transition: 0.2s;
             display: flex;
             align-items: center;
             gap: 12px;
+            position: relative;
         }
 
-        .welcome-avatar{
+        .profile-header:hover {
+            background: rgba(255,255,240,0.3);
+        }
+
+        /* Profile Dropdown Menu */
+        .profile-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            background: white;
+            border-radius: 20px;
+            min-width: 220px;
+            box-shadow: 0 20px 35px -8px rgba(0,0,0,0.2);
+            padding: 0.6rem 0;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(142,68,173,0.15);
+        }
+
+        .profile-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .profile-dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            color: #2c0b3a;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.15s;
+            font-size: 0.9rem;
+        }
+
+        .profile-dropdown-menu a i {
+            width: 22px;
+            font-size: 1.1rem;
+            color: #8e44ad;
+        }
+
+        .profile-dropdown-menu a:hover {
+            background: #f3e9ff;
+            color: #6c3483;
+        }
+
+        .dropdown-divider-custom {
+            height: 1px;
+            background: #e9d9ff;
+            margin: 0.4rem 0;
+        }
+
+        .logout-dropdown-item {
+            color: #e74c3c !important;
+        }
+
+        .logout-dropdown-item i {
+            color: #e74c3c !important;
+        }
+
+        .logout-dropdown-item:hover {
+            background: #fee2e2 !important;
+            color: #c0392b !important;
+        }
+
+        .avatar-circle {
             width: 42px;
             height: 42px;
+            background: linear-gradient(145deg, #ffd966, #f39c12);
             border-radius: 50%;
-            background: linear-gradient(135deg,#2563eb,#3b82f6);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 16px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #4a1d6d;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
 
-        /* Dashboard Card */
-
-        .dashboard-card{
-            background: white;
-            border-radius: 18px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: 0.3s;
+        .avatar-circle img {
+            width: 100%;
             height: 100%;
+            object-fit: cover;
         }
 
-        .dashboard-card:hover{
-            transform: translateY(-5px);
-        }
-
-        .dashboard-icon{
-            width: 55px;
-            height: 55px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .user-info h6 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 0.85rem;
             color: white;
-            font-size: 24px;
-            margin-bottom: 15px;
         }
 
-        /* Status Card */
-
-        .status-card{
-            background: white;
-            border-radius: 18px;
-            padding: 22px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            height: 100%;
+        .user-info small {
+            font-size: 0.7rem;
+            opacity: 0.85;
         }
 
-        .status-badge{
-            padding: 8px 18px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 600;
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
         }
 
-        /* Alerts */
+        /* Footer - Same as base.html */
+        .footer-purple {
+            background: linear-gradient(90deg, #1f0930, #3c1a54, #1f0930);
+            color: #e2c6ff;
+            padding: 1.4rem 2rem;
+            margin-top: auto;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            font-size: 0.85rem;
+            border-top: 1px solid #a569bd40;
+        }
 
-        .alert{
-            border-radius: 12px;
-            border: none;
+        .footer-purple a {
+            color: #e2b0ff;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .footer-purple a:hover {
+            color: #ffd966;
+            letter-spacing: 0.3px;
+        }
+
+        /* Toast Messages */
+        .toast-message {
+            border-radius: 20px;
+            font-weight: 500;
         }
 
         /* Responsive */
-
-        @media(max-width:991px){
-
-            .sidebar{
-                width: 75px;
+        @media (max-width: 768px) {
+            .navbar-purple {
+                padding: 0.6rem 1rem;
             }
-
-            .sidebar-logo{
-                font-size: 15px;
+            .nav-link-custom span {
+                font-size: 0.75rem;
             }
-
-            .sidebar a span{
+            .main-content {
+                padding: 1rem;
+            }
+            .profile-header .user-info {
                 display: none;
             }
-
-            .sidebar a{
-                justify-content: center;
-                padding: 14px;
+            .profile-dropdown-menu {
+                right: -10px;
+                min-width: 190px;
             }
-
-            .main{
-                margin-left: 75px;
-                padding: 15px;
+            .footer-purple {
+                padding: 1rem;
+                border-top-left-radius: 20px;
+                border-top-right-radius: 20px;
             }
-
-            .topbar{
-                flex-direction: column;
-                align-items: flex-start !important;
-                gap: 12px;
-            }
-
         }
-
     </style>
 
+    {% block extra_css %}{% endblock %}
 </head>
-
 <body>
 
-
-    <!-- ✅ Messages -->
-{% if messages %}
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-    {% for message in messages %}
-    <div class="toast show align-items-center text-white 
-        {% if message.tags == 'error' %}bg-danger
-        {% elif message.tags == 'warning' %}bg-warning
-        {% else %}bg-success{% endif %}
-        border-0 mb-2 shadow" role="alert">
-
-        <div class="d-flex">
-            <div class="toast-body">
-                {{ message }}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto"></button>
-        </div>
-
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
-
-<!-- Auto remove messages -->
-<script>
-setTimeout(() => {
-    let toasts = document.querySelectorAll('.toast');
-    toasts.forEach(t => t.remove());
-}, 3000);
-</script>
-
-
-    <!-- Sidebar -->
-
-    <div class="sidebar">
-
-        <div class="sidebar-logo">
-            🔧 Mechanic Panel
-        </div>
-
-        <a href="{% url 'home_mechanic' %}" class="active">
-
-            <i class="bi bi-grid-fill"></i>
-
-            <span>Dashboard</span>
-
-        </a>
-
-        <a href="{% url 'pending_jobs_list' %}">
-
-            <i class="bi bi-clock-history"></i>
-
-            <span>Pending Jobs</span>
-
-        </a>
-
-        <a href="{% url 'completed_jobs_list' %}">
-
-            <i class="bi bi-check-circle"></i>
-
-            <span>Completed Jobs</span>
-
-        </a>
-
-        <a href="#">
-
-            <i class="bi bi-cash-stack"></i>
-
-            <span>Earnings</span>
-
-        </a>
-
-        <a href="{% url 'profile_page_mechanic' %}">
-
-            <i class="bi bi-person-circle"></i>
-
-            <span>My Profile</span>
-
-        </a>
-
-        <a href="{% url 'logout_view_mechanic' %}" class="logout-btn">
-
-            <i class="bi bi-box-arrow-right"></i>
-
-            <span>Logout</span>
-
-        </a>
-
-    </div>
-
-    <!-- Main -->
-
-    <div class="main">
-
-        <!-- Topbar -->
-
-        <div class="topbar d-flex justify-content-between align-items-center">
-
-            <div>
-
-                <h5>
-                    {% block header %}Mechanic Dashboard{% endblock %}
-                </h5>
-
-                <small class="text-muted">
-                    Automobile Workshop Management System
-                </small>
-
-            </div>
-
-            <div class="welcome-box">
-
-                <div class="welcome-avatar">
-
-                    {{ mechanic.name|slice:":1"|upper }}
-
+    <!-- Messages Toast -->
+    {% if messages %}
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100; max-width: 380px;" id="messageContainer">
+        {% for message in messages %}
+        <div class="toast show align-items-center text-white 
+            {% if message.tags == 'error' %}bg-danger
+            {% elif message.tags == 'warning' %}bg-warning text-dark
+            {% else %}bg-success{% endif %} 
+            border-0 mb-2 shadow-lg rounded-4 toast-message" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% elif message.tags == 'error' %}bi-x-circle-fill{% else %}bi-info-circle-fill{% endif %} me-2"></i>
+                    {{ message }}
                 </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('#messageContainer .toast').forEach(t => t.remove());
+        }, 4000);
+    </script>
+    {% endif %}
 
-                <div>
-
-                    <div class="fw-semibold">
-
-                        {{ mechanic.name }}
-
+    <!-- Header Navigation -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-purple">
+            <div class="container-fluid px-0 px-md-2">
+                <a class="navbar-brand" href="{% url 'home_mechanic' %}">
+                    <i class="bi bi-tools"></i> FixiGo
+                </a>
+                <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mechanicNavbar">
+                    <i class="bi bi-list fs-1 text-white"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="mechanicNavbar">
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0 align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'home_mechanic' %}active{% endif %}" href="{% url 'home_mechanic' %}">
+                                <i class="bi bi-house-door-fill"></i> <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'pending_jobs_list' %}active{% endif %}" href="{% url 'pending_jobs_list' %}">
+                                <i class="bi bi-clock-history"></i> <span>Pending Jobs</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'earnings' %}active{% endif %}" href="{% url 'earnings' %}">
+                                <i class="bi bi-cash-stack"></i> <span>Earnings</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'profile_page_mechanic' %}active{% endif %}" href="{% url 'profile_page_mechanic' %}">
+                                <i class="bi bi-person-circle"></i> <span>Profile</span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Profile Dropdown -->
+                    <div class="profile-dropdown-wrapper" style="position: relative;">
+                        <div class="profile-header" id="profilePillBtn">
+                            <div class="avatar-circle">
+                                {% if mechanic.profile_pic %}
+                                    <img src="{{ mechanic.profile_pic.url }}" alt="Profile">
+                                {% else %}
+                                    {{ mechanic.name|slice:":1"|upper|default:"M" }}
+                                {% endif %}
+                            </div>
+                            <div class="user-info">
+                                <h6>{{ mechanic.name|default:"Mechanic" }}</h6>
+                                <small>Mechanic</small>
+                            </div>
+                            <i class="bi bi-chevron-down text-white-50 small"></i>
+                        </div>
+                        
+                        <div class="profile-dropdown-menu" id="profileDropdownMenu">
+                            <a href="{% url 'profile_page_mechanic' %}">
+                                <i class="bi bi-person-badge"></i> My Account
+                            </a>
+                            <a href="{% url 'earnings' %}">
+                                <i class="bi bi-cash-stack"></i> Earnings
+                            </a>
+                            <div class="dropdown-divider-custom"></div>
+                            <a href="{% url 'logout_view_mechanic' %}" class="logout-dropdown-item">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a>
+                        </div>
                     </div>
-
-                    <small class="text-muted">
-
-                        Mechanic
-
-                    </small>
-
                 </div>
-
             </div>
+        </nav>
+    </header>
 
-        </div>
-
-
-        <!-- Page Content -->
-
+    <!-- Main Content -->
+    <main class="main-content">
         {% block content %}
+        <!-- Default Dashboard Content -->
+        <div>
+            <div class="mb-4">
+                <h1 class="display-5 fw-bold" style="color:#4a235a;">
+                    <i class="bi bi-speedometer2"></i> Welcome, {{ mechanic.name|default:"Mechanic" }}!
+                </h1>
+                <p class="text-muted">Your automotive service dashboard</p>
+            </div>
+            
+            <div class="row g-4 mb-5">
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-secondary mb-1">Pending Jobs</h6>
+                                <h2 class="fw-bold mb-0" style="color:#8e44ad;">{{ pending_count|default:"0" }}</h2>
+                            </div>
+                            <i class="bi bi-clock-history fs-1" style="color:#c39bd3;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-secondary mb-1">Completed Jobs</h6>
+                                <h2 class="fw-bold mb-0" style="color:#8e44ad;">{{ completed_count|default:"0" }}</h2>
+                            </div>
+                            <i class="bi bi-check-circle-fill fs-1" style="color:#c39bd3;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-secondary mb-1">Total Earnings</h6>
+                                <h2 class="fw-bold mb-0" style="color:#8e44ad;">₹{{ total_earnings|default:"0" }}</h2>
+                            </div>
+                            <i class="bi bi-cash-stack fs-1" style="color:#c39bd3;"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-secondary mb-1">Rating</h6>
+                                <h2 class="fw-bold mb-0" style="color:#8e44ad;">{{ mechanic_rating|default:"4.5" }} ★</h2>
+                            </div>
+                            <i class="bi bi-star-fill fs-1" style="color:#fbbf24;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endblock %}
+    </main>
 
-    </div>
+    <!-- Footer -->
+    <footer class="footer-purple">
+        <div class="container-fluid">
+            <div class="row align-items-center gy-3">
+                <div class="col-md-6 text-center text-md-start">
+                    <i class="bi bi-gear-wide-connected"></i> FixiGo Pro Workshop | <span id="currentYear"></span> © All rights reserved.
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="me-3"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="me-3"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="me-3"><i class="bi bi-facebook"></i></a>
+                    <a href="#"><i class="bi bi-envelope-fill"></i> support@fixigo.com</a>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col text-center small opacity-75">
+                    <i class="bi bi-shield-check"></i> Professional Auto Care | 24/7 Support
+                </div>
+            </div>
+        </div>
+    </footer>
 
-    <!-- Bootstrap JS -->
-
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script>
+        // Profile Dropdown Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const profilePill = document.getElementById('profilePillBtn');
+            const dropdownMenu = document.getElementById('profileDropdownMenu');
+            
+            if (profilePill && dropdownMenu) {
+                profilePill.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('show');
+                });
+                
+                document.addEventListener('click', function(event) {
+                    if (!profilePill.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+                
+                dropdownMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+        });
+        
+        // Set current year in footer
+        document.getElementById('currentYear').innerText = new Date().getFullYear();
+        
+        // Auto-dismiss toasts
+        setTimeout(() => {
+            document.querySelectorAll('.toast').forEach(toast => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            });
+        }, 5000);
+    </script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

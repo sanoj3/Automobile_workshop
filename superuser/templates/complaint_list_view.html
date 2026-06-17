@@ -1,0 +1,166 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Complaint List{% endblock %}
+
+{% block header %}Complaint List{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Top Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                <i class="bi bi-tools text-danger me-2"></i>
+                Complaint List
+            </h2>
+
+            <p class="text-muted mb-0">
+                Manage all complaint list easily
+            </p>
+        </div>
+
+        <a href="{% url 'add_complaints' %}"
+           class="btn btn-danger btn-lg rounded-3 shadow-sm">
+
+            <i class="bi bi-plus-circle me-1"></i>
+            Add Complaints
+
+        </a>
+
+    </div>
+
+    <!-- Main Card -->
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+
+        {% if complaints %}
+
+        <!-- Table -->
+        <div class="table-responsive">
+
+            <table class="table align-middle table-hover mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">#</th>
+                        <th>complaint Name</th>
+                        <th>Basic Price</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for c in complaints %}
+                    <tr>
+
+                        <!-- Serial -->
+                        <td class="ps-4 fw-semibold">
+                            {{ forloop.counter }}
+                        </td>
+
+                        <!-- Complaint Name -->
+                        <td>
+                            <div>
+                                <h6 class="mb-0 fw-bold">
+                                    {{ c.complaint_name }}
+                                </h6>
+
+                                <small class="text-muted">
+                                    id : {{c.id}}
+                                </small>
+                            </div>
+
+                        </td>
+
+                        <!-- Complaint Price -->
+                        <td>
+                            <span class="fw-bold text-dark">
+                                ₹ {{ c.basic_service_price }}
+                            </span>
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="text-end pe-4">
+
+                            <a href="{% url 'modify_complaints' c.id %}"
+                               class="btn btn-sm btn-outline-warning rounded-pill px-3">
+
+                                <i class="bi bi-pencil-square"></i>
+
+                            </a>
+
+                            <form action="{% url 'delete_complaints' c.id %}"
+                                  method="POST"
+                                  class="d-inline">
+
+                                {% csrf_token %}
+
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                        onclick="return confirm('Delete this complaint?');">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <!-- Empty State -->
+        <div class="text-center py-5">
+
+            <div class="mb-4">
+
+                <div class="bg-danger bg-opacity-10 
+                            rounded-circle d-inline-flex 
+                            align-items-center 
+                            justify-content-center shadow-sm"
+                     style="width:110px;height:110px;">
+
+                    <i class="bi bi-tools text-danger"
+                       style="font-size:55px;"></i>
+
+                </div>
+
+            </div>
+
+            <h4 class="fw-bold mb-2">
+                No Complaints Found
+            </h4>
+
+            <p class="text-muted mb-4">
+                Add complaints and make services.
+            </p>
+
+            <a href="#"
+               class="btn btn-danger btn-lg rounded-3 px-4">
+
+                <i class="bi bi-plus-circle me-1"></i>
+                Add Complaints
+
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

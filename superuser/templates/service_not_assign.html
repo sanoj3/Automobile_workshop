@@ -1,0 +1,63 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Pending Services{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <h2 class="mb-4">
+        <i class="bi bi-tools"></i>
+        Services Not Assigned
+    </h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            {% if service %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Customer</th>
+                            <th>Vehicle</th>
+                            <th>Service Type</th>
+                            <th>Booking Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for booking in service %}
+                        <tr style="cursor:pointer;"
+                            onclick="window.location.href='/superuser/service-not-assign/{{ booking.id }}/'">
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ booking.customer }}</td>
+                            <td>{{ booking.vehicle }}</td>
+                            <td>{{ booking.problem_description }}</td>
+                            <td>{{ booking.created_at }}</td>
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    {{ booking.status }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+            {% else %}
+            <div class="alert alert-info text-center">
+                No pending services found.
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

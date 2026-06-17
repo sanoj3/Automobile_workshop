@@ -2,46 +2,349 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Application Rejected</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Rejected - FixiGo</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f0ff 0%, #e9d9ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(142, 68, 173, 0.06);
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(106, 13, 173, 0.04);
+            border-radius: 50%;
+            animation: floatReverse 18s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30px, -20px) scale(1.05); }
+        }
+
+        @keyframes floatReverse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 20px) scale(1.08); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(220, 38, 38, 0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .reject-container {
+            max-width: 520px;
+            margin: 20px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Main Card */
+        .reject-card {
+            background: white;
+            border-radius: 32px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(106, 13, 173, 0.12);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .reject-card:hover {
+            box-shadow: 0 25px 50px rgba(106, 13, 173, 0.18);
+        }
+
+        /* Animated Border Gradient */
+        .reject-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #dc2626, #ef4444, #dc2626);
+            animation: shimmer 3s ease-in-out infinite;
+            background-size: 200% 100%;
+        }
+
+        /* Icon */
+        .icon-wrapper {
+            margin-bottom: 25px;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+
+        .reject-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .reject-icon i {
+            font-size: 55px;
+            color: #dc2626;
+            animation: bounce 0.6s ease-out 0.5s both;
+        }
+
+        /* Title */
+        .reject-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #dc2626;
+            margin-bottom: 12px;
+            animation: fadeInUp 0.5s ease-out 0.3s both;
+        }
+
+        /* Message */
+        .reject-message {
+            color: #64748b;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.5s ease-out 0.4s both;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #f0e8ff, #c39bd3, #f0e8ff, transparent);
+            margin: 20px 0;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #faf5ff;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 25px;
+            border: 1px solid #f0e8ff;
+            animation: fadeInUp 0.5s ease-out 0.5s both;
+        }
+
+        .info-box p {
+            margin: 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .info-box i {
+            color: #8e44ad;
+            margin-right: 6px;
+        }
+
+        /* Button */
+        .btn-logout {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            border: none;
+            border-radius: 50px;
+            padding: 14px 40px;
+            font-weight: 700;
+            font-size: 15px;
+            color: white;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.25);
+            animation: fadeInUp 0.5s ease-out 0.6s both;
+        }
+
+        .btn-logout:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 38, 38, 0.35);
+            color: white;
+        }
+
+        /* Footer */
+        .reject-footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #94a3b8;
+            animation: fadeInUp 0.5s ease-out 0.7s both;
+        }
+
+        .reject-footer a {
+            color: #8e44ad;
+            text-decoration: none;
+        }
+
+        .reject-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 576px) {
+            .reject-card {
+                padding: 35px 25px;
+            }
+
+            .reject-title {
+                font-size: 22px;
+            }
+
+            .reject-icon {
+                width: 80px;
+                height: 80px;
+            }
+
+            .reject-icon i {
+                font-size: 42px;
+            }
+
+            .btn-logout {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
+<body>
 
-<body class="bg-light">
+<div class="reject-container">
+    <div class="reject-card">
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-6">
-
-            <div class="card shadow border-0 rounded-4 text-center p-5">
-
-                <div class="mb-4">
-                    <i class="bi bi-x-circle-fill text-danger display-1"></i>
-                </div>
-
-                <h2 class="fw-bold mb-3 text-danger">
-                    Application Rejected
-                </h2>
-
-                <p class="text-muted">
-                    Your mechanic application has been rejected by the admin.
-                    Please contact support or apply again later.
-                </p>
-
-                <!-- Logout Button -->
-                <a href="{% url 'logout_view_mechanic' %}" class="btn btn-danger mt-3">
-                    Logout
-                </a>
-
+        <!-- Icon -->
+        <div class="icon-wrapper">
+            <div class="reject-icon">
+                <i class="bi bi-x-circle-fill"></i>
             </div>
-
         </div>
+
+        <!-- Title -->
+        <h2 class="reject-title">Application Rejected</h2>
+
+        <!-- Message -->
+        <p class="reject-message">
+            Your mechanic application has been declined by the admin.
+            Please review your application or contact support for more information.
+        </p>
+
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <p>
+                <i class="bi bi-info-circle-fill"></i>
+                Need help? Contact us at <strong>support@fixigo.com</strong>
+            </p>
+        </div>
+
+        <!-- Logout Button -->
+        <a href="{% url 'logout_view_mechanic' %}" class="btn-logout">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+        </a>
+
+        <!-- Footer -->
+        <div class="reject-footer">
+            <i class="bi bi-tools"></i> FixiGo Auto Workshop &bull; <a href="#">Contact Support</a>
+        </div>
+
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effect for button
+        const btn = document.querySelector('.btn-logout');
+        btn.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px)';
+        });
+        btn.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+</script>
 
 </body>
 </html>

@@ -5,265 +5,384 @@
 {% block content %}
 
 <style>
-
-    .parts-wrapper{
-        min-height:90vh;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        padding:30px 15px;
+    .add-part-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 20px;
     }
 
-    .parts-card{
-        width:100%;
-        max-width:600px;
-        background:#fff;
-        border-radius:25px;
-        overflow:hidden;
-        box-shadow:0 15px 40px rgba(0,0,0,0.12);
-        animation:fadeIn 0.5s ease;
+    /* Modern Header */
+    .modern-header {
+        background: linear-gradient(135deg, #6c3483, #8e44ad);
+        border-radius: 20px;
+        padding: 28px 25px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: space-between;
     }
 
-    .parts-header{
-        background:linear-gradient(135deg,#dc2626,#ef4444);
-        color:#fff;
-        text-align:center;
-        padding:35px 20px;
+    .header-info h1 {
+        color: white;
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0 0 5px;
     }
 
-    .parts-header i{
-        font-size:65px;
-        margin-bottom:12px;
+    .header-info h1 i {
+        margin-right: 10px;
+        color: #ffd966;
     }
 
-    .parts-header h2{
-        font-weight:700;
-        margin-bottom:5px;
+    .header-info p {
+        color: rgba(255,255,255,0.8);
+        margin: 0;
+        font-size: 14px;
     }
 
-    .parts-header p{
-        margin:0;
-        opacity:0.9;
+    .header-icon {
+        background: rgba(255,255,255,0.15);
+        width: 55px;
+        height: 55px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
-    .parts-body{
-        padding:35px;
+    .header-icon i {
+        font-size: 28px;
+        color: #ffd966;
     }
 
-    .form-label{
-        font-weight:600;
-        margin-bottom:8px;
+    /* Form Card */
+    .form-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
     }
 
-    .form-control{
-        border-radius:14px;
-        padding:13px;
-        border:1px solid #d1d5db;
-        transition:0.3s;
+    .form-card-inner {
+        padding: 30px;
     }
 
-    .form-control:focus{
-        border-color:#dc2626;
-        box-shadow:0 0 0 0.2rem rgba(220,38,38,0.15);
+    /* Input Groups */
+    .input-group-custom {
+        margin-bottom: 22px;
     }
 
-    .btn-add{
-        background:linear-gradient(135deg,#dc2626,#ef4444);
-        color:white;
-        border:none;
-        border-radius:14px;
-        padding:13px;
-        font-size:17px;
-        font-weight:600;
-        transition:0.3s;
+    .input-group-custom label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 8px;
     }
 
-    .btn-add:hover{
-        transform:translateY(-2px);
-        opacity:0.95;
-        color:white;
+    .input-group-custom label i {
+        margin-right: 6px;
+        color: #8e44ad;
     }
 
-    .back-link{
-        text-align:center;
-        margin-top:20px;
+    .input-group-custom input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 14px;
+        transition: all 0.2s;
+        background: #f8fafc;
     }
 
-    .back-link a{
-        text-decoration:none;
-        color:#dc2626;
-        font-weight:600;
+    .input-group-custom input:focus {
+        outline: none;
+        border-color: #8e44ad;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(142,68,173,0.1);
     }
 
-    .back-link a:hover{
-        text-decoration:underline;
+    /* File Upload */
+    .upload-area {
+        border: 2px dashed #e2e8f0;
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        background: #f8fafc;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-top: 5px;
     }
 
-    .alert{
-        border-radius:12px;
+    .upload-area:hover {
+        border-color: #8e44ad;
+        background: #faf5ff;
     }
 
-    .preview-img{
-        width:100%;
-        max-height:220px;
-        object-fit:cover;
-        border-radius:15px;
-        margin-top:10px;
-        display:none;
-        border:2px dashed #ddd;
-        padding:5px;
+    .upload-area i {
+        font-size: 40px;
+        color: #94a3b8;
+        margin-bottom: 10px;
+        display: block;
     }
 
-    @keyframes fadeIn{
-        from{
-            opacity:0;
-            transform:translateY(20px);
+    .upload-area p {
+        margin: 0;
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .upload-area small {
+        font-size: 11px;
+        color: #94a3b8;
+    }
+
+    .file-input-hidden {
+        display: none;
+    }
+
+    /* Image Preview */
+    .image-preview-area {
+        margin-top: 15px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .preview-img {
+        max-width: 150px;
+        max-height: 150px;
+        border-radius: 16px;
+        object-fit: cover;
+        border: 2px solid #e9d9ff;
+        padding: 4px;
+        background: white;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+        background: linear-gradient(135deg, #8e44ad, #a569bd);
+        border: none;
+        border-radius: 12px;
+        padding: 14px 20px;
+        font-size: 16px;
+        font-weight: 700;
+        color: white;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(142,68,173,0.3);
+    }
+
+    /* Back Button */
+    .back-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: #f1f5f9;
+        border: none;
+        border-radius: 12px;
+        padding: 12px;
+        color: #475569;
+        font-weight: 600;
+        text-decoration: none;
+        margin-top: 15px;
+        transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    /* Alert */
+    .alert-modern {
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+    }
+
+    .alert-error {
+        background: #fee2e2;
+        color: #dc2626;
+        border-left: 4px solid #ef4444;
+    }
+
+    .alert-success {
+        background: #dcfce7;
+        color: #16a34a;
+        border-left: 4px solid #22c55e;
+    }
+
+    @media (max-width: 576px) {
+        .form-card-inner {
+            padding: 20px;
         }
-        to{
-            opacity:1;
-            transform:translateY(0);
+        
+        .modern-header {
+            padding: 20px;
+        }
+        
+        .header-info h1 {
+            font-size: 20px;
+        }
+        
+        .header-icon {
+            width: 45px;
+            height: 45px;
+        }
+        
+        .header-icon i {
+            font-size: 22px;
         }
     }
-
 </style>
 
-<div class="parts-wrapper">
-
-    <div class="parts-card">
-
-        <!-- Header -->
-        <div class="parts-header">
-
-            <i class="bi bi-tools"></i>
-
-            <h2>Add Vehicle Parts</h2>
-
-            <p>Add new spare parts to your stock inventory</p>
-
+<div class="add-part-container">
+    
+    <!-- Modern Header -->
+    <div class="modern-header">
+        <div class="header-info">
+            <h1>
+                <i class="bi bi-plus-circle"></i>
+                Add New Part
+            </h1>
+            <p>Add spare parts to your inventory</p>
         </div>
+        <div class="header-icon">
+            <i class="bi bi-tools"></i>
+        </div>
+    </div>
 
-        <!-- Body -->
-        <div class="parts-body">
+    <!-- Form Card -->
+    <div class="form-card">
+        <div class="form-card-inner">
+            
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert-modern {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+                        <i class="bi {% if message.tags == 'error' %}bi-exclamation-circle{% else %}bi-check-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
-            <!-- Form -->
-            <form method="POST"
-                  enctype="multipart/form-data">
-
+            <form method="POST" enctype="multipart/form-data" id="addPartForm">
                 {% csrf_token %}
-
-                <!-- Item Name -->
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        <i class="bi bi-tools me-1 text-danger"></i>
-                        Vehicle Part Name
-                    </label>
-
-                    <input type="text"
-                           name="item_name"
-                           class="form-control"
-                           placeholder="Enter vehicle part name"
-                           required>
-
+                
+                <!-- Part Name -->
+                <div class="input-group-custom">
+                    <label><i class="bi bi-tools"></i> Part Name</label>
+                    <input type="text" name="item_name" placeholder="e.g., Brake Pad, Oil Filter, Air Filter" required>
                 </div>
 
                 <!-- Price -->
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        <i class="bi bi-currency-rupee me-1 text-danger"></i>
-                        Price
-                    </label>
-
-                    <input type="number"
-                           name="price"
-                           class="form-control"
-                           placeholder="Enter price"
-                           step="0.01"
-                           required>
-
+                <div class="input-group-custom">
+                    <label><i class="bi bi-currency-rupee"></i> Price</label>
+                    <input type="number" name="price" step="0.01" placeholder="Enter price" min="0" required>
                 </div>
 
                 <!-- Quantity -->
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        <i class="bi bi-box-seam me-1 text-danger"></i>
-                        Quantity
-                    </label>
-
-                    <input type="number"
-                           name="quantity"
-                           class="form-control"
-                           placeholder="Enter quantity"
-                           min="0"
-                           required>
-
+                <div class="input-group-custom">
+                    <label><i class="bi bi-box-seam"></i> Quantity</label>
+                    <input type="number" name="quantity" placeholder="Enter stock quantity" min="0" required>
                 </div>
 
-                <!-- Stock Image -->
-                <div class="mb-4">
-
-                    <label class="form-label">
-                        <i class="bi bi-image me-1 text-danger"></i>
-                        Vehicle Part Image
-                    </label>
-
-                    <input type="file"
-                           name="stock_pic"
-                           class="form-control"
-                           accept="image/*"
-                           onchange="previewImage(event)">
-
-                    <img id="preview"
-                         class="preview-img">
-
+                <!-- Image Upload -->
+                <div class="input-group-custom">
+                    <label><i class="bi bi-image"></i> Part Image</label>
+                    <div class="upload-area" id="uploadArea">
+                        <i class="bi bi-cloud-upload"></i>
+                        <p>Click to upload image</p>
+                        <small>PNG, JPG, JPEG up to 5MB</small>
+                    </div>
+                    <input type="file" name="stock_pic" id="fileInput" class="file-input-hidden" accept="image/*">
+                    <div class="image-preview-area" id="previewArea" style="display: none;">
+                        <img id="previewImg" class="preview-img">
+                    </div>
                 </div>
 
-                <!-- Button -->
-                <div class="d-grid">
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn">
+                    <i class="bi bi-check-circle"></i>
+                    Add Vehicle Part
+                </button>
 
-                    <button type="submit"
-                            class="btn btn-add">
-
-                        <i class="bi bi-plus-circle me-1"></i>
-                        Add Vehicle Part
-
-                    </button>
-
-                </div>
-
-            </form>
-
-            <!-- Back -->
-            <div class="back-link">
-
-                <a href="{% url 'vehicle_parts_list' %}">
-
+                <!-- Back Button -->
+                <a href="{% url 'vehicle_parts_list' %}" class="back-btn">
                     <i class="bi bi-arrow-left"></i>
-                    Back to Vehicle Parts
-
+                    Back to Parts List
                 </a>
 
-            </div>
-
+            </form>
         </div>
-
     </div>
-
 </div>
 
 <script>
+    // File upload handling
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const previewArea = document.getElementById('previewArea');
+    const previewImg = document.getElementById('previewImg');
 
-    function previewImage(event){
+    uploadArea.addEventListener('click', () => {
+        fileInput.click();
+    });
 
-        const preview = document.getElementById('preview');
+    fileInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                previewImg.src = event.target.result;
+                previewArea.style.display = 'flex';
+                uploadArea.style.display = 'none';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
 
-        preview.src = URL.createObjectURL(event.target.files[0]);
+    // Form validation
+    document.getElementById('addPartForm').addEventListener('submit', function(e) {
+        const partName = document.querySelector('input[name="item_name"]').value.trim();
+        const price = document.querySelector('input[name="price"]').value;
+        const quantity = document.querySelector('input[name="quantity"]').value;
 
-        preview.style.display = 'block';
-    }
+        if (!partName) {
+            e.preventDefault();
+            alert('Please enter part name');
+            return;
+        }
 
+        if (!price || parseFloat(price) <= 0) {
+            e.preventDefault();
+            alert('Please enter a valid price');
+            return;
+        }
+
+        if (!quantity || parseInt(quantity) < 0) {
+            e.preventDefault();
+            alert('Please enter valid quantity');
+            return;
+        }
+    });
 </script>
 
 {% endblock %}

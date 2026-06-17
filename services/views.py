@@ -3,8 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
 
+import razorpay
+from django.conf import settings
+
 from customer.models import Customer, City, Vehicle
-from .models import Complaints, ServiceBooking, MechanicRequest
+from .models import Complaints, ServiceBooking, MechanicRequest, Bill
 from mechanic.models import Active_mechanic
 
 from mechanic.views import check_mechanic_access
@@ -139,6 +142,9 @@ def edit_booking(request, id):
 def mechanic_requests(request):
     mechanic = check_mechanic_access(request)
 
+    if mechanic is None:
+        return redirect('login_mechanic')
+
     requests = MechanicRequest.objects.filter(
         mechanic=mechanic,
         status='Pending'
@@ -153,7 +159,8 @@ def mechanic_requests(request):
 def accept_booking(request, request_id):
 
     mechanic = check_mechanic_access(request)
-    if not mechanic:
+    
+    if mechanic is None:
         return redirect('login_mechanic')
 
     mechanic_request = get_object_or_404(
@@ -202,7 +209,8 @@ def accept_booking(request, request_id):
 def reject_booking(request, request_id):
 
     mechanic = check_mechanic_access(request)
-    if not mechanic:
+    
+    if mechanic is None:
         return redirect('login_mechanic')
 
     mechanic_request = get_object_or_404(
@@ -224,14 +232,224 @@ def reject_booking(request, request_id):
 #::::::::::::::::::::::Booking Success::::::::::::::::::::::
 @login_required
 def booking_success(request):
-
+    customer = request.user.customer
+    booking = ServiceBooking.objects.filter(customer=customer).first()
     return render(
         request,
-        'booking_success.html'
+        'booking_success.html',{
+        'booking' : booking
+        }
     )
 
 
+#::::::::::::::::::::::Customer Cancel Booking::::::::::::::::::::::
+@login_required
+def cancel_booking_user(request, id):
+    customer = get_object_or_404(
+        Customer,
+        user=request.user
+    )
+
+    booking = get_object_or_404(
+        ServiceBooking,
+        id=id,
+        customer=customer
+    )
+
+    if booking.status in ["Completed", "Cancelled", "In_progress"]:
+
+        messages.error(request, "You cannot cancel this booking.")
+        return redirect('order_view', booking.id)
+
+    if request.method == "POST":
+        reason = request.POST.get("reason")
+
+        booking.status = "Cancelled"
+        booking.cancel_reason = reason
+        booking.cancelled_by = "Customer"
+
+        booking.save()
+
+        MechanicRequest.objects.filter(
+            booking=booking
+        ).exclude(
+            status="Completed"
+        ).update(
+            status="Cancelled"
+        )
+
+        if booking.mechanic:
+            active_mechanic, created = Active_mechanic.objects.get_or_create(
+                mechanic=booking.mechanic
+            )
+
+            active_mechanic.is_available = True
+            active_mechanic.save()
+
+        messages.success(request, "Booking cancelled successfully.")
+        return redirect('home')
+
+    return render(request, "cancel_booking.html",{
+            "booking": booking
+        })
 
 
 
+#::::::::::::::::::::::Mechanic Cancel Booking::::::::::::::::::::::
+def cancel_booking_mechanic(request, id):
+    mechanic = check_mechanic_access(request)
 
+    if mechanic is None:
+        return redirect('login_mechanic')
+    
+    job = get_object_or_404(
+        MechanicRequest,
+        id=id,
+        mechanic=mechanic
+    )
+
+    job.status = "Rejected"
+    job.save()
+
+    booking = job.booking
+
+    active_mechanic, created = Active_mechanic.objects.get_or_create(
+        mechanic=mechanic
+    )
+
+    active_mechanic.is_available = True
+    active_mechanic.save()
+
+    booking.status = "Pending"
+    booking.mechanic = None
+    booking.save()
+
+    booking.rejected_mechanics.add(mechanic)
+
+    mechanics = Active_mechanic.objects.filter(
+        is_online=True,
+        is_available=True,
+        mechanic__city=booking.city
+    ).exclude(
+        mechanic__in=booking.rejected_mechanics.all()
+    )
+
+    for m in mechanics:
+        MechanicRequest.objects.update_or_create(
+            booking=booking,
+            mechanic=m.mechanic,
+            defaults={"status": "Pending"}
+        )
+
+    messages.warning(request, "Job rejected successfully.")
+    return redirect('pending_jobs_list')
+
+
+
+#::::::::::::::::::::::Payment Page::::::::::::::::::::::
+def payment_page(request, id):
+    bill = get_object_or_404(Bill, id=id)
+
+    client = razorpay.Client(auth=(
+        settings.RAZORPAY_KEY_ID,
+        settings.RAZORPAY_KEY_SECRET
+    ))
+
+    amount = int(bill.grand_total * 100)
+
+    payment = client.order.create({
+        "amount": amount,
+        "currency": "INR",
+        "payment_capture": "1"
+    })
+
+    context = {
+        "bill": bill,
+        "payment": payment,
+        "razorpay_key": settings.RAZORPAY_KEY_ID
+    }
+
+    return render(request, "payment_page.html", context)
+
+
+#::::::::::::::::::::::Payment Success::::::::::::::::::::::
+def payment_success(request):
+    if request.method == "POST":
+
+        payment_id = request.POST.get('razorpay_payment_id')
+        order_id = request.POST.get('razorpay_order_id')
+
+        bill_id = request.POST.get('bill_id')
+
+        bill = Bill.objects.get(id=bill_id)
+
+        bill.payment_status = "Paid"
+        bill.payment_id = payment_id
+        bill.save()
+
+        booking = bill.booking
+        booking.status = "Completed"
+        booking.save()
+
+        mechanic_request = MechanicRequest.objects.filter(
+            booking=booking,
+            mechanic=booking.mechanic
+        ).first()
+
+        if mechanic_request:
+            mechanic_request.status = "Completed"
+            mechanic_request.save()
+
+        active_mechanic = Active_mechanic.objects.filter(
+            mechanic=booking.mechanic
+        ).first()
+
+        if active_mechanic:
+            active_mechanic.is_available = True
+            active_mechanic.save()
+
+        messages.success(request, "Payment Successful")
+
+        return redirect('home_page')
+
+from .models import Feedback    
+
+@login_required
+def feedback(request, order_id):
+    customer = get_object_or_404(
+        Customer,
+        user=request.user
+    )
+
+    order = get_object_or_404(
+        ServiceBooking,
+        id=order_id,
+        customer=customer
+    )
+
+    existing_feedback = Feedback.objects.filter(
+    service=order
+    ).first()
+
+    if existing_feedback:
+        messages.warning(request, "Rating already submitted.")
+        return redirect('order_view', id=order.id)
+
+    if request.method == "POST":
+        rating = request.POST.get("rating")
+        message = request.POST.get("message")
+
+        Feedback.objects.create(
+            customer=customer,
+            service=order,
+            mechanic=order.mechanic,
+            rating=rating,
+            message=message
+        )
+
+        messages.success(request, "Feedback submitted successfully.")
+        return redirect("order_details")
+
+    return render(request, "feedback.html", {
+        "order": order
+    })

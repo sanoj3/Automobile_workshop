@@ -5,12 +5,14 @@ from django.db import transaction
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
+from django.db.models import Avg, Count
 
 import re
 from datetime import datetime
 
 from .models import Customer, Vehicle, City
-from services.models import ServiceBooking, Bill
+from mechanic.models import Mechanic
+from services.models import ServiceBooking, Bill, BookingSparePart, Feedback
 
 
 
@@ -63,9 +65,18 @@ def number_validation(number):
 
 
 def index(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-    return render(request, 'index.html')
+
+    customer_count = Customer.objects.count()
+    mechanic_count = Mechanic.objects.count()
+    completed_service_count = ServiceBooking.objects.filter(
+        status= 'Completed'
+        ).count()
+
+    return render(request, 'index.html', {
+        'customer_count' : customer_count,
+        'mechanic_count' : mechanic_count,
+        'completed_service_count' : completed_service_count
+    })
 
 #::::::::::::::::::::::User Registration::::::::::::::::::::::
 def registration(request):
@@ -147,9 +158,7 @@ def registration(request):
 #::::::::::::::::::::::User Login::::::::::::::::::::::
 def user_login(request):
     if request.user.is_authenticated:
-
-        # Create customer automatically if not exists
-        customer, created = Customer.objects.get_or_create(
+        Customer.objects.get_or_create(
             user=request.user,
             defaults={
                 'name': request.user.username or "Google User",
@@ -176,30 +185,41 @@ def user_login(request):
         if password_error:
             messages.error(request, password_error)
             return redirect('login')
+        
+        try:
+            user_obj = User.objects.get(email=email)
 
-        #.............User Authenticate.............
-        user = authenticate(username=email, password=password)
-        if user is not None:
-            login(request, user)
+            user = authenticate(
+                request,
+                username = user_obj.username,
+                password = password
+            )
 
-            # Create Customer if missing
-            Customer.objects.get_or_create(
+            if user is not None:
+                login(request, user)
+
+                Customer.objects.get_or_create(
                 user=user,
                 defaults={
                     'name': user.username,
                     'number': '0000000000',
                     'address': 'Default Address',
                     'city': City.objects.first()
-                }
-            )
-
-            messages.success(request, 'Login successfull')
-            return redirect('home')
-        else:
+                    }
+                )
+                messages.success(request, 'Login successfull')
+                return redirect('home')
+            
             messages.error(request, 'Invalid email or password')
             return redirect('login')
-    
+        
+        except User.DoesNotExist:
+            messages.error(request, 'Invalid email or password')
+            return redirect('login')
+        
     return render(request, 'login.html')
+
+        
 
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 #.............Main Vehicle Name Validation.............
@@ -384,6 +404,27 @@ def home_page(request):
         status__in=['Cancelled', 'Completed']
     ).order_by('-id')
 
+    mechanic_ratings = {
+        item['mechanic']: item
+        for item in Feedback.objects.values('mechanic').annotate(
+            average=Avg('rating'),
+            total_reviews=Count('id')
+        )
+    }
+
+    for booking in bookings:
+        if booking.mechanic_id:
+            data = mechanic_ratings.get(booking.mechanic_id)
+
+            booking.average_rating = round(
+                data['average'], 1
+            ) if data and data['average'] else 0
+
+            booking.review_count = (
+                data['total_reviews']
+                if data else 0
+            )
+
     return render(request, 'home.html', {
         'customer':customer,
         'vehicles':vehicle,
@@ -397,9 +438,15 @@ def profile_user(request):
     customer = request.user.customer
     vehicles = customer.vehicles.all()
 
+    total_vehicles = Vehicle.objects.filter(customer=customer).count()
+    total_orders = ServiceBooking.objects.filter(customer=customer).count()
+    member_since = request.user.date_joined
     return render(request, 'profile_user.html',{
         'customer':customer,
-        'vehicles': vehicles
+        'vehicles': vehicles,
+        'total_vehicles': total_vehicles,
+        'total_orders': total_orders,
+        'member_since': member_since,
     })
 
 
@@ -411,6 +458,7 @@ def profile_user_edit(request,id):
         id=id,
         user= request.user
     )
+    member_since = request.user.date_joined
     if request.method == "POST":
         name = request.POST.get('name')
         number = request.POST.get('number')
@@ -460,7 +508,8 @@ def profile_user_edit(request,id):
         messages.success(request, 'Profile updated successfully')
         return redirect('profile_user')
     return render(request, 'edit_profile_user.html',{
-        'customer':customer
+        'customer':customer,
+        'member_since' : member_since
     })
 
 
@@ -516,23 +565,50 @@ def profile_user_change_password(request):
 
 
 #::::::::::::::::::::::Order List::::::::::::::::::::::
+@login_required
 def order_details(request):
     customer = request.user.customer
     order = ServiceBooking.objects.filter(customer=customer).order_by('-id')
+    pending_count = order.filter(status='Pending').count()
+    in_progress_count = order.filter(status='In_progress').count()
+    completed_count = order.filter(status='Completed').count()
 
     return render(request, 'order_details_list.html', {
-        'orders' : order
+        'orders' : order,
+        'pending_count': pending_count,
+        'in_progress_count': in_progress_count,
+        'completed_count': completed_count,
     })   
 
 
 #::::::::::::::::::::::Order View::::::::::::::::::::::
+@login_required
 def order_view(request, id):
     customer = request.user.customer
     order = get_object_or_404(ServiceBooking, id=id, customer=customer)
     bill = Bill.objects.filter(booking=order).first()
 
+    mechanic_rating = 0
+    review_count = 0
+
+    if order.mechanic:
+        rating_data = Feedback.objects.filter(
+            mechanic=order.mechanic
+        ).aggregate(
+            average=Avg('rating'),
+            total_reviews=Count('id')
+        )
+
+        mechanic_rating = round(
+            rating_data['average'], 1
+        ) if rating_data['average'] else 0
+
+        review_count = rating_data['total_reviews']
+
     return render(request, 'order_view.html', {
         'order': order,
-        'bill': bill
+        'bill': bill,
+        'mechanic_rating': mechanic_rating,
+        'review_count': review_count,
     })  
         

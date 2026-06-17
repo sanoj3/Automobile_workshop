@@ -5,158 +5,579 @@
 
 {% block content %}
 
-<div class="container py-3">
+<style>
+    /* Animation Keyframes */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .edit-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    /* Two Column Layout */
+    .edit-layout {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        gap: 25px;
+        background: transparent;
+    }
+    
+    /* Left Sidebar - Profile Card */
+    .profile-sidebar {
+        background: linear-gradient(135deg, #6c3483, #8e44ad);
+        border-radius: 28px;
+        padding: 30px 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(106, 13, 173, 0.2);
+        animation: slideInLeft 0.5s ease-out;
+    }
+    
+    .profile-sidebar::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        right: -30%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+    }
+    
+    .profile-sidebar::after {
+        content: '';
+        position: absolute;
+        bottom: -20%;
+        left: -20%;
+        width: 180px;
+        height: 180px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+    
+    .avatar-wrapper {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        margin: 0 auto 20px;
+        cursor: pointer;
+    }
+    
+    .avatar-preview {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        background: white;
+        transition: all 0.3s ease;
+    }
+    
+    .avatar-preview:hover {
+        transform: scale(1.02);
+        border-color: white;
+    }
+    
+    .avatar-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .avatar-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #ffd966, #f39c12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #4a1d6d;
+        font-size: 56px;
+        font-weight: 700;
+    }
+    
+    .camera-icon {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
+        background: white;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .camera-icon:hover {
+        transform: scale(1.1);
+        background: #f3e9ff;
+    }
+    
+    .camera-icon i {
+        color: #8e44ad;
+        font-size: 16px;
+    }
+    
+    .profile-sidebar h3 {
+        color: white;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .profile-sidebar p {
+        color: rgba(255, 255, 255, 0.85);
+        font-size: 13px;
+        margin-bottom: 0;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .member-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 15px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Right Side - Form Card */
+    .form-card {
+        background: white;
+        border-radius: 28px;
+        padding: 30px;
+        box-shadow: 0 15px 35px rgba(106, 13, 173, 0.1);
+        animation: slideInRight 0.5s ease-out;
+    }
+    
+    .form-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #4a1d6d;
+        margin-bottom: 8px;
+    }
+    
+    .form-subtitle {
+        color: #9ca3af;
+        font-size: 14px;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f0e8ff;
+    }
+    
+    /* Form Groups */
+    .form-group-modern {
+        margin-bottom: 22px;
+    }
+    
+    .form-group-modern label {
+        display: block;
+        font-weight: 600;
+        color: #4a1d6d;
+        margin-bottom: 8px;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .form-group-modern label i {
+        margin-right: 6px;
+        color: #8e44ad;
+    }
+    
+    .input-modern {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e9d9ff;
+        border-radius: 16px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .input-modern:focus {
+        border-color: #8e44ad;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1);
+    }
+    
+    .input-modern:hover {
+        border-color: #c39bd3;
+    }
+    
+    textarea.input-modern {
+        resize: vertical;
+        font-family: inherit;
+    }
+    
+    /* File Input Styling */
+    .file-input-modern {
+        width: 100%;
+        padding: 10px 12px;
+        border: 2px solid #e9d9ff;
+        border-radius: 16px;
+        background: white;
+        transition: all 0.3s ease;
+    }
+    
+    .file-input-modern:hover {
+        border-color: #c39bd3;
+    }
+    
+    /* Button Group */
+    .button-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 10px;
+    }
+    
+    .btn-update-modern {
+        flex: 1;
+        background: linear-gradient(135deg, #8e44ad, #a569bd);
+        border: none;
+        border-radius: 50px;
+        padding: 14px 24px;
+        font-weight: 700;
+        font-size: 14px;
+        color: white;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .btn-update-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(142, 68, 173, 0.35);
+    }
+    
+    .btn-cancel-modern {
+        flex: 1;
+        background: transparent;
+        border: 2px solid #e9d9ff;
+        border-radius: 50px;
+        padding: 14px 24px;
+        font-weight: 700;
+        font-size: 14px;
+        color: #6c3483;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .btn-cancel-modern:hover {
+        background: #f3e9ff;
+        border-color: #c39bd3;
+        transform: translateY(-2px);
+        color: #4a1d6d;
+        text-decoration: none;
+    }
+    
+    /* Alert Messages */
+    .alert-modern {
+        border-radius: 16px;
+        padding: 12px 18px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: fadeInUp 0.3s ease-out;
+    }
+    
+    .alert-error-modern {
+        background: #fee2e2;
+        color: #dc2626;
+        border-left: 4px solid #ef4444;
+    }
+    
+    .alert-success-modern {
+        background: #dcfce7;
+        color: #16a34a;
+        border-left: 4px solid #22c55e;
+    }
+    
+    .help-text-modern {
+        font-size: 11px;
+        color: #9ca3af;
+        margin-top: 6px;
+        display: block;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .edit-layout {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .profile-sidebar {
+            padding: 25px 20px;
+        }
+        
+        .avatar-wrapper {
+            width: 110px;
+            height: 110px;
+        }
+        
+        .form-card {
+            padding: 25px;
+        }
+        
+        .form-title {
+            font-size: 20px;
+        }
+        
+        .button-group {
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn-update-modern, .btn-cancel-modern {
+            text-align: center;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .form-card {
+            padding: 20px;
+        }
+        
+        .avatar-wrapper {
+            width: 95px;
+            height: 95px;
+        }
+        
+        .camera-icon {
+            width: 30px;
+            height: 30px;
+        }
+        
+        .camera-icon i {
+            font-size: 12px;
+        }
+        
+        .profile-sidebar h3 {
+            font-size: 18px;
+        }
+    }
+</style>
 
-    <div class="row justify-content-center">
-
-        <div class="col-lg-7 col-md-9">
-
-            <div class="card border-0 shadow rounded-4 overflow-hidden">
-
-                <!-- Top Banner -->
-                <div class="bg-primary position-relative"
-                     style="height:100px;">
-
-                    <!-- Profile Image -->
-                    <div class="position-absolute start-50 translate-middle"
-                         style="bottom:-40px;">
-
-                        <div class="rounded-circle bg-white shadow border border-3 border-white overflow-hidden"
-                             style="width:85px;height:85px;">
-
-                            {% if customer.profile_pic %}
-
-                                <img src="{{ customer.profile_pic.url }}"
-                                     class="w-100 h-100"
-                                     style="object-fit:cover;">
-
-                            {% else %}
-
-                                <div class="bg-primary text-white d-flex align-items-center justify-content-center fw-bold h-100"
-                                     style="font-size:28px;">
-
-                                    {{ customer.name|slice:":1" }}
-
-                                </div>
-
-                            {% endif %}
-
-                        </div>
-
+<div class="container py-4">
+    <div class="edit-wrapper">
+        
+        <!-- Two Column Layout -->
+        <div class="edit-layout">
+            
+            <!-- Left Sidebar - Profile Card -->
+            <div class="profile-sidebar">
+                <div class="avatar-wrapper">
+                    <div class="avatar-preview" id="avatarPreview">
+                        {% if customer.profile_pic %}
+                            <img src="{{ customer.profile_pic.url }}" alt="Profile" id="avatarImg">
+                        {% else %}
+                            <div class="avatar-placeholder" id="avatarPlaceholder">
+                                {{ customer.name|slice:":1"|upper }}
+                            </div>
+                        {% endif %}
                     </div>
-
+                    <label for="profileImageInput" class="camera-icon">
+                        <i class="bi bi-camera-fill"></i>
+                    </label>
                 </div>
-
-                <!-- Form Body -->
-                <div class="card-body pt-5 mt-2 px-4">
-
-                    <form method="POST"
-                          enctype="multipart/form-data">
-
-                        {% csrf_token %}
-
-                        <!-- Name -->
-                        <div class="mb-3">
-
-                            <label class="form-label fw-semibold">
-                                Full Name
-                            </label>
-
-                            <input type="text"
-                                   name="name"
-                                   class="form-control rounded-3"
-                                   value="{{ customer.name }}"
-                                   required>
-
-                        </div>
-
-                        <!-- Email -->
-                        <div class="mb-3">
-
-                            <label class="form-label fw-semibold">
-                                Email
-                            </label>
-
-                            <input type="email"
-                                   name="email"
-                                   class="form-control rounded-3"
-                                   value="{{ user.email }}"
-                                   required>
-
-                        </div>
-
-                        <!-- Phone -->
-                        <div class="mb-3">
-
-                            <label class="form-label fw-semibold">
-                                Phone Number
-                            </label>
-
-                            <input type="text"
-                                   name="number"
-                                   class="form-control rounded-3"
-                                   value="{{ customer.number }}"
-                                   required>
-
-                        </div>
-
-                        <!-- Address -->
-                        <div class="mb-3">
-
-                            <label class="form-label fw-semibold">
-                                Address
-                            </label>
-
-                            <textarea name="address"
-                                      rows="3"
-                                      class="form-control rounded-3"
-                                      required>{{ customer.address }}</textarea>
-
-                        </div>
-
-                        <!-- Profile Picture -->
-                        <div class="mb-4">
-
-                            <label class="form-label fw-semibold">
-                                Profile Picture
-                            </label>
-
-                            <input type="file"
-                                   name="profile_pic"
-                                   class="form-control rounded-3">
-
-                        </div>
-
-                        <!-- Buttons -->
-                        <div class="d-flex justify-content-center gap-2">
-
-                            <button type="submit"
-                                    class="btn btn-primary rounded-pill px-4">
-
-                                <i class="bi bi-check-circle"></i>
-                                Update
-
-                            </button>
-
-                            <a href="{% url 'profile_user' %}"
-                               class="btn btn-outline-dark rounded-pill px-4">
-
-                                Cancel
-
-                            </a>
-
-                        </div>
-
-                    </form>
-
+                <h3>{{ customer.name }}</h3>
+                <p>{{ user.email }}</p>
+                <div class="member-badge">
+                    <i class="bi bi-calendar-check"></i> Member since {{ member_since|date:"Y" }}
                 </div>
-
             </div>
-
+            
+            <!-- Right Side - Form Card -->
+            <div class="form-card">
+                <h2 class="form-title">Edit Profile</h2>
+                <p class="form-subtitle">Update your personal information</p>
+                
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert-modern {% if message.tags == 'error' %}alert-error-modern{% else %}alert-success-modern{% endif %}">
+                            <i class="bi {% if message.tags == 'error' %}bi-exclamation-circle{% else %}bi-check-circle{% endif %}"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
+                <form method="POST" enctype="multipart/form-data" id="editForm">
+                    {% csrf_token %}
+                    
+                    <!-- Full Name -->
+                    <div class="form-group-modern">
+                        <label><i class="bi bi-person"></i> FULL NAME</label>
+                        <input type="text" 
+                               name="name" 
+                               class="input-modern" 
+                               value="{{ customer.name }}"
+                               placeholder="Enter your full name"
+                               required>
+                    </div>
+                    
+                    <!-- Email -->
+                    <div class="form-group-modern">
+                        <label><i class="bi bi-envelope"></i> EMAIL ADDRESS</label>
+                        <input type="email" 
+                               name="email" 
+                               class="input-modern" 
+                               value="{{ user.email }}"
+                               placeholder="Enter your email"
+                               required>
+                    </div>
+                    
+                    <!-- Phone -->
+                    <div class="form-group-modern">
+                        <label><i class="bi bi-telephone"></i> PHONE NUMBER</label>
+                        <input type="tel" 
+                               name="number" 
+                               class="input-modern" 
+                               value="{{ customer.number }}"
+                               placeholder="Enter your phone number"
+                               required>
+                    </div>
+                    
+                    <!-- Address -->
+                    <div class="form-group-modern">
+                        <label><i class="bi bi-geo-alt"></i> ADDRESS</label>
+                        <textarea name="address" 
+                                  rows="3" 
+                                  class="input-modern"
+                                  placeholder="Enter your full address">{{ customer.address }}</textarea>
+                    </div>
+                    
+                    <!-- Profile Picture Upload -->
+                    <div class="form-group-modern">
+                        <label><i class="bi bi-image"></i> CHANGE PROFILE PICTURE</label>
+                        <input type="file" 
+                               name="profile_pic" 
+                               id="profileImageInput"
+                               class="file-input-modern"
+                               accept="image/*">
+                        <span class="help-text-modern">
+                            <i class="bi bi-info-circle"></i> JPG, PNG or GIF. Max 5MB.
+                        </span>
+                    </div>
+                    
+                    <!-- Buttons -->
+                    <div class="button-group">
+                        <button type="submit" class="btn-update-modern" id="submitBtn">
+                            <i class="bi bi-check-lg"></i> Save Changes
+                        </button>
+                        <a href="{% url 'profile_user' %}" class="btn-cancel-modern">
+                            <i class="bi bi-x-lg"></i> Cancel
+                        </a>
+                    </div>
+                    
+                </form>
+            </div>
         </div>
-
     </div>
-
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('profileImageInput');
+        const avatarImg = document.getElementById('avatarImg');
+        const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+        const avatarPreview = document.getElementById('avatarPreview');
+        const form = document.getElementById('editForm');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Image preview
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        if (avatarPlaceholder) {
+                            avatarPlaceholder.style.display = 'none';
+                        }
+                        let img = avatarImg;
+                        if (!img) {
+                            img = document.createElement('img');
+                            img.id = 'avatarImg';
+                            img.style.width = '100%';
+                            img.style.height = '100%';
+                            img.style.objectFit = 'cover';
+                            avatarPreview.innerHTML = '';
+                            avatarPreview.appendChild(img);
+                        }
+                        img.src = event.target.result;
+                        img.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        
+        // Form submit loading
+        if (form) {
+            form.addEventListener('submit', function() {
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving...';
+                submitBtn.disabled = true;
+            });
+        }
+        
+        // Phone validation
+        const phoneInput = document.querySelector('input[name="number"]');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9+]/g, '');
+            });
+        }
+    });
+</script>
 
 {% endblock %}

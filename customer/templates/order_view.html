@@ -5,217 +5,676 @@
 
 {% block content %}
 
+<style>
+    /* Animation Keyframes */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+    }
+    
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Page Header */
+    .page-header {
+        animation: fadeInLeft 0.5s ease-out;
+        margin-bottom: 2rem;
+    }
+    
+    .page-header h2 {
+        background: linear-gradient(135deg, #6c3483, #8e44ad);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 800;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .page-header h2 i {
+        background: linear-gradient(135deg, #8e44ad, #a569bd);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-right: 10px;
+    }
+    
+    .page-header h2:after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(90deg, #8e44ad, #c39bd3);
+        border-radius: 3px;
+    }
+    
+    /* Back Button */
+    .btn-back {
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+        color: #6c3483;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 24px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-back:hover {
+        background: linear-gradient(135deg, #e9d9ff, #dcc6f0);
+        transform: translateX(-5px);
+        color: #4a1d6d;
+    }
+    
+    /* Main Card */
+    .order-card {
+        background: white;
+        border-radius: 28px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(106, 13, 173, 0.08);
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+        transition: all 0.3s ease;
+    }
+    
+    .order-card:hover {
+        box-shadow: 0 15px 40px rgba(106, 13, 173, 0.12);
+    }
+    
+    /* Card Header - Purple Theme */
+    .card-header-purple {
+        background: linear-gradient(135deg, #6c3483, #8e44ad);
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .card-header-purple::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 250px;
+        height: 250px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        animation: pulse 8s ease-in-out infinite;
+    }
+    
+    .card-header-purple::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 50%;
+        animation: pulse 6s ease-in-out infinite reverse;
+    }
+    
+    /* Status Badge */
+    .status-badge-lg {
+        padding: 8px 24px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: 0.5px;
+        animation: scaleIn 0.5s ease-out;
+    }
+    
+    .status-pending {
+        background: #fef3c7;
+        color: #d97706;
+        border-left: 4px solid #f59e0b;
+    }
+    
+    .status-completed {
+        background: #dcfce7;
+        color: #16a34a;
+        border-left: 4px solid #22c55e;
+    }
+    
+    .status-cancelled {
+        background: #fee2e2;
+        color: #dc2626;
+        border-left: 4px solid #ef4444;
+    }
+    
+    .status-progress {
+        background: #e0f2fe;
+        color: #0284c7;
+        border-left: 4px solid #0ea5e9;
+    }
+    
+    /* Info Sections */
+    .info-section {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        border: 1px solid rgba(142, 68, 173, 0.1);
+        transition: all 0.3s ease;
+        animation: fadeInRight 0.5s ease-out;
+        animation-fill-mode: both;
+    }
+    
+    .info-section:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(106, 13, 173, 0.08);
+        border-color: rgba(142, 68, 173, 0.2);
+    }
+    
+    .info-section:nth-child(1) { animation-delay: 0.1s; }
+    .info-section:nth-child(2) { animation-delay: 0.2s; }
+    .info-section:nth-child(3) { animation-delay: 0.3s; }
+    .info-section:nth-child(4) { animation-delay: 0.4s; }
+    .info-section:nth-child(5) { animation-delay: 0.5s; }
+    .info-section:nth-child(6) { animation-delay: 0.6s; }
+    
+    .section-title {
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #f0e8ff;
+    }
+    
+    .section-title i {
+        font-size: 1.3rem;
+    }
+    
+    .title-purple { color: #8e44ad; }
+    .title-green { color: #16a34a; }
+    .title-orange { color: #f97316; }
+    .title-blue { color: #3b82f6; }
+    .title-pink { color: #ec4899; }
+    
+    /* Info Rows */
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f3e9ff;
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: #6b7280;
+    }
+    
+    .info-value {
+        font-weight: 700;
+        color: #2c0b3a;
+    }
+    
+    /* Complaint Badges */
+    .complaint-badge-lg {
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+        color: #6c3483;
+        padding: 8px 18px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-block;
+        margin: 5px;
+        transition: all 0.3s ease;
+    }
+    
+    .complaint-badge-lg:hover {
+        transform: translateY(-2px) scale(1.05);
+        background: linear-gradient(135deg, #e9d9ff, #dcc6f0);
+    }
+    
+    /* Mechanic Card */
+    .mechanic-card {
+        background: linear-gradient(135deg, #faf5ff, #f3e9ff);
+        border-radius: 20px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .mechanic-card:hover {
+        transform: translateX(5px);
+        background: linear-gradient(135deg, #f3e9ff, #edd9ff);
+    }
+    
+    /* Rating Stars */
+    .rating-stars-large {
+        display: inline-flex;
+        gap: 5px;
+        font-size: 1.2rem;
+    }
+    
+    .star-filled {
+        color: #fbbf24;
+    }
+    
+    .star-empty {
+        color: #d1d5db;
+    }
+    
+    /* Bill Section */
+    .bill-section {
+        background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+        border-radius: 20px;
+        padding: 1.5rem;
+    }
+    
+    .bill-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 0;
+    }
+    
+    .bill-total {
+        border-top: 2px dashed #86efac;
+        padding-top: 1rem;
+        margin-top: 0.5rem;
+    }
+    
+    .grand-total {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #16a34a;
+    }
+    
+    /* Cancel Button */
+    .btn-cancel {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        border: none;
+        border-radius: 50px;
+        padding: 12px 32px;
+        font-weight: 700;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+    
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+        color: white;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .card-header-purple {
+            padding: 1.5rem;
+        }
+        
+        .info-section {
+            padding: 1rem;
+        }
+        
+        .grand-total {
+            font-size: 1.1rem;
+        }
+        
+        .status-badge-lg {
+            padding: 6px 16px;
+            font-size: 12px;
+        }
+    }
+</style>
+
 <div class="container py-4">
-
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
-        <div>
-            <h2 class="fw-bold text-primary">
-                <i class="bi bi-eye-fill"></i> Order Details
-            </h2>
-
-            <p class="text-muted mb-0">
-                Complete information about your booking
-            </p>
+    <!-- Page Header -->
+    <div class="page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2 class="fw-bold mb-2">
+                    <i class="bi bi-eye-fill"></i> Order Details
+                </h2>
+                <p class="text-muted mb-0">
+                    Complete information about your service booking
+                </p>
+            </div>
+            <div>
+                <a href="{% url 'order_details' %}" class="btn btn-back">
+                    <i class="bi bi-arrow-left"></i> Back to Orders
+                </a>
+            </div>
         </div>
-
-        <a href="{% url 'order_details' %}" class="btn btn-outline-dark rounded-pill">
-            <i class="bi bi-arrow-left"></i> Back
-        </a>
-
     </div>
 
     <!-- Order Card -->
-    <div class="card border-0 shadow rounded-4 overflow-hidden">
-
+    <div class="order-card">
         <!-- Card Header -->
-        <div class="bg-dark text-white p-4">
-
+        <div class="card-header-purple">
             <div class="row align-items-center">
-
                 <div class="col-md-8">
-                    <h3 class="fw-bold mb-1">
+                    <h3 class="fw-bold mb-2 text-white">
                         {{ order.vehicle.vehicle_name }}
                     </h3>
-
-                    <p class="mb-0 text-light">
-                        Booking ID : #{{ order.id }}
+                    <p class="mb-0 text-white-50">
+                        <i class="bi bi-receipt"></i> Booking ID: #{{ order.id }}
+                    </p>
+                    <p class="mb-0 text-white-50 mt-1">
+                        <i class="bi bi-calendar3"></i> Booked on {{ order.created_at|date:"F d, Y" }}
                     </p>
                 </div>
-
                 <div class="col-md-4 text-md-end mt-3 mt-md-0">
-
                     {% if order.status == 'Pending' %}
-                        <span class="badge bg-warning text-dark px-4 py-2">Pending</span>
-
+                        <span class="status-badge-lg status-pending">
+                            <i class="bi bi-hourglass-split"></i> Pending
+                        </span>
                     {% elif order.status == 'Completed' %}
-                        <span class="badge bg-success px-4 py-2">Completed</span>
-
+                        <span class="status-badge-lg status-completed">
+                            <i class="bi bi-check-circle-fill"></i> Completed
+                        </span>
                     {% elif order.status == 'Cancelled' %}
-                        <span class="badge bg-danger px-4 py-2">Cancelled</span>
-
+                        <span class="status-badge-lg status-cancelled">
+                            <i class="bi bi-x-circle-fill"></i> Cancelled
+                        </span>
+                    {% elif order.status == 'In_progress' %}
+                        <span class="status-badge-lg status-progress">
+                            <i class="bi bi-gear-wide-connected"></i> In Progress
+                        </span>
                     {% else %}
-                        <span class="badge bg-secondary px-4 py-2">{{ order.status }}</span>
+                        <span class="status-badge-lg status-progress">
+                            <i class="bi bi-clock"></i> {{ order.status }}
+                        </span>
                     {% endif %}
-
                 </div>
-
             </div>
-
         </div>
 
         <!-- Card Body -->
-        <div class="card-body p-4">
-
+        <div class="card-body p-4 p-lg-5">
             <div class="row g-4">
-
-                <!-- Vehicle -->
+                <!-- Vehicle Details -->
                 <div class="col-md-6">
-
-                    <div class="border rounded-4 p-3 h-100">
-
-                        <h5 class="fw-bold mb-3 text-primary">
+                    <div class="info-section">
+                        <h5 class="section-title title-purple">
                             <i class="bi bi-car-front-fill"></i> Vehicle Details
                         </h5>
-
-                        <p><strong>Vehicle:</strong> {{ order.vehicle.vehicle_name }}</p>
-                        <p><strong>City:</strong> {{ order.city.name }}</p>
-
+                        <div class="info-row">
+                            <span class="info-label">Vehicle Name:</span>
+                            <span class="info-value">{{ order.vehicle.vehicle_name }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Vehicle Number:</span>
+                            <span class="info-value">{{ order.vehicle.vehicle_number }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Service Location:</span>
+                            <span class="info-value">{{ order.city.name }}</span>
+                        </div>
                     </div>
-
                 </div>
 
-                <!-- Booking -->
+                <!-- Booking Info -->
                 <div class="col-md-6">
-
-                    <div class="border rounded-4 p-3 h-100">
-
-                        <h5 class="fw-bold mb-3 text-success">
-                            <i class="bi bi-calendar-check-fill"></i> Booking Info
+                    <div class="info-section">
+                        <h5 class="section-title title-green">
+                            <i class="bi bi-calendar-check-fill"></i> Booking Information
                         </h5>
-
-                        <p><strong>Date:</strong> {{ order.created_at|date:"d M Y" }}</p>
-                        <p><strong>Total Price:</strong> ₹ {{ order.total_price }}</p>
-
+                        <div class="info-row">
+                            <span class="info-label">Booking Date:</span>
+                            <span class="info-value">{{ order.created_at|date:"d M Y" }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Booking Time:</span>
+                            <span class="info-value">{{ order.created_at|time:"h:i A" }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Total Amount:</span>
+                            <span class="info-value" style="color: #8e44ad; font-size: 1.1rem;">₹ {{ order.total_price|floatformat:2 }}</span>
+                        </div>
                     </div>
-
                 </div>
 
-                <!-- Complaints -->
+                <!-- Services/Complaints -->
                 <div class="col-12">
-
-                    <div class="border rounded-4 p-3">
-
-                        <h5 class="fw-bold mb-3 text-danger">
-                            <i class="bi bi-tools"></i> Complaints
+                    <div class="info-section">
+                        <h5 class="section-title title-orange">
+                            <i class="bi bi-tools"></i> Services Requested
                         </h5>
-
-                        {% for complaint in order.complaints.all %}
-
-                            <span class="badge bg-info text-dark px-3 py-2 m-1">
-                                {{ complaint.complaint_name }}
-                            </span>
-
-                        {% empty %}
-
-                            <span class="text-muted">No complaints added</span>
-
-                        {% endfor %}
-
+                        <div>
+                            {% for complaint in order.complaints.all %}
+                                <span class="complaint-badge-lg">
+                                    <i class="bi bi-wrench me-1"></i> {{ complaint.complaint_name }}
+                                </span>
+                            {% empty %}
+                                <span class="text-muted">No services specified</span>
+                            {% endfor %}
+                        </div>
                     </div>
-
                 </div>
 
                 <!-- Problem Description -->
                 <div class="col-12">
-
-                    <div class="border rounded-4 p-3">
-
-                        <h5 class="fw-bold mb-3 text-secondary">
+                    <div class="info-section">
+                        <h5 class="section-title title-blue">
                             <i class="bi bi-file-text-fill"></i> Problem Description
                         </h5>
-
-                        <p>{{ order.problem_description }}</p>
-
+                        <p class="mb-0" style="line-height: 1.6;">
+                            {{ order.problem_description|default:"No description provided" }}
+                        </p>
                     </div>
-
                 </div>
 
-                <!-- Mechanic -->
+                <!-- Mechanic Information -->
                 <div class="col-12">
-
-                    <div class="border rounded-4 p-3">
-
-                        <h5 class="fw-bold mb-3 text-warning">
-                            <i class="bi bi-person-workspace"></i> Mechanic
+                    <div class="info-section">
+                        <h5 class="section-title title-pink">
+                            <i class="bi bi-person-workspace"></i> Assigned Mechanic
                         </h5>
-
                         {% if order.mechanic %}
+                            <div class="mechanic-card">
+                                <div class="d-flex align-items-start gap-3 flex-wrap">
+                                    <div class="avatar-base bg-purple-gradient text-white" style="width: 60px; height: 60px; font-size: 1.5rem;">
+                                        {{ order.mechanic.name|slice:":1"|upper }}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h5 class="fw-bold mb-2" style="color: #4a1d6d;">{{ order.mechanic.name }}</h5>
+                                        <p class="mb-2">
+                                            <i class="bi bi-telephone"></i> {{ order.mechanic.number }}
+                                        </p>
+                                        <p class="mb-2">
+                                            <i class="bi bi-currency-rupee"></i> Labour Charge: ₹ {{ order.labour_charge|default:"0" }}
+                                        </p>
+                                        
+                                        <!-- Rating Section -->
+                                        <div class="mt-3 p-3 bg-white rounded-4">
+                                            <strong>Mechanic Rating:</strong>
+                                            <div class="d-flex align-items-center gap-3 mt-2 flex-wrap">
+                                                <div class="rating-stars-large">
+                                                    {% for i in "12345" %}
+                                                        {% if forloop.counter <= mechanic_rating %}
+                                                            <i class="bi bi-star-fill star-filled"></i>
+                                                        {% else %}
+                                                            <i class="bi bi-star star-empty"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                <span class="fw-bold" style="color: #8e44ad;">{{ mechanic_rating|floatformat:1 }}/5</span>
+                                                <span class="text-muted">
+                                                    <i class="bi bi-chat-dots"></i> {{ review_count }} review{{ review_count|pluralize }}
+                                                </span>
+                                            </div>
+                                        </div>
 
-                            <p><strong>Name:</strong> {{ order.mechanic.name }}</p>
-                            <p><strong>Labour Charge:</strong> ₹ {{ order.labour_charge }}</p>
-
+                                        {% if order.status == 'Completed' %}
+                                            <div class="mt-3">
+                                                {% if order.feedback_set.exists %}
+                                                    <span class="badge bg-success px-4 py-2 rounded-pill">
+                                                        <i class="bi bi-star-fill"></i> Feedback Submitted
+                                                    </span>
+                                                {% else %}
+                                                    <a href="{% url 'feedback' order.id %}" class="btn btn-purple-base rounded-pill">
+                                                        <i class="bi bi-star-fill"></i> Rate & Review This Mechanic
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                         {% else %}
-
-                            <span class="text-muted">Not assigned yet</span>
-
+                            <div class="text-center py-4">
+                                <i class="bi bi-person-x fs-1" style="color: #c39bd3;"></i>
+                                <p class="text-muted mt-2 mb-0">No mechanic assigned yet</p>
+                                <small class="text-muted">A mechanic will be assigned to your booking soon</small>
+                            </div>
                         {% endif %}
-
                     </div>
-
                 </div>
 
-                <!-- BILL SECTION -->
+                <!-- Bill Details -->
                 <div class="col-12">
-
-                    <div class="border rounded-4 p-3">
-
-                        <h5 class="fw-bold mb-3 text-primary">
-                            <i class="bi bi-receipt"></i> Bill Details
+                    <div class="info-section">
+                        <h5 class="section-title title-purple">
+                            <i class="bi bi-receipt"></i> Bill Summary
                         </h5>
-
                         {% if bill %}
-
-                            <p><strong>Complaint Total:</strong> ₹ {{ bill.complaint_total }}</p>
-                            <p><strong>Spare Parts:</strong> ₹ {{ bill.spare_parts_total }}</p>
-                            <p><strong>Extra Parts:</strong> ₹ {{ bill.extra_parts_total }}</p>
-                            <p><strong>Labour Charge:</strong> ₹ {{ bill.labour_charge }}</p>
-
-                            <hr>
-
-                            <h5 class="text-success">
-                                Grand Total: ₹ {{ bill.grand_total }}
-                            </h5>
-
-                            <p class="mt-2">
-                                <strong>Payment Status:</strong>
-
-                                {% if bill.payment_status == 'Paid' %}
-                                    <span class="badge bg-success">Paid</span>
-                                {% else %}
-                                    <span class="badge bg-warning text-dark">Pending</span>
-                                {% endif %}
-                            </p>
-
+                            <div class="bill-section">
+                                <div class="bill-row">
+                                    <span>Service Charges:</span>
+                                    <strong>₹ {{ bill.complaint_total|floatformat:2 }}</strong>
+                                </div>
+                                <div class="bill-row">
+                                    <span>Spare Parts:</span>
+                                    <strong>₹ {{ bill.spare_parts_total|floatformat:2 }}</strong>
+                                </div>
+                                <div class="bill-row">
+                                    <span>Extra Parts:</span>
+                                    <strong>₹ {{ bill.extra_parts_total|floatformat:2 }}</strong>
+                                </div>
+                                <div class="bill-row">
+                                    <span>Labour Charge:</span>
+                                    <strong>₹ {{ bill.labour_charge|floatformat:2 }}</strong>
+                                </div>
+                                <div class="bill-total">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold">Grand Total:</span>
+                                        <span class="grand-total">₹ {{ bill.grand_total|floatformat:2 }}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 text-end">
+                                    {% if bill.payment_status == 'Paid' %}
+                                        <span class="badge bg-success px-4 py-2 rounded-pill">
+                                            <i class="bi bi-check-circle-fill"></i> Payment Completed
+                                        </span>
+                                    {% else %}
+                                        <a href="{% url 'payment_page' bill.id %}" class="btn btn-purple-base rounded-pill px-4">
+                                            <i class="bi bi-credit-card"></i> Pay Now
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
                         {% else %}
-
-                            <span class="text-muted">
-                                Bill not generated yet
-                            </span>
-
+                            <div class="text-center py-4">
+                                <i class="bi bi-receipt-cutoff fs-1" style="color: #c39bd3;"></i>
+                                <p class="text-muted mt-2 mb-0">Bill not generated yet</p>
+                                <small class="text-muted">The bill will be available once the service is completed</small>
+                            </div>
                         {% endif %}
-
                     </div>
-
                 </div>
 
+                <!-- Cancel Booking Button -->
+                {% if order.status != "Completed" and order.status != "Cancelled" and order.status != "In_progress" %}
+                    <div class="col-12">
+                        <div class="text-center text-md-end mt-3">
+                            <a href="{% url 'cancel_booking_user' order.id %}" 
+                               class="btn btn-cancel"
+                               onclick="return confirm('Are you sure you want to cancel this booking? This action cannot be undone.')">
+                                <i class="bi bi-x-circle"></i> Cancel Booking
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
-
         </div>
-
     </div>
-
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add smooth scroll to top when page loads
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Add confirmation for cancel button if not already present
+        const cancelBtn = document.querySelector('.btn-cancel');
+        if (cancelBtn && !cancelBtn.hasAttribute('onclick')) {
+            cancelBtn.addEventListener('click', function(e) {
+                if (!confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) {
+                    e.preventDefault();
+                }
+            });
+        }
+    });
+</script>
 
 {% endblock %}

@@ -6,125 +6,316 @@
 
 {% block content %}
 
-<div class="container py-5">
+<style>
+    .edit-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
 
-    <div class="row justify-content-center">
+    /* Header Section */
+    .edit-header {
+        background: linear-gradient(135deg, #6c3483, #8e44ad);
+        border-radius: 24px;
+        padding: 30px;
+        margin-bottom: 30px;
+    }
 
-        <div class="col-lg-8">
+    .edit-header h2 {
+        color: white;
+        font-weight: 700;
+        margin: 0;
+        font-size: 24px;
+    }
 
-            <!-- MAIN CARD -->
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+    .edit-header h2 i {
+        margin-right: 10px;
+        color: #ffd966;
+    }
 
-                <!-- HEADER -->
-                <div class="card-header bg-primary text-white p-4">
+    .edit-header p {
+        color: rgba(255,255,255,0.85);
+        margin: 8px 0 0;
+        font-size: 14px;
+    }
 
-                    <h4 class="mb-1 fw-bold">
-                        <i class="bi bi-pencil-square me-2"></i>
-                        Edit Work Details
-                    </h4>
+    /* Main Card */
+    .edit-card {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
 
-                    <small class="opacity-75">
-                        Update problem description and complaints before generating bill
-                    </small>
+    /* Form Section */
+    .form-section {
+        padding: 30px;
+    }
 
-                </div>
+    .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #4a1d6d;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f0e8ff;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
 
-                <!-- BODY -->
-                <div class="card-body p-4 p-md-5">
+    .section-title i {
+        color: #8e44ad;
+        font-size: 20px;
+    }
 
-                    <form method="POST">
-                        {% csrf_token %}
+    /* Problem Textarea */
+    .problem-textarea {
+        width: 100%;
+        padding: 14px 16px;
+        border: 2px solid #e9d9ff;
+        border-radius: 16px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        background: #faf5ff;
+        resize: vertical;
+    }
 
-                        <!-- PROBLEM DESCRIPTION -->
-                        <div class="mb-4">
+    .problem-textarea:focus {
+        outline: none;
+        border-color: #8e44ad;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(142,68,173,0.1);
+    }
 
-                            <label class="form-label fw-semibold text-secondary mb-2">
-                                Problem Description
-                            </label>
+    /* Complaints Grid */
+    .complaints-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
 
-                            <textarea name="problem_description"
-                                      class="form-control form-control-lg border-0 shadow-sm rounded-3 p-3"
-                                      rows="4"
-                                      placeholder="Describe the vehicle issue clearly...">{{ booking.problem_description }}</textarea>
+    .complaint-card {
+        background: #faf5ff;
+        border: 2px solid #e9d9ff;
+        border-radius: 16px;
+        padding: 14px 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
 
-                        </div>
+    .complaint-card:hover {
+        border-color: #c39bd3;
+        background: #f3e9ff;
+        transform: translateX(3px);
+    }
 
-                        <!-- COMPLAINTS SECTION -->
-                        <div class="mb-4">
+    .complaint-card.selected {
+        border-color: #8e44ad;
+        background: #f3e8ff;
+    }
 
-                            <label class="form-label fw-semibold text-secondary mb-3">
-                                Select Complaints
-                            </label>
+    .complaint-checkbox {
+        width: 20px;
+        height: 20px;
+        accent-color: #8e44ad;
+        cursor: pointer;
+    }
 
-                            <div class="row g-3">
+    .complaint-info {
+        flex: 1;
+    }
 
-                                {% for c in complaints %}
+    .complaint-name {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
 
-                                <div class="col-md-6">
+    .complaint-price {
+        font-size: 12px;
+        color: #8e44ad;
+        font-weight: 600;
+    }
 
-                                    <label class="d-flex align-items-center justify-content-between p-3 border rounded-4 bg-light shadow-sm">
+    /* Button Group */
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #f0e8ff;
+    }
 
-                                        <div class="d-flex align-items-center gap-2">
+    .btn-back-edit {
+        background: linear-gradient(135deg, #64748b, #475569);
+        border: none;
+        border-radius: 50px;
+        padding: 12px 28px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
 
-                                            <input class="form-check-input"
-                                                   type="checkbox"
-                                                   name="complaints"
-                                                   value="{{ c.id }}"
-                                                   {% if c in booking.complaints.all %}checked{% endif %}>
+    .btn-back-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(100,116,139,0.3);
+        color: white;
+    }
 
-                                            <div>
-                                                <div class="fw-semibold">
-                                                    {{ c.complaint_name }}
-                                                </div>
+    .btn-save-edit {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        border: none;
+        border-radius: 50px;
+        padding: 12px 32px;
+        color: white;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+    }
 
-                                                <small class="text-danger fw-bold">
-                                                    ₹ {{ c.basic_sevice_price }}
-                                                </small>
-                                            </div>
+    .btn-save-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(34,197,94,0.3);
+    }
 
-                                        </div>
+    /* Responsive */
+    @media (max-width: 768px) {
+        .form-section {
+            padding: 20px;
+        }
+        
+        .complaints-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        
+        .button-group {
+            flex-direction: column;
+        }
+        
+        .btn-back-edit, .btn-save-edit {
+            justify-content: center;
+        }
+        
+        .edit-header {
+            padding: 20px;
+        }
+        
+        .edit-header h2 {
+            font-size: 20px;
+        }
+    }
+</style>
 
-                                    </label>
-
-                                </div>
-
-                                {% endfor %}
-
-                            </div>
-
-                        </div>
-
-                        <!-- BUTTONS -->
-                        <div class="d-flex justify-content-between align-items-center mt-5">
-
-                            <a href="{% url 'pending_job' job.id %}"
-                               class="btn btn-outline-secondary rounded-pill px-4">
-
-                                <i class="bi bi-arrow-left me-1"></i>
-                                Back
-
-                            </a>
-
-                            <button type="submit"
-                                    class="btn btn-success rounded-pill px-5 shadow-sm">
-
-                                <i class="bi bi-check-circle me-1"></i>
-                                Save Changes
-
-                            </button>
-
-                        </div>
-
-                    </form>
-
-                </div>
-
-            </div>
-
-        </div>
-
+<div class="edit-container">
+    
+    <!-- Header -->
+    <div class="edit-header">
+        <h2>
+            <i class="bi bi-pencil-square"></i>
+            Edit Work Details
+        </h2>
+        <p>Update problem description and service complaints before generating bill</p>
     </div>
 
+    <!-- Main Card -->
+    <div class="edit-card">
+        <div class="form-section">
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <!-- Problem Description Section -->
+                <div class="section-title">
+                    <i class="bi bi-chat-text"></i>
+                    Problem Description
+                </div>
+                <textarea name="problem_description"
+                          class="problem-textarea"
+                          rows="4"
+                          placeholder="Describe the vehicle issue clearly...">{{ booking.problem_description }}</textarea>
+                
+                <!-- Complaints Section -->
+                <div class="section-title mt-4">
+                    <i class="bi bi-list-check"></i>
+                    Select Complaints
+                </div>
+                <div class="complaints-grid">
+                    {% for c in complaints %}
+                    <label class="complaint-card {% if c in booking.complaints.all %}selected{% endif %}">
+                        <input type="checkbox"
+                               name="complaints"
+                               value="{{ c.id }}"
+                               class="complaint-checkbox"
+                               {% if c in booking.complaints.all %}checked{% endif %}>
+                        <div class="complaint-info">
+                            <div class="complaint-name">{{ c.complaint_name }}</div>
+                            <div class="complaint-price">₹ {{ c.basic_service_price }}</div>
+                        </div>
+                    </label>
+                    {% endfor %}
+                </div>
+                
+                <!-- Button Group -->
+                <div class="button-group">
+                    <a href="{% url 'pending_job' job.id %}" class="btn-back-edit">
+                        <i class="bi bi-arrow-left"></i>
+                        Back to Job
+                    </a>
+                    <button type="submit" class="btn-save-edit">
+                        <i class="bi bi-check-circle"></i>
+                        Save Changes
+                    </button>
+                </div>
+                
+            </form>
+            
+        </div>
+    </div>
+    
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Complaint card selection styling
+        const complaintCards = document.querySelectorAll('.complaint-card');
+        
+        complaintCards.forEach(card => {
+            const checkbox = card.querySelector('.complaint-checkbox');
+            
+            // Update card style when checkbox changes
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            
+            // Make entire card clickable
+            card.addEventListener('click', function(e) {
+                if (e.target !== checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                    if (checkbox.checked) {
+                        card.classList.add('selected');
+                    } else {
+                        card.classList.remove('selected');
+                    }
+                }
+            });
+        });
+    });
+</script>
 
 {% endblock %}

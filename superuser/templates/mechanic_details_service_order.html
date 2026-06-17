@@ -1,0 +1,312 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Mechanic Service Order Details{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="card shadow border-0 rounded-4 mb-4">
+        <div class="card-body bg-primary text-white">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+                    <h2 class="fw-bold mb-1">
+                        Service Order #{{ service_order.id }}
+                    </h2>
+
+                    <p class="mb-0">
+                        Mechanic : {{ mechanic.name }}
+                    </p>
+                </div>
+
+                <div>
+
+                    {% if service_order.status == "Completed" %}
+                        <span class="badge bg-success fs-6">
+                            {{ service_order.status }}
+                        </span>
+
+                    {% elif service_order.status == "Pending" %}
+                        <span class="badge bg-warning text-dark fs-6">
+                            {{ service_order.status }}
+                        </span>
+
+                    {% elif service_order.status == "Cancelled" %}
+                        <span class="badge bg-danger fs-6">
+                            {{ service_order.status }}
+                        </span>
+
+                    {% else %}
+                        <span class="badge bg-light text-dark fs-6">
+                            {{ service_order.status }}
+                        </span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+
+        <!-- Customer Details -->
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Customer Details</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <p>
+                        <strong>Name:</strong>
+                        {{ service_order.customer.name }}
+                    </p>
+
+                    <p>
+                        <strong>Email:</strong>
+                        {{ service_order.customer.user.email }}
+                    </p>
+
+                    <p>
+                        <strong>Phone:</strong>
+                        {{ service_order.customer.number }}
+                    </p>
+
+                    <p>
+                        <strong>City:</strong>
+                        {{ service_order.customer.city }}
+                    </p>
+
+                    <p>
+                        <strong>Address:</strong>
+                        {{ service_order.customer.address }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Mechanic Details -->
+        <div class="col-md-6 mb-4">
+
+            <div class="card shadow-sm border-0 h-100">
+
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Mechanic Details</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <p>
+                        <strong>Name:</strong>
+                        {{ mechanic.name }}
+                    </p>
+
+                    <p>
+                        <strong>Email:</strong>
+                        {{ mechanic.email }}
+                    </p>
+
+                    <p>
+                        <strong>Phone:</strong>
+                        {{ mechanic.number }}
+                    </p>
+
+                    <p>
+                        <strong>City:</strong>
+                        {{ mechanic.city }}
+                    </p>
+
+                    <p>
+                        <strong>Address:</strong>
+                        {{ mechanic.address }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Vehicle Details -->
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Vehicle Details</h5>
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                <strong>Vehicle Name:</strong>
+                {{ service_order.vehicle.vehicle_name }}
+            </p>
+
+            <p>
+                <strong>Vehicle Number:</strong>
+                {{ service_order.vehicle.vehicle_number }}
+            </p>
+
+            <p>
+                <strong>Model:</strong>
+                {{ service_order.vehicle.vehicle_model }}
+            </p>
+
+            <p>
+                <strong>Year:</strong>
+                {{ service_order.vehicle.vehicle_year }}
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Service Details -->
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Service Details</h5>
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                <strong>Location:</strong>
+                {{ service_order.location }}
+            </p>
+
+            <p>
+                <strong>Problem Description:</strong>
+                {{ service_order.problem_description }}
+            </p>
+
+            <p>
+                <strong>Booking Date:</strong>
+                {{ service_order.created_at|date:"d M Y h:i A" }}
+            </p>
+
+            <p>
+                <strong>Complaints:</strong>
+            </p>
+
+            <ul>
+
+                {% for complaint in service_order.complaints.all %}
+                    <li>
+                        {{ complaint.complaint_name }}
+                        (₹{{ complaint.basic_service_price }})
+                    </li>
+                {% empty %}
+                    <li>No complaints added</li>
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+    </div>
+
+    <!-- Bill Details -->
+    <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Bill Details</h5>
+        </div>
+
+        <div class="card-body">
+
+            {% if bill %}
+
+                <div class="row">
+
+                    <div class="col-md-6">
+
+                        <p>
+                            <strong>Complaint Total:</strong>
+                            ₹{{ bill.complaint_total }}
+                        </p>
+
+                        <p>
+                            <strong>Spare Parts Total:</strong>
+                            ₹{{ bill.spare_parts_total }}
+                        </p>
+
+                        <p>
+                            <strong>Extra Parts Total:</strong>
+                            ₹{{ bill.extra_parts_total }}
+                        </p>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <p>
+                            <strong>Labour Charge:</strong>
+                            ₹{{ bill.labour_charge }}
+                        </p>
+
+                        <p>
+                            <strong>Grand Total:</strong>
+                            ₹{{ bill.grand_total }}
+                        </p>
+
+                        <p>
+
+                            <strong>Payment Status:</strong>
+
+                            {% if bill.payment_status == "Paid" %}
+                                <span class="badge bg-success">
+                                    Paid
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">
+                                    Pending
+                                </span>
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            {% else %}
+
+                <div class="alert alert-info">
+                    Bill not generated yet.
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center">
+
+        <a href="{% url 'mechanic_deatail' mechanic.id %}"
+           class="btn btn-primary">
+
+            <i class="bi bi-arrow-left"></i>
+            Back To Mechanic
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

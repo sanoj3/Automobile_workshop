@@ -6,116 +6,536 @@
 
 {% block content %}
 
-<div class="container py-4">
+<style>
+    /* Animation Keyframes */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+    
+    /* Page Container */
+    .edit-vehicle-container {
+        animation: fadeInUp 0.5s ease-out;
+    }
+    
+    /* Main Card */
+    .edit-card {
+        background: white;
+        border-radius: 32px;
+        border: none;
+        box-shadow: 0 20px 40px rgba(106, 13, 173, 0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        animation: scaleIn 0.5s ease-out;
+    }
+    
+    .edit-card:hover {
+        box-shadow: 0 25px 50px rgba(106, 13, 173, 0.15);
+    }
+    
+    /* Card Header - Purple Theme */
+    .card-header-purple {
+        background: linear-gradient(135deg, #6c3483, #8e44ad, #a569bd);
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .card-header-purple::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 250px;
+        height: 250px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        animation: pulse 8s ease-in-out infinite;
+    }
+    
+    .card-header-purple::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        animation: pulse 6s ease-in-out infinite reverse;
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            opacity: 0.5;
+        }
+        50% {
+            transform: scale(1.1);
+            opacity: 0.3;
+        }
+    }
+    
+    .card-header-purple h3 {
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .card-header-purple p {
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Form Styles */
+    .form-group {
+        margin-bottom: 1.75rem;
+        animation: fadeInRight 0.5s ease-out;
+        animation-fill-mode: both;
+    }
+    
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; }
+    .form-group:nth-child(4) { animation-delay: 0.4s; }
+    
+    .form-label {
+        font-weight: 700;
+        color: #4a1d6d;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-label i {
+        color: #8e44ad;
+        font-size: 1.1rem;
+    }
+    
+    .form-control-custom {
+        border: 2px solid #e9d9ff;
+        border-radius: 16px;
+        padding: 12px 18px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+        width: 100%;
+    }
+    
+    .form-control-custom:focus {
+        border-color: #8e44ad;
+        box-shadow: 0 0 0 4px rgba(142, 68, 173, 0.1);
+        outline: none;
+    }
+    
+    .form-control-custom:hover {
+        border-color: #c39bd3;
+    }
+    
+    /* Button Styles */
+    .btn-update {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        border: none;
+        border-radius: 50px;
+        padding: 12px 32px;
+        font-weight: 700;
+        font-size: 1rem;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+    }
+    
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(22, 163, 74, 0.4);
+        color: white;
+    }
+    
+    .btn-update:active {
+        transform: translateY(0);
+    }
+    
+    .btn-cancel {
+        background: linear-gradient(135deg, #6b7280, #9ca3af);
+        border: none;
+        border-radius: 50px;
+        padding: 12px 32px;
+        font-weight: 700;
+        font-size: 1rem;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #4b5563, #6b7280);
+        color: white;
+    }
+    
+    /* Vehicle Preview Card */
+    .vehicle-preview {
+        background: linear-gradient(135deg, #faf5ff, #f3e9ff);
+        border-radius: 20px;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+        animation: fadeInLeft 0.5s ease-out;
+    }
+    
+    .preview-title {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #8e44ad;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+    
+    .preview-value {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2c0b3a;
+        word-break: break-word;
+    }
+    
+    /* Input Group with Icon */
+    .input-icon-wrapper {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control-custom.with-icon {
+        padding-left: 45px;
+    }
+    
+    .form-control-custom:focus + .input-icon {
+        color: #8e44ad;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .card-header-purple {
+            padding: 1.5rem;
+        }
+        
+        .card-header-purple h3 {
+            font-size: 1.5rem;
+        }
+        
+        .form-control-custom {
+            padding: 10px 16px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-update, .btn-cancel {
+            padding: 10px 24px;
+            font-size: 0.9rem;
+        }
+        
+        .d-flex {
+            flex-direction: column;
+        }
+        
+        .btn-update, .btn-cancel {
+            width: 100%;
+        }
+    }
+    
+    /* Loading State */
+    .loading {
+        position: relative;
+        opacity: 0.6;
+        pointer-events: none;
+    }
+    
+    .loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #fff;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        transform: translate(-50%, -50%);
+    }
+    
+    @keyframes spin {
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+</style>
 
+<div class="container py-4 edit-vehicle-container">
     <div class="row justify-content-center">
-        <div class="col-lg-7">
-
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-
+        <div class="col-lg-8 col-xl-7">
+            
+            <!-- Main Card -->
+            <div class="edit-card">
+                
                 <!-- Header -->
-                <div class="bg-primary text-white p-4">
-                    <h3 class="mb-1">
-                        <i class="bi bi-car-front-fill me-2"></i>
-                        Update Vehicle
-                    </h3>
-                    <p class="mb-0 small">
-                        Edit your vehicle details below
-                    </p>
+                <div class="card-header-purple">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="vehicle-icon-large">
+                            <i class="bi bi-car-front-fill fs-1"></i>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold mb-1 text-white">
+                                Update Vehicle Details
+                            </h3>
+                            <p class="mb-0 text-white-50">
+                                Edit and manage your vehicle information
+                            </p>
+                        </div>
+                    </div>
                 </div>
-
-                <!-- Form -->
-                <div class="card-body p-4">
-
-                    <form method="POST">
+                
+                <!-- Form Body -->
+                <div class="card-body p-4 p-lg-5">
+                    
+                    <!-- Vehicle Preview (Current Details) -->
+                    <div class="vehicle-preview">
+                        <div class="preview-title">
+                            <i class="bi bi-info-circle"></i> Currently Editing
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <small class="text-muted d-block">Vehicle Name</small>
+                                <strong class="preview-value">{{ vehicle.vehicle_name }}</strong>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block">Vehicle Number</small>
+                                <strong class="preview-value">{{ vehicle.vehicle_number }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form method="POST" id="editVehicleForm">
                         {% csrf_token %}
-
+                        
                         <!-- Vehicle Name -->
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold">
-                                <i class="bi bi-car-front me-1 text-primary"></i>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-car-front-fill"></i>
                                 Vehicle Name
                             </label>
-
-                            <input type="text"
-                                   name="vehicle_name"
-                                   class="form-control form-control-lg rounded-3"
-                                   value="{{ vehicle.vehicle_name }}"
-                                   placeholder="Enter vehicle name"
-                                   required>
+                            <div class="input-icon-wrapper">
+                                <i class="bi bi-car-front input-icon"></i>
+                                <input type="text"
+                                       name="vehicle_name"
+                                       class="form-control form-control-custom with-icon"
+                                       value="{{ vehicle.vehicle_name }}"
+                                       placeholder="e.g., Honda City, Toyota Innova"
+                                       required>
+                            </div>
+                            <small class="text-muted mt-1 d-block">
+                                <i class="bi bi-info-circle"></i> Enter the brand and model name
+                            </small>
                         </div>
-
-                        <!-- Model -->
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold">
-                                <i class="bi bi-tools me-1 text-primary"></i>
+                        
+                        <!-- Vehicle Model -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-tools"></i>
                                 Vehicle Model
                             </label>
-
-                            <input type="text"
-                                   name="vehicle_model"
-                                   class="form-control form-control-lg rounded-3"
-                                   value="{{ vehicle.vehicle_model }}"
-                                   placeholder="Enter vehicle model"
-                                   required>
+                            <div class="input-icon-wrapper">
+                                <i class="bi bi-gear input-icon"></i>
+                                <input type="text"
+                                       name="vehicle_model"
+                                       class="form-control form-control-custom with-icon"
+                                       value="{{ vehicle.vehicle_model }}"
+                                       placeholder="e.g., VX, ZX, SX4"
+                                       required>
+                            </div>
                         </div>
-
-                        <!-- Year -->
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold">
-                                <i class="bi bi-calendar-event me-1 text-primary"></i>
+                        
+                        <!-- Manufacturing Year -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-calendar-event"></i>
                                 Manufacturing Year
                             </label>
-
-                            <input type="number"
-                                   name="vehicle_year"
-                                   class="form-control form-control-lg rounded-3"
-                                   value="{{ vehicle.vehicle_year }}"
-                                   placeholder="Enter year"
-                                   required>
+                            <div class="input-icon-wrapper">
+                                <i class="bi bi-calendar3 input-icon"></i>
+                                <input type="number"
+                                       name="vehicle_year"
+                                       class="form-control form-control-custom with-icon"
+                                       value="{{ vehicle.vehicle_year }}"
+                                       placeholder="e.g., 2020"
+                                       min="1980"
+                                       max="2026"
+                                       required>
+                            </div>
                         </div>
-
+                        
                         <!-- Vehicle Number -->
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold">
-                                <i class="bi bi-upc-scan me-1 text-primary"></i>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="bi bi-upc-scan"></i>
                                 Vehicle Number
                             </label>
-
-                            <input type="text"
-                                   name="vehicle_number"
-                                   class="form-control form-control-lg rounded-3 text-uppercase"
-                                   value="{{ vehicle.vehicle_number }}"
-                                   placeholder="KL07AB1234"
-                                   required>
+                            <div class="input-icon-wrapper">
+                                <i class="bi bi-upc-scan input-icon"></i>
+                                <input type="text"
+                                       name="vehicle_number"
+                                       class="form-control form-control-custom with-icon text-uppercase"
+                                       value="{{ vehicle.vehicle_number }}"
+                                       placeholder="KL07AB1234"
+                                       pattern="[A-Za-z0-9]{2,15}"
+                                       title="Enter valid vehicle number (letters and numbers only)"
+                                       required>
+                            </div>
+                            <small class="text-muted mt-1 d-block">
+                                <i class="bi bi-info-circle"></i> Enter the registration number of your vehicle
+                            </small>
                         </div>
-
-                        <!-- Buttons -->
-                        <div class="d-flex gap-3 mt-4">
-
-                            <button type="submit"
-                                    class="btn btn-success btn-lg px-4 rounded-3">
-                                <i class="bi bi-check-circle me-1"></i>
+                        
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-3 mt-5 pt-2">
+                            <button type="submit" class="btn btn-update flex-grow-1" id="submitBtn">
+                                <i class="bi bi-check-circle me-2"></i>
                                 Update Vehicle
                             </button>
-
-                            <a href="{% url 'vehicle_list' %}"
-                               class="btn btn-outline-secondary btn-lg px-4 rounded-3">
-                                <i class="bi bi-arrow-left me-1"></i>
+                            <a href="{% url 'vehicle_list' %}" class="btn btn-cancel px-4">
+                                <i class="bi bi-x-circle me-2"></i>
                                 Cancel
                             </a>
-
                         </div>
-
+                        
                     </form>
-
                 </div>
-
             </div>
-
+            
+            <!-- Helpful Tips Card -->
+            <div class="mt-4 text-center">
+                <small class="text-muted">
+                    <i class="bi bi-shield-check"></i> Your vehicle information helps us provide better service
+                </small>
+            </div>
+            
         </div>
     </div>
-
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('editVehicleForm');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Add loading state on form submit
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> Updating...';
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+                
+                // Re-enable after 3 seconds (in case of error, form will reload anyway)
+                setTimeout(function() {
+                    if (submitBtn.disabled) {
+                        submitBtn.innerHTML = '<i class="bi bi-check-circle me-2"></i> Update Vehicle';
+                        submitBtn.classList.remove('loading');
+                        submitBtn.disabled = false;
+                    }
+                }, 3000);
+            });
+        }
+        
+        // Auto-uppercase vehicle number
+        const vehicleNumberInput = document.querySelector('input[name="vehicle_number"]');
+        if (vehicleNumberInput) {
+            vehicleNumberInput.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+        }
+        
+        // Add input validation for year
+        const yearInput = document.querySelector('input[name="vehicle_year"]');
+        if (yearInput) {
+            yearInput.addEventListener('change', function() {
+                const year = parseInt(this.value);
+                const currentYear = new Date().getFullYear();
+                if (year < 1980) {
+                    this.value = 1980;
+                    alert('Year cannot be before 1980');
+                } else if (year > currentYear + 1) {
+                    this.value = currentYear;
+                    alert('Year cannot be in the future');
+                }
+            });
+        }
+        
+        // Add floating label effect on focus
+        const inputs = document.querySelectorAll('.form-control-custom');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('focused');
+            });
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('focused');
+            });
+        });
+    });
+</script>
 
 {% endblock %}

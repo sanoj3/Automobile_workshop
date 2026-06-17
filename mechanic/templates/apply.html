@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply as Mechanic</title>
+    <title>Apply as Mechanic - FixiGo</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,376 +11,813 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        body{
-            min-height:100vh;
-            background:#f5f7fb;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            font-family:'Segoe UI',sans-serif;
-            padding:20px;
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f0ff 0%, #e9d9ff 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            padding: 20px;
+            position: relative;
+            overflow-y: auto;
         }
 
-        .register-container{
-            width:100%;
-            max-width:1100px;
-            background:#fff;
-            border-radius:25px;
-            overflow:hidden;
-            box-shadow:0 15px 40px rgba(0,0,0,0.08);
-            display:grid;
-            grid-template-columns:1fr 1fr;
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: rgba(142, 68, 173, 0.06);
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
         }
 
-        /* Left Side */
-
-        .left-side{
-            background:linear-gradient(135deg,#0ea5e9,#2563eb);
-            color:white;
-            padding:60px 45px;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(106, 13, 173, 0.04);
+            border-radius: 50%;
+            animation: floatReverse 18s ease-in-out infinite;
+            pointer-events: none;
         }
 
-        .left-side i{
-            font-size:90px;
-            margin-bottom:25px;
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30px, -20px) scale(1.05); }
         }
 
-        .left-side h1{
-            font-size:42px;
-            font-weight:700;
-            margin-bottom:15px;
+        @keyframes floatReverse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 20px) scale(1.08); }
         }
 
-        .left-side p{
-            font-size:16px;
-            line-height:1.7;
-            opacity:0.9;
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Right Side */
-
-        .right-side{
-            padding:50px 45px;
-            display:flex;
-            flex-direction:column;
-            justify-content:center;
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        .form-title{
-            font-size:34px;
-            font-weight:700;
-            color:#111827;
-            margin-bottom:8px;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
 
-        .form-subtitle{
-            color:#6b7280;
-            margin-bottom:30px;
+        .register-wrapper {
+            width: 100%;
+            max-width: 1100px;
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(106, 13, 173, 0.12);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            animation: scaleIn 0.5s ease-out;
+            border: 1px solid #e9d9ff;
+            max-height: 85vh;
+            overflow-y: auto;
         }
 
-        .form-label{
-            font-weight:600;
-            margin-bottom:7px;
-            color:#374151;
+        /* Custom Scrollbar for container */
+        .register-wrapper::-webkit-scrollbar {
+            width: 6px;
+        }
+        .register-wrapper::-webkit-scrollbar-track {
+            background: #f0e8ff;
+            border-radius: 3px;
+        }
+        .register-wrapper::-webkit-scrollbar-thumb {
+            background: #8e44ad;
+            border-radius: 3px;
         }
 
-        .form-control,
-        .form-select{
-            height:52px;
-            border-radius:14px;
-            border:1px solid #d1d5db;
-            padding-left:15px;
-            transition:0.3s;
+        /* LEFT SIDE - Purple Theme */
+        .left-side {
+            background: linear-gradient(135deg, #6c3483, #8e44ad, #a569bd);
+            color: white;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 100%;
         }
 
-        input[type="file"].form-control{
-            padding-top:12px;
+        .left-side::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 50%;
         }
 
-        .form-control:focus,
-        .form-select:focus{
-            border-color:#2563eb;
-            box-shadow:none;
+        .left-side::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -10%;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 50%;
         }
 
-        .btn-register{
-            width:100%;
-            height:52px;
-            border:none;
-            border-radius:14px;
-            background:linear-gradient(135deg,#0ea5e9,#2563eb);
-            color:white;
-            font-size:16px;
-            font-weight:600;
-            transition:0.3s;
+        .left-side .icon-wrapper {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 20px;
         }
 
-        .btn-register:hover{
-            transform:translateY(-2px);
-            opacity:0.95;
+        .left-side .icon-wrapper i {
+            font-size: 60px;
+            color: #ffd966;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 18px;
         }
 
-        .login-link{
-            text-align:center;
-            margin-top:22px;
-            color:#6b7280;
+        .left-side h1 {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
         }
 
-        .login-link a{
-            text-decoration:none;
-            color:#2563eb;
-            font-weight:600;
+        .left-side p {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+            color: rgba(255, 255, 255, 0.85);
         }
 
-        .login-link a:hover{
-            text-decoration:underline;
+        .left-side .feature-list {
+            margin-top: 20px;
+            position: relative;
+            z-index: 2;
         }
 
-        .alert{
-            border-radius:12px;
+        .left-side .feature-list .feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
         }
 
-        small{
-            color:#6b7280;
+        .left-side .feature-list .feature i {
+            color: #ffd966;
+            font-size: 16px;
         }
 
-        @media(max-width:768px){
+        /* RIGHT SIDE */
+        .right-side {
+            padding: 35px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
 
-            .register-container{
-                grid-template-columns:1fr;
+        .right-side::-webkit-scrollbar {
+            width: 4px;
+        }
+        .right-side::-webkit-scrollbar-track {
+            background: #f0e8ff;
+        }
+        .right-side::-webkit-scrollbar-thumb {
+            background: #8e44ad;
+            border-radius: 2px;
+        }
+
+        .form-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1e1b2a;
+            margin-bottom: 2px;
+        }
+
+        .form-subtitle {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 12px;
+            color: #4a1d6d;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .form-group label i {
+            color: #8e44ad;
+            margin-right: 4px;
+        }
+
+        .form-group label .optional {
+            font-weight: 400;
+            color: #94a3b8;
+            font-size: 10px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid #e9d9ff;
+            border-radius: 10px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            background: #faf8ff;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 50px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8e44ad;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.06);
+        }
+
+        .form-group input:hover,
+        .form-group select:hover,
+        .form-group textarea:hover {
+            border-color: #c39bd3;
+        }
+
+        .form-group input.error,
+        .form-group select.error,
+        .form-group textarea.error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .form-group .error-message {
+            font-size: 10px;
+            color: #ef4444;
+            margin-top: 3px;
+            display: none;
+        }
+
+        .form-group .error-message.show {
+            display: block;
+        }
+
+        .form-group .help-text {
+            font-size: 10px;
+            color: #94a3b8;
+            margin-top: 3px;
+            display: block;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn-register {
+            width: 100%;
+            height: 44px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #8e44ad, #a569bd);
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(142, 68, 173, 0.2);
+            margin-top: 5px;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(142, 68, 173, 0.3);
+        }
+
+        .btn-register:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .login-link a {
+            color: #8e44ad;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .login-link a:hover {
+            color: #6c3483;
+            text-decoration: underline;
+        }
+
+        /* Alert */
+        .alert-custom {
+            border-radius: 10px;
+            padding: 8px 12px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            border: 1px solid transparent;
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #16a34a;
+            border-color: #bbf7d0;
+        }
+
+        /* Footer - No Box */
+        .copyright-footer {
+            width: 100%;
+            max-width: 1100px;
+            margin-top: 25px;
+            padding: 15px 10px 5px;
+            text-align: center;
+            animation: fadeInUp 0.5s ease-out;
+            border-top: 1px solid rgba(142, 68, 173, 0.15);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #6b7280;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: #8e44ad;
+            text-decoration: underline;
+        }
+
+        .copyright-footer p {
+            color: #94a3b8;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .copyright-footer p strong {
+            color: #4a1d6d;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .register-wrapper {
+                max-height: none;
+                overflow-y: visible;
             }
 
-            .left-side{
-                display:none;
+            .right-side {
+                max-height: none;
+                overflow-y: visible;
             }
-
-            .right-side{
-                padding:35px 25px;
-            }
-
         }
 
+        @media (max-width: 768px) {
+            .register-wrapper {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+            }
+
+            .left-side {
+                display: none;
+            }
+
+            .right-side {
+                padding: 25px 20px;
+                max-height: none;
+                overflow-y: visible;
+            }
+
+            .form-title {
+                font-size: 22px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            body {
+                padding: 15px 10px;
+            }
+
+            .copyright-footer {
+                padding: 12px 10px 5px;
+            }
+
+            .footer-links {
+                gap: 15px;
+            }
+
+            .footer-links a {
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .right-side {
+                padding: 20px 15px;
+            }
+
+            .form-title {
+                font-size: 20px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 7px 10px;
+                font-size: 12px;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .copyright-footer p {
+                font-size: 11px;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-<div class="register-container">
+    <div class="register-wrapper">
 
-    <!-- Left Side -->
-    <div class="left-side">
-
-        <i class="bi bi-tools"></i>
-
-        <h1>Join as Mechanic</h1>
-
-        <p>
-            Apply as a professional mechanic to manage
-            vehicle services, customer bookings,
-            spare parts, and work assignments easily.
-        </p>
-
-    </div>
-
-    <!-- Right Side -->
-    <div class="right-side">
-
-        <h2 class="form-title">
-            Mechanic Application
-        </h2>
-
-        <p class="form-subtitle">
-            Fill your details to apply as mechanic
-        </p>
-
-        <!-- Messages -->
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger shadow-sm">
-                    {{ message }}
+        <!-- LEFT SIDE -->
+        <div class="left-side">
+            <div class="icon-wrapper">
+                <i class="bi bi-tools"></i>
+            </div>
+            <h1>Join as Mechanic</h1>
+            <p>Apply as a professional mechanic to manage vehicle services, customer bookings, spare parts, and work assignments easily.</p>
+            <div class="feature-list">
+                <div class="feature">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Manage service requests</span>
                 </div>
-            {% endfor %}
-        {% endif %}
-
-        <!-- Form -->
-        <form method="POST" enctype="multipart/form-data">
-
-            {% csrf_token %}
-
-            <!-- Name -->
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Full Name
-                </label>
-
-                <input type="text"
-                       name="name"
-                       class="form-control"
-                       placeholder="Enter full name"
-                       minlength="3"
-                       required>
-
+                <div class="feature">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Track your earnings</span>
+                </div>
+                <div class="feature">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Build your reputation</span>
+                </div>
             </div>
+        </div>
 
-            <!-- Email -->
-            <div class="mb-3">
+        <!-- RIGHT SIDE -->
+        <div class="right-side">
 
-                <label class="form-label">
-                    Email Address
-                </label>
+            <h2 class="form-title">Mechanic Application</h2>
+            <p class="form-subtitle">Fill your details to apply as a mechanic</p>
 
-                <input type="email"
-                       name="email"
-                       class="form-control"
-                       placeholder="Enter email address"
-                       required>
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert-custom {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+                        <i class="bi {% if message.tags == 'error' %}bi-exclamation-circle{% else %}bi-check-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
 
+            <form method="POST" enctype="multipart/form-data" id="registerForm">
+                {% csrf_token %}
+
+                <!-- Name -->
+                <div class="form-group">
+                    <label><i class="bi bi-person"></i> Full Name</label>
+                    <input type="text" name="name" id="nameInput" placeholder="Enter your full name" required minlength="3">
+                    <span class="error-message" id="nameError">Name must be at least 3 characters</span>
+                </div>
+
+                <div class="form-row">
+                    <!-- Email -->
+                    <div class="form-group">
+                        <label><i class="bi bi-envelope"></i> Email Address</label>
+                        <input type="email" name="email" id="emailInput" placeholder="Enter email address" required>
+                        <span class="error-message" id="emailError">Please enter a valid email address</span>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="form-group">
+                        <label><i class="bi bi-phone"></i> Phone Number</label>
+                        <input type="text" name="number" id="phoneInput" placeholder="10 digit number" required maxlength="10" minlength="10">
+                        <span class="error-message" id="phoneError">Enter a valid 10-digit phone number</span>
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="form-group">
+                    <label><i class="bi bi-house"></i> Address</label>
+                    <textarea name="address" id="addressInput" placeholder="Enter your full address" required></textarea>
+                    <span class="error-message" id="addressError">Please enter your address</span>
+                </div>
+
+                <div class="form-row">
+                    <!-- Aadhaar -->
+                    <div class="form-group">
+                        <label><i class="bi bi-card-text"></i> Aadhaar Number</label>
+                        <input type="text" name="aadhaar" id="aadhaarInput" placeholder="12 digit Aadhaar number" required maxlength="12" minlength="12">
+                        <span class="error-message" id="aadhaarError">Enter a valid 12-digit Aadhaar number</span>
+                    </div>
+
+                    <!-- City -->
+                    <div class="form-group">
+                        <label><i class="bi bi-geo-alt"></i> Select City</label>
+                        <select name="city" id="cityInput" required>
+                            <option value="">Choose your city</option>
+                            {% for city in cities %}
+                                <option value="{{ city.id }}">{{ city.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <span class="error-message" id="cityError">Please select a city</span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <!-- Certificate -->
+                    <div class="form-group">
+                        <label><i class="bi bi-file-pdf"></i> Certificate</label>
+                        <input type="file" name="certificate" id="certInput" accept=".pdf,.jpg,.jpeg,.png" required>
+                        <span class="error-message" id="certError">Please upload a certificate</span>
+                        <span class="help-text">PDF, JPG, PNG (Max 5MB)</span>
+                    </div>
+
+                    <!-- Experience Certificate -->
+                    <div class="form-group">
+                        <label><i class="bi bi-file-earmark"></i> Experience <span class="optional">(Optional)</span></label>
+                        <input type="file" name="experience_certificate" accept=".pdf,.jpg,.jpeg,.png">
+                        <span class="help-text">PDF, JPG, PNG (Max 5MB)</span>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label><i class="bi bi-lock"></i> Password</label>
+                    <input type="password" name="password" id="passwordInput" placeholder="Enter password (min 6 characters)" required minlength="6">
+                    <span class="error-message" id="passwordError">Password must be at least 6 characters</span>
+                </div>
+
+                <button type="submit" class="btn-register" id="submitBtn">
+                    <i class="bi bi-person-workspace"></i>
+                    Apply Now
+                </button>
+            </form>
+
+            <div class="login-link">
+                Already have an account?
+                <a href="{% url 'login_mechanic' %}">Login</a>
             </div>
-
-            <!-- Aadhaar -->
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Aadhaar Number
-                </label>
-
-                <input type="text"
-                       name="aadhaar"
-                       class="form-control"
-                       placeholder="Enter 12 digit Aadhaar number"
-                       minlength="12"
-                       maxlength="12"
-                       pattern="[0-9]{12}"
-                       required>
-
-            </div>
-
-            <!-- Phone -->
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Phone Number
-                </label>
-
-                <input type="text"
-                       name="number"
-                       class="form-control"
-                       placeholder="Enter phone number"
-                       minlength="10"
-                       maxlength="10"
-                       pattern="[0-9]{10}"
-                       required>
-
-            </div>
-
-            <!-- City -->
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Select City
-                </label>
-
-                <select name="city"
-                        class="form-select"
-                        required>
-
-                    <option value="" disabled selected>
-                        Choose your city
-                    </option>
-
-                    {% for city in cities %}
-                        <option value="{{ city.id }}">
-                            {{ city.name }}
-                        </option>
-                    {% endfor %}
-
-                </select>
-
-            </div>
-
-            <!-- Certificate -->
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Certificate
-                </label>
-
-                <input type="file"
-                       name="certificate"
-                       class="form-control"
-                       accept=".pdf,.jpg,.jpeg,.png"
-                       required>
-
-            </div>
-
-            <!-- Experience Certificate -->
-            <div class="mb-3">
-
-                <label class="form-label">
-                    Experience Certificate
-                    <small>(Optional)</small>
-                </label>
-
-                <input type="file"
-                       name="experience_certificate"
-                       class="form-control"
-                       accept=".pdf,.jpg,.jpeg,.png">
-
-            </div>
-
-            <!-- Password -->
-            <div class="mb-4">
-
-                <label class="form-label">
-                    Password
-                </label>
-
-                <input type="password"
-                       name="password"
-                       class="form-control"
-                       placeholder="Enter password"
-                       minlength="6"
-                       required>
-
-            </div>
-
-            <!-- Submit Button -->
-            <button type="submit" class="btn-register">
-
-                <i class="bi bi-person-workspace me-1"></i>
-
-                Apply Now
-
-            </button>
-
-        </form>
-
-        <!-- Login -->
-        <div class="login-link">
-
-            Already have an account?
-
-            <a href="{% url 'login_mechanic' %}">
-                Login
-            </a>
 
         </div>
 
     </div>
 
-</div>
+    <!-- FOOTER - No Box -->
+    <div class="copyright-footer">
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact Us</a>
+            <a href="#">Help Center</a>
+        </div>
+        <p>© <span id="currentYear"></span> <strong>FixiGo</strong> — Automobile Workshop Management System. All Rights Reserved.</p>
+    </div>
+
+    <script>
+        // Set current year dynamically
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const nameInput = document.getElementById('nameInput');
+            const emailInput = document.getElementById('emailInput');
+            const phoneInput = document.getElementById('phoneInput');
+            const addressInput = document.getElementById('addressInput');
+            const aadhaarInput = document.getElementById('aadhaarInput');
+            const cityInput = document.getElementById('cityInput');
+            const certInput = document.getElementById('certInput');
+            const passwordInput = document.getElementById('passwordInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const form = document.getElementById('registerForm');
+
+            // Error elements
+            const nameError = document.getElementById('nameError');
+            const emailError = document.getElementById('emailError');
+            const phoneError = document.getElementById('phoneError');
+            const addressError = document.getElementById('addressError');
+            const aadhaarError = document.getElementById('aadhaarError');
+            const cityError = document.getElementById('cityError');
+            const certError = document.getElementById('certError');
+            const passwordError = document.getElementById('passwordError');
+
+            // Validation functions
+            function validateEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            }
+
+            function validatePhone(phone) {
+                return /^[0-9]{10}$/.test(phone);
+            }
+
+            function validateAadhaar(aadhaar) {
+                return /^[0-9]{12}$/.test(aadhaar);
+            }
+
+            function validateField(input, errorEl, condition, message) {
+                if (!condition) {
+                    input.classList.add('error');
+                    errorEl.textContent = message;
+                    errorEl.classList.add('show');
+                    return false;
+                } else {
+                    input.classList.remove('error');
+                    errorEl.classList.remove('show');
+                    return true;
+                }
+            }
+
+            // Real-time validation
+            nameInput.addEventListener('input', function() {
+                validateField(this, nameError, this.value.trim().length >= 3, 'Name must be at least 3 characters');
+            });
+
+            emailInput.addEventListener('input', function() {
+                validateField(this, emailError, validateEmail(this.value), 'Please enter a valid email address');
+            });
+
+            phoneInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                validateField(this, phoneError, validatePhone(this.value), 'Enter a valid 10-digit phone number');
+            });
+
+            addressInput.addEventListener('input', function() {
+                validateField(this, addressError, this.value.trim().length > 0, 'Please enter your address');
+            });
+
+            aadhaarInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                validateField(this, aadhaarError, validateAadhaar(this.value), 'Enter a valid 12-digit Aadhaar number');
+            });
+
+            cityInput.addEventListener('change', function() {
+                validateField(this, cityError, this.value !== '', 'Please select a city');
+            });
+
+            certInput.addEventListener('change', function() {
+                validateField(this, certError, this.files.length > 0, 'Please upload a certificate');
+            });
+
+            passwordInput.addEventListener('input', function() {
+                validateField(this, passwordError, this.value.length >= 6, 'Password must be at least 6 characters');
+            });
+
+            // Form submit validation
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                let isValid = true;
+
+                if (!validateField(nameInput, nameError, nameInput.value.trim().length >= 3, 'Name must be at least 3 characters')) {
+                    nameInput.style.animation = 'shake 0.3s ease';
+                    setTimeout(() => nameInput.style.animation = '', 300);
+                    isValid = false;
+                }
+
+                if (!validateField(emailInput, emailError, validateEmail(emailInput.value), 'Please enter a valid email address')) {
+                    emailInput.style.animation = 'shake 0.3s ease';
+                    setTimeout(() => emailInput.style.animation = '', 300);
+                    isValid = false;
+                }
+
+                if (!validateField(phoneInput, phoneError, validatePhone(phoneInput.value), 'Enter a valid 10-digit phone number')) {
+                    phoneInput.style.animation = 'shake 0.3s ease';
+                    setTimeout(() => phoneInput.style.animation = '', 300);
+                    isValid = false;
+                }
+
+                if (!validateField(addressInput, addressError, addressInput.value.trim().length > 0, 'Please enter your address')) {
+                    addressInput.style.animation = 'shake 0.3s ease';
+                    setTimeout(() => addressInput.style.animation = '', 300);
+                    isValid = false;
+                }
+
+                if (!validateField(aadhaarInput, aadhaarError, validateAadhaar(aadhaarInput.value), 'Enter a valid 12-digit Aadhaar number')) {
+                    aadhaarInput.style.animation = 'shake 0.3s ease';
+                    setTimeout(() => aadhaarInput.style.animation = '', 300);
+                    isValid = false;
+                }
+
+                if (!validateField(cityInput, cityError, cityInput.value !== '', 'Please select a city')) {
+                    cityInput.style.animation = 'shake 0.3s ease';
+                    setTimeout(() => cityInput.style.animation = '', 300);
+                    isValid = false;
+                }
+
+                if (!validateField(certInput, certError, certInput.files.length > 0, 'Please upload a certificate')) {
+                    certInput.style.animation = 'shake 0.3s ease';
+                    setTimeout(() => certInput.style.animation = '', 300);
+                    isValid = false;
+                }
+
+                if (!validateField(passwordInput, passwordError, passwordInput.value.length >= 6, 'Password must be at least 6 characters')) {
+                    passwordInput.style.animation = 'shake 0.3s ease';
+                    setTimeout(() => passwordInput.style.animation = '', 300);
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Submitting...';
+                    submitBtn.disabled = true;
+                    form.submit();
+                } else {
+                    const firstError = document.querySelector('.error');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>

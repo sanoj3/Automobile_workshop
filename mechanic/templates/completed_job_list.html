@@ -6,107 +6,489 @@
 
 {% block content %}
 
-<div class="container py-4">
+<style>
+    .completed-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    /* Modern Header */
+    .modern-header {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        border-radius: 24px;
+        padding: 30px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
 
-        <div>
-            <h2 class="fw-bold text-success">
-                <i class="bi bi-check-circle-fill"></i> Completed Jobs
-            </h2>
+    .header-title h1 {
+        color: white;
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0 0 5px;
+    }
 
-            <p class="text-muted mb-0">
-                All successfully completed service jobs
-            </p>
+    .header-title h1 i {
+        margin-right: 12px;
+        background: rgba(255,255,255,0.2);
+        padding: 10px;
+        border-radius: 14px;
+    }
+
+    .header-title p {
+        color: rgba(255,255,255,0.85);
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .header-stats {
+        display: flex;
+        gap: 25px;
+        background: rgba(255,255,255,0.15);
+        padding: 12px 25px;
+        border-radius: 20px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 28px;
+        font-weight: 800;
+        color: white;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        color: rgba(255,255,255,0.8);
+    }
+
+    /* Jobs Grid */
+    .jobs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 24px;
+    }
+
+    /* Job Card */
+    .job-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: all 0.2s ease;
+        border: 1px solid #e9d9ff;
+        cursor: pointer;
+    }
+
+    .job-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+        border-color: #c39bd3;
+    }
+
+    /* Card Header */
+    .card-header-green {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        padding: 16px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .job-id {
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        background: rgba(255,255,255,0.2);
+        padding: 4px 12px;
+        border-radius: 50px;
+    }
+
+    .job-date {
+        color: rgba(255,255,255,0.85);
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* Card Body */
+    .card-body {
+        padding: 20px;
+    }
+
+    /* Customer Row */
+    .customer-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f0e8ff;
+    }
+
+    .customer-avatar {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .customer-avatar i {
+        font-size: 24px;
+        color: #8e44ad;
+    }
+
+    .customer-info h4 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 3px;
+    }
+
+    .customer-info p {
+        font-size: 12px;
+        color: #94a3b8;
+        margin: 0;
+    }
+
+    /* Vehicle Row */
+    .vehicle-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 15px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0e8ff;
+    }
+
+    .vehicle-icon {
+        width: 40px;
+        height: 40px;
+        background: #faf5ff;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .vehicle-icon i {
+        font-size: 20px;
+        color: #8e44ad;
+    }
+
+    .vehicle-details h5 {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 3px;
+    }
+
+    .vehicle-details span {
+        font-size: 11px;
+        color: #94a3b8;
+    }
+
+    /* Services Section */
+    .services-section {
+        margin-bottom: 15px;
+    }
+
+    .services-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .services-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .service-tag {
+        background: #f3e9ff;
+        color: #6c3483;
+        padding: 4px 10px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    /* Rating Section */
+    .rating-section {
+        margin: 12px 0;
+        padding: 8px 0;
+        border-top: 1px dashed #f0e8ff;
+        border-bottom: 1px dashed #f0e8ff;
+    }
+
+    .rating-stars {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .stars {
+        display: inline-flex;
+        gap: 3px;
+    }
+
+    .star-filled {
+        color: #fbbf24;
+        font-size: 14px;
+    }
+
+    .star-empty {
+        color: #d1d5db;
+        font-size: 14px;
+    }
+
+    .rating-value {
+        font-size: 13px;
+        font-weight: 600;
+        color: #f59e0b;
+    }
+
+    .review-text {
+        font-size: 11px;
+        color: #94a3b8;
+        margin-top: 6px;
+        font-style: italic;
+    }
+
+    /* Amount Row */
+    .amount-row {
+        background: #faf5ff;
+        border-radius: 14px;
+        padding: 12px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .amount-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    .amount-value {
+        font-size: 20px;
+        font-weight: 800;
+        color: #16a34a;
+    }
+
+    /* Empty State */
+    .empty-state-modern {
+        text-align: center;
+        padding: 80px 30px;
+        background: white;
+        border-radius: 24px;
+        border: 1px solid #e9d9ff;
+    }
+
+    .empty-icon-modern {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+    }
+
+    .empty-icon-modern i {
+        font-size: 48px;
+        color: #8e44ad;
+    }
+
+    .empty-state-modern h3 {
+        font-weight: 700;
+        color: #4a1d6d;
+        margin-bottom: 10px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .modern-header {
+            padding: 20px;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .header-title h1 {
+            font-size: 22px;
+        }
+        
+        .header-stats {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .jobs-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .customer-row {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .vehicle-row {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .rating-stars {
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="completed-container">
+    
+    <!-- Modern Header -->
+    <div class="modern-header">
+        <div class="header-title">
+            <h1>
+                <i class="bi bi-check-circle-fill"></i>
+                Completed Jobs
+            </h1>
+            <p>Successfully finished service requests</p>
         </div>
-
-    </div>
-
-    <!-- Table -->
-    <div class="card border-0 shadow-sm rounded-4">
-
-        <div class="card-body">
-
-            <div class="table-responsive">
-
-                <table class="table table-hover table-bordered align-middle text-center">
-
-                    <thead class="table-dark">
-
-                        <tr>
-                            <th>#</th>
-                            <th>Customer</th>
-                            <th>Vehicle</th>
-                            <th>Complaints</th>
-                            <th>Date</th>
-                            <th>Total</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {% for job in jobs %}
-
-                        <tr style="cursor:pointer;"
-                            onclick="window.location.href='/mechanic/completed-job/{{ job.id }}/'">
-
-                            <td>{{ forloop.counter }}</td>
-
-                            <td>
-                                {{ job.customer.name }}
-                            </td>
-
-                            <td>
-                                {{ job.vehicle.vehicle_name }}
-                            </td>
-
-                            <td>
-
-                                {% for complaint in job.complaints.all %}
-
-                                    <span class="badge bg-info text-dark m-1">
-                                        {{ complaint.complaint_name }}
-                                    </span>
-
-                                {% empty %}
-
-                                    <span class="text-muted">No Complaints</span>
-
-                                {% endfor %}
-
-                            </td>
-
-                            <td>
-                                {{ job.created_at|date:"d M Y" }}
-                            </td>
-
-                            <td>
-                                ₹ {{ job.total_price }}
-                            </td>
-
-                        </tr>
-
-                        {% empty %}
-
-                        <tr>
-                            <td colspan="6" class="text-muted py-4">
-                                No completed jobs found
-                            </td>
-                        </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
+        <div class="header-stats">
+            <div class="stat-item">
+                <div class="stat-number">{{ jobs|length }}</div>
+                <div class="stat-label">Total Jobs</div>
             </div>
-
+           
         </div>
-
     </div>
+
+    <!-- Jobs Grid -->
+    {% if jobs %}
+    <div class="jobs-grid">
+        {% for job in jobs %}
+        <div class="job-card" onclick="window.location.href='/mechanic/completed-job/{{ job.id }}/'">
+            <div class="card-header-green">
+                <span class="job-id">
+                    <i class="bi bi-receipt"></i> #{{ job.id }}
+                </span>
+                <span class="job-date">
+                    <i class="bi bi-calendar3"></i> {{ job.completed_at|default:job.created_at|date:"d M Y" }}
+                </span>
+            </div>
+            <div class="card-body">
+                <!-- Customer Info -->
+                <div class="customer-row">
+                    <div class="customer-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div class="customer-info">
+                        <h4>{{ job.customer.name }}</h4>
+                        <p>{{ job.customer.user.email|default:"No email" }}</p>
+                    </div>
+                </div>
+                
+                <!-- Vehicle Info -->
+                <div class="vehicle-row">
+                    <div class="vehicle-icon">
+                        <i class="bi bi-car-front-fill"></i>
+                    </div>
+                    <div class="vehicle-details">
+                        <h5>{{ job.vehicle.vehicle_name }}</h5>
+                        <span>{{ job.vehicle.vehicle_number }}</span>
+                    </div>
+                </div>
+                
+                <!-- Services -->
+                <div class="services-section">
+                    <div class="services-title">
+                        <i class="bi bi-wrench"></i> Services Provided
+                    </div>
+                    <div class="services-list">
+                        {% for complaint in job.complaints.all %}
+                        <span class="service-tag">{{ complaint.complaint_name }}</span>
+                        {% empty %}
+                        <span class="service-tag">No services</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Dynamic Rating Section -->
+                <div class="rating-section">
+                    <div class="rating-stars">
+                        <div class="stars">
+                            {% with rating=job.average_rating|default:0 %}
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= rating %}
+                                        <i class="bi bi-star-fill star-filled"></i>
+                                    {% elif forloop.counter <= rating|add:0.4 %}
+                                        <i class="bi bi-star-half star-filled"></i>
+                                    {% else %}
+                                        <i class="bi bi-star star-empty"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endwith %}
+                        </div>
+                        <span class="rating-value">
+                            {% if job.average_rating %}
+                                {{ job.average_rating|floatformat:1 }} / 5
+                            {% else %}
+                                Not rated yet
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% if job.review_text %}
+                    <div class="review-text">
+                                        <i class="bi bi-chat-quote"></i> "{{ job.review_text|truncatechars:60 }}"
+                    </div>
+                    {% elif job.feedback_set.all %}
+                        {% for feedback in job.feedback_set.all|slice:":1" %}
+                            <div class="review-text">
+                                <i class="bi bi-chat-quote"></i> "{{ feedback.message|truncatechars:60 }}"
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                
+                <!-- Amount -->
+                <div class="amount-row">
+                    <span class="amount-label">Total Amount</span>
+                    <span class="amount-value">₹ {{ job.total_price }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <!-- Empty State -->
+    <div class="empty-state-modern">
+        <div class="empty-icon-modern">
+            <i class="bi bi-check-circle"></i>
+        </div>
+        <h3>No Completed Jobs Yet</h3>
+        <p class="text-muted">Your completed jobs will appear here</p>
+    </div>
+    {% endif %}
 
 </div>
 

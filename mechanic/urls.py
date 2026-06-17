@@ -20,4 +20,7 @@ urlpatterns = [
     path('inprogress/<int:id>/', views.inprogress_status, name='inprogress_status'),
     path('completed-job/', views.completed_jobs_list, name='completed_jobs_list'),
     path('completed-job/<int:id>/', views.job_completed_view, name='job_completed_view'),
+    path('bill-generate/<int:id>/', views.bill_generate, name='bill_generate'),
+    path('complete-job/<int:id>/', views.complete_job, name='complete_job'),
+    path('earnings/', views.earnings, name='earnings'),
 ]

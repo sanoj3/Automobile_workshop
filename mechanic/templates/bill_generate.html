@@ -1,0 +1,443 @@
+{% extends 'base_mechanic.html' %}
+{% load static %}
+
+{% block title %}Generated Bill{% endblock %}
+
+{% block content %}
+
+<style>
+    .bill-wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    /* Invoice Card */
+    .invoice-card {
+        background: white;
+        border-radius: 24px;
+        border: 1px solid #e9d9ff;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(106, 13, 173, 0.06);
+        transition: all 0.3s ease;
+    }
+
+    .invoice-card:hover {
+        box-shadow: 0 8px 25px rgba(106, 13, 173, 0.1);
+    }
+
+    /* Header */
+    .invoice-header {
+        background: linear-gradient(135deg, #6c3483, #8e44ad, #a569bd);
+        padding: 30px 35px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .invoice-title {
+        font-size: 26px;
+        font-weight: 800;
+        color: white;
+        margin: 0 0 4px;
+    }
+
+    .invoice-title i {
+        color: #ffd966;
+        margin-right: 10px;
+    }
+
+    .invoice-subtitle {
+        color: rgba(255,255,255,0.8);
+        font-size: 14px;
+        margin: 0;
+    }
+
+    /* Payment Badge */
+    .badge-paid {
+        background: #dcfce7;
+        color: #16a34a;
+        padding: 6px 18px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-pending {
+        background: #fef3c7;
+        color: #d97706;
+        padding: 6px 18px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Body */
+    .invoice-body {
+        padding: 30px 35px;
+    }
+
+    /* Detail Box */
+    .detail-box {
+        background: #faf8ff;
+        border-radius: 16px;
+        padding: 18px 20px;
+        border: 1px solid #f0e8ff;
+        height: 100%;
+        transition: 0.3s;
+    }
+
+    .detail-box:hover {
+        background: #f5f0ff;
+        border-color: #e0d0f0;
+    }
+
+    .detail-box .section-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #4a1d6d;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .detail-box .section-title i {
+        color: #8e44ad;
+    }
+
+    .detail-box p {
+        margin: 0 0 6px;
+        font-size: 14px;
+        color: #1e293b;
+    }
+
+    .detail-box p strong {
+        color: #475569;
+        font-weight: 600;
+    }
+
+    /* Table */
+    .table-custom {
+        margin-bottom: 0;
+    }
+
+    .table-custom thead {
+        background: #f3e9ff;
+    }
+
+    .table-custom thead th {
+        color: #4a1d6d;
+        font-weight: 700;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        padding: 12px 16px;
+        border: none;
+    }
+
+    .table-custom tbody td {
+        padding: 12px 16px;
+        vertical-align: middle;
+        font-size: 14px;
+        border-bottom: 1px solid #f0e8ff;
+    }
+
+    .table-custom tbody tr:hover {
+        background: #faf8ff;
+    }
+
+    .extra-badge {
+        background: #f3e9ff;
+        color: #6c3483;
+        padding: 2px 10px;
+        border-radius: 50px;
+        font-size: 10px;
+        font-weight: 600;
+        margin-left: 6px;
+    }
+
+    /* Grand Total */
+    .grand-total-box {
+        background: linear-gradient(135deg, #16a34a, #22c55e);
+        border-radius: 18px;
+        padding: 25px 30px;
+        color: white;
+        margin-top: 20px;
+    }
+
+    .grand-total-box .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .grand-total-box .divider-line {
+        border-top: 1px solid rgba(255,255,255,0.2);
+        margin: 12px 0;
+    }
+
+    .grand-total-box .total-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 20px;
+        font-weight: 800;
+    }
+
+    /* Buttons */
+    .btn-group-bill {
+        display: flex;
+        gap: 12px;
+        margin-top: 25px;
+        flex-wrap: wrap;
+    }
+
+    .btn-print {
+        background: #1e293b;
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-print:hover {
+        background: #0f172a;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    .btn-back-bill {
+        background: transparent;
+        border: 1.5px solid #e9d9ff;
+        color: #6c3483;
+        padding: 10px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-back-bill:hover {
+        background: #f3e9ff;
+        border-color: #c39bd3;
+        transform: translateY(-2px);
+        color: #4a1d6d;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .invoice-body {
+            padding: 20px;
+        }
+
+        .invoice-header {
+            padding: 25px 20px;
+        }
+
+        .invoice-title {
+            font-size: 22px;
+        }
+
+        .grand-total-box {
+            padding: 20px;
+        }
+
+        .grand-total-box .total-row {
+            font-size: 18px;
+        }
+
+        .btn-group-bill {
+            flex-direction: column;
+        }
+
+        .btn-print, .btn-back-bill {
+            justify-content: center;
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="bill-wrap">
+    <div class="invoice-card">
+
+        <!-- Header -->
+        <div class="invoice-header">
+            <div>
+                <h1 class="invoice-title">
+                    <i class="bi bi-receipt"></i>
+                    Service Invoice
+                </h1>
+                <p class="invoice-subtitle">
+                    <i class="bi bi-calendar3"></i>
+                    Generated: {{ bill.created_at|date:"d M Y - h:i A" }}
+                </p>
+            </div>
+            <div>
+                {% if bill.payment_status == 'Paid' %}
+                    <span class="badge-paid">
+                        <i class="bi bi-check-circle-fill"></i> Paid
+                    </span>
+                {% else %}
+                    <span class="badge-pending">
+                        <i class="bi bi-clock"></i> Pending Payment
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Body -->
+        <div class="invoice-body">
+
+            <!-- Customer & Vehicle -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="detail-box">
+                        <div class="section-title">
+                            <i class="bi bi-person-badge"></i> Customer Details
+                        </div>
+                        <p><strong>Name:</strong> {{ booking.customer.name }}</p>
+                        <p><strong>Phone:</strong> {{ booking.customer.number }}</p>
+                        <p><strong>City:</strong> {{ booking.city.name }}</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="detail-box">
+                        <div class="section-title">
+                            <i class="bi bi-car-front"></i> Vehicle Details
+                        </div>
+                        <p><strong>Vehicle:</strong> {{ booking.vehicle.vehicle_name }}</p>
+                        <p><strong>Number:</strong> {{ booking.vehicle.vehicle_number }}</p>
+                        <p><strong>Mechanic:</strong> {{ booking.mechanic.name }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Complaints -->
+            <div class="mb-4">
+                <h5 class="section-title" style="font-size:16px;font-weight:700;color:#4a1d6d;margin-bottom:12px;">
+                    <i class="bi bi-clipboard-check" style="color:#8e44ad;"></i> Complaint Charges
+                </h5>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Service</th>
+                                <th style="text-align:right;">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for complaint in booking.complaints.all %}
+                            <tr>
+                                <td>{{ complaint.complaint_name }}</td>
+                                <td style="text-align:right;">₹ {{ complaint.basic_service_price }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="2" class="text-center text-muted">No complaints added</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Spare Parts -->
+            <div class="mb-4">
+                <h5 class="section-title" style="font-size:16px;font-weight:700;color:#4a1d6d;margin-bottom:12px;">
+                    <i class="bi bi-box-seam" style="color:#8e44ad;"></i> Spare Parts
+                </h5>
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Part Name</th>
+                                <th style="text-align:center;">Qty</th>
+                                <th style="text-align:right;">Price</th>
+                                <th style="text-align:right;">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in spare_parts %}
+                            <tr>
+                                <td>
+                                    {{ item.part_name }}
+                                    {% if item.is_extra %}
+                                        <span class="extra-badge">Extra</span>
+                                    {% endif %}
+                                </td>
+                                <td style="text-align:center;">{{ item.quantity }}</td>
+                                <td style="text-align:right;">₹ {{ item.price }}</td>
+                                <td style="text-align:right;">₹ {{ item.total_price }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center text-muted">No spare parts used</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bill Summary -->
+            <div class="row justify-content-end">
+                <div class="col-lg-6 col-md-8">
+                    <div class="grand-total-box">
+                        <div class="summary-row">
+                            <span>Complaint Charges</span>
+                            <strong>₹ {{ bill.complaint_total|floatformat:2 }}</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Spare Parts</span>
+                            <strong>₹ {{ bill.spare_parts_total|floatformat:2 }}</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Extra Parts</span>
+                            <strong>₹ {{ bill.extra_parts_total|floatformat:2 }}</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Labour Charge</span>
+                            <strong>₹ {{ bill.labour_charge|floatformat:2 }}</strong>
+                        </div>
+                        <div class="divider-line"></div>
+                        <div class="total-row">
+                            <span>Grand Total</span>
+                            <span>₹ {{ bill.grand_total|floatformat:2 }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-group-bill">
+                <button onclick="window.print()" class="btn-print">
+                    <i class="bi bi-printer"></i> Print Bill
+                </button>
+                <a href="{% url 'complete_job' booking.id %}" class="btn-back-bill">
+                    <i class="bi bi-arrow-left"></i> Complete Job
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

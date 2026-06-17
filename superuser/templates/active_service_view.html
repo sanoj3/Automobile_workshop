@@ -1,0 +1,103 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Service Details{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">
+            <i class="bi bi-tools"></i>
+            Active Service Details
+        </h2>
+
+        <a href="{% url 'active_service_booking' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                Booking #{{ service.id }}
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Customer</label>
+                    <p>{{ service.customer }}</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Vehicle</label>
+                    <p>{{ service.vehicle }}</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Mechanic</label>
+                    <p>
+                        {% if service.mechanic %}
+                            {{ service.mechanic }}
+                        {% else %}
+                            Not Assigned
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Booking Date</label>
+                    <p>{{ service.created_at }}</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Status</label>
+                    <p>
+                        {% if service.status == 'Assigned' %}
+                            <span class="badge bg-warning text-dark">Assigned</span>
+
+                        {% elif service.status == 'Accepted' %}
+                            <span class="badge bg-info">Accepted</span>
+
+                        {% elif service.status == 'In_progress' %}
+                            <span class="badge bg-primary">In Progress</span>
+
+                        {% elif service.status == 'Completed' %}
+                            <span class="badge bg-success">Completed</span>
+
+                        {% else %}
+                            <span class="badge bg-secondary">
+                                {{ service.status }}
+                            </span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                {% if service.service_type %}
+                <div class="col-md-6 mb-3">
+                    <label class="fw-bold">Service Type</label>
+                    <p>{{ service.service_type }}</p>
+                </div>
+                {% endif %}
+
+                {% if service.problem_description %}
+                <div class="col-12 mb-3">
+                    <label class="fw-bold">Problem Description</label>
+                    <div class="border rounded p-3 bg-light">
+                        {{ service.problem_description }}
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

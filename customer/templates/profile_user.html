@@ -6,333 +6,572 @@
 {% block content %}
 
 <style>
-
-    .profile-container{
-        max-width: 700px;
+    /* Animation Keyframes */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+    
+    .profile-container {
+        max-width: 1000px;
         margin: auto;
+        animation: fadeInUp 0.5s ease-out;
     }
-
-    .profile-card{
-        background: white;
-        border-radius: 24px;
+    
+    /* Profile Header - New Design */
+    .profile-header {
+        background: linear-gradient(135deg, #6c3483, #8e44ad, #a569bd);
+        border-radius: 32px;
+        padding: 30px;
+        margin-bottom: 30px;
+        position: relative;
         overflow: hidden;
-        border: none;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        box-shadow: 0 15px 35px rgba(106, 13, 173, 0.2);
     }
-
-    /* Banner */
-
-    .profile-banner{
-        height: 160px;
-        background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    .profile-header::after {
+        content: '';
+        position: absolute;
+        bottom: -20%;
+        left: -5%;
+        width: 250px;
+        height: 250px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite reverse;
+    }
+    
+    /* Profile Info Row */
+    .profile-info-row {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Profile Image - New Style */
+    .profile-image-large {
         position: relative;
     }
-
-    /* Profile Image */
-
-    .profile-image-wrapper{
-        position: absolute;
-        left: 50%;
-        bottom: -45px;
-        transform: translateX(-50%);
-    }
-
-    .profile-image{
-        width: 95px;
-        height: 95px;
+    
+    .profile-image-large .profile-img {
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
-        overflow: hidden;
-        border: 4px solid white;
+        border: 4px solid rgba(255, 255, 255, 0.3);
         background: white;
-        box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
     }
-
-    .profile-image img{
+    
+    .profile-image-large .profile-img:hover {
+        transform: scale(1.05);
+        border-color: white;
+    }
+    
+    .profile-image-large .profile-img img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
-
-    .profile-placeholder{
+    
+    .profile-placeholder-large {
         width: 100%;
         height: 100%;
-        background: #2563eb;
+        background: linear-gradient(135deg, #ffd966, #f39c12);
         display: flex;
         align-items: center;
         justify-content: center;
+        color: #4a1d6d;
+        font-size: 48px;
+        font-weight: 700;
+    }
+    
+    .profile-name-large h2 {
+        font-size: 28px;
+        font-weight: 800;
         color: white;
+        margin-bottom: 8px;
+    }
+    
+    .profile-name-large p {
+        color: rgba(255, 255, 255, 0.85);
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .profile-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 5px 15px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+    
+    /* Stats Cards - New Design */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-card-new {
+        background: white;
+        border-radius: 24px;
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(142, 68, 173, 0.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        animation: fadeInUp 0.5s ease-out;
+        animation-fill-mode: both;
+    }
+    
+    .stat-card-new:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card-new:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card-new:nth-child(3) { animation-delay: 0.3s; }
+    
+    .stat-card-new:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(106, 13, 173, 0.12);
+        border-color: rgba(142, 68, 173, 0.2);
+    }
+    
+    .stat-icon-circle {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+    }
+    
+    .stat-icon-circle i {
+        font-size: 28px;
+        color: #8e44ad;
+    }
+    
+    .stat-number-new {
         font-size: 32px;
-        font-weight: 700;
-    }
-
-    /* Body */
-
-    .profile-body{
-        padding: 60px 25px 25px;
-    }
-
-    .profile-name{
-        font-size: 24px;
-        font-weight: 700;
+        font-weight: 800;
+        color: #4a1d6d;
         margin-bottom: 5px;
     }
-
-    .profile-email{
-        color: #6b7280;
-        font-size: 13px;
-    }
-
-    .profile-role{
-        display: inline-block;
-        margin-top: 10px;
-        padding: 6px 14px;
-        border-radius: 30px;
-        background: rgba(37,99,235,0.1);
-        color: #2563eb;
+    
+    .stat-label-new {
         font-size: 12px;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 1px;
         font-weight: 600;
     }
-
-    /* Info Card */
-
-    .info-card{
-        background: #f8fafc;
-        border-radius: 18px;
-        padding: 16px;
-        height: 100%;
-        border: 1px solid #eef2f7;
+    
+    /* Info Cards - New Design */
+    .info-section {
+        background: white;
+        border-radius: 28px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(142, 68, 173, 0.1);
+        transition: all 0.3s ease;
     }
-
-    .info-icon{
-        width: 45px;
-        height: 45px;
-        border-radius: 14px;
+    
+    .info-section:hover {
+        box-shadow: 0 10px 25px rgba(106, 13, 173, 0.1);
+    }
+    
+    .section-title-new {
+        font-size: 18px;
+        font-weight: 700;
+        color: #4a1d6d;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f0e8ff;
         display: flex;
         align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 18px;
-        flex-shrink: 0;
+        gap: 10px;
     }
-
-    .bg-blue{
-        background: #2563eb;
+    
+    .section-title-new i {
+        color: #8e44ad;
+        font-size: 20px;
     }
-
-    .bg-green{
-        background: #16a34a;
+    
+    /* Info Rows */
+    .info-row-new {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid #f3e9ff;
     }
-
-    .bg-dark{
-        background: #111827;
+    
+    .info-row-new:last-child {
+        border-bottom: none;
     }
-
-    .info-title{
-        font-size: 12px;
+    
+    .info-label-new {
+        font-weight: 600;
         color: #6b7280;
-        margin-bottom: 3px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
-
-    .info-value{
-        margin: 0;
+    
+    .info-label-new i {
+        color: #8e44ad;
+        width: 20px;
+    }
+    
+    .info-value-new {
+        font-weight: 700;
+        color: #2c0b3a;
+    }
+    
+    /* Action Buttons - New Style */
+    .action-buttons-new {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .btn-new {
+        padding: 12px 28px;
+        border-radius: 50px;
         font-size: 14px;
         font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        cursor: pointer;
     }
-
-    /* Buttons */
-
-    .profile-btn{
-        padding: 9px 18px;
-        border-radius: 12px;
-        font-size: 14px;
-        font-weight: 500;
+    
+    .btn-primary-new {
+        background: linear-gradient(135deg, #8e44ad, #a569bd);
+        border: none;
+        color: white;
+        box-shadow: 0 4px 12px rgba(142, 68, 173, 0.3);
     }
-
+    
+    .btn-primary-new:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(142, 68, 173, 0.4);
+        color: white;
+    }
+    
+    .btn-outline-new {
+        background: transparent;
+        border: 2px solid #e9d9ff;
+        color: #6c3483;
+    }
+    
+    .btn-outline-new:hover {
+        background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+        border-color: #c39bd3;
+        transform: translateY(-2px);
+        color: #4a1d6d;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .profile-info-row {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .profile-name-large {
+            text-align: center;
+        }
+        
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        .action-buttons-new {
+            justify-content: center;
+        }
+        
+        .info-row-new {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        .profile-header {
+            padding: 25px;
+        }
+        
+        .profile-image-large .profile-img {
+            width: 100px;
+            height: 100px;
+        }
+        
+        .profile-name-large h2 {
+            font-size: 22px;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .profile-header {
+            padding: 20px;
+        }
+        
+        .stat-number-new {
+            font-size: 24px;
+        }
+        
+        .btn-new {
+            padding: 10px 20px;
+            font-size: 13px;
+        }
+        
+        .info-section {
+            padding: 18px;
+        }
+    }
 </style>
 
 <div class="container py-4">
-
     <div class="profile-container">
-
-        <div class="profile-card">
-
-            <!-- Banner -->
-
-            <div class="profile-banner">
-
-                <div class="profile-image-wrapper">
-
-                    <div class="profile-image">
-
+        
+        <!-- Profile Header - New Design -->
+        <div class="profile-header">
+            <div class="profile-info-row">
+                <div class="profile-image-large">
+                    <div class="profile-img">
                         {% if customer.profile_pic %}
-
-                            <img src="{{ customer.profile_pic.url }}"
-                                 alt="Profile">
-
+                            <img src="{{ customer.profile_pic.url }}" alt="Profile Picture">
                         {% else %}
-
-                            <div class="profile-placeholder">
+                            <div class="profile-placeholder-large">
                                 {{ customer.name|slice:":1"|upper }}
                             </div>
-
                         {% endif %}
-
                     </div>
-
                 </div>
-
+                <div class="profile-name-large">
+                    <h2>{{ customer.name }}</h2>
+                    <p><i class="bi bi-envelope-fill"></i> {{ user.email }}</p>
+                    <div class="profile-badge">
+                        <i class="bi bi-patch-check-fill"></i> Premium Customer
+                    </div>
+                </div>
             </div>
-
-            <!-- Body -->
-
-            <div class="profile-body">
-
-                <!-- User -->
-
-                <div class="text-center mb-4">
-
-                    <h3 class="profile-name">
-                        {{ customer.name }}
-                    </h3>
-
-                    <div class="profile-email">
-                        <i class="bi bi-envelope-fill"></i>
-                        {{ user.email }}
-                    </div>
-
-                    <div class="profile-role">
-                        Customer Account
-                    </div>
-
-                </div>
-
-                <!-- Info -->
-
-                <div class="row g-3">
-
-                    <!-- Phone -->
-
-                    <div class="col-md-6">
-
-                        <div class="info-card">
-
-                            <div class="d-flex align-items-center">
-
-                                <div class="info-icon bg-blue">
-                                    <i class="bi bi-telephone-fill"></i>
-                                </div>
-
-                                <div class="ms-3">
-
-                                    <div class="info-title">
-                                        Phone
-                                    </div>
-
-                                    <p class="info-value">
-                                        {{ customer.number }}
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- City -->
-
-                    <div class="col-md-6">
-
-                        <div class="info-card">
-
-                            <div class="d-flex align-items-center">
-
-                                <div class="info-icon bg-green">
-                                    <i class="bi bi-geo-alt-fill"></i>
-                                </div>
-
-                                <div class="ms-3">
-
-                                    <div class="info-title">
-                                        City
-                                    </div>
-
-                                    <p class="info-value">
-                                        {{ customer.city.name|default:"Not Added" }}
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- Address -->
-
-                    <div class="col-12">
-
-                        <div class="info-card">
-
-                            <div class="d-flex align-items-start">
-
-                                <div class="info-icon bg-dark">
-                                    <i class="bi bi-house-door-fill"></i>
-                                </div>
-
-                                <div class="ms-3">
-
-                                    <div class="info-title">
-                                        Address
-                                    </div>
-
-                                    <p class="info-value">
-                                        {{ customer.address|default:"Not Added" }}
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- Buttons -->
-
-                <div class="text-center mt-4">
-
-                    <a href="{% url 'edit_profile_user' customer.id %}"
-                       class="btn btn-primary profile-btn me-2">
-
-                        <i class="bi bi-pencil-square"></i>
-                        Edit
-
-                    </a>
-
-                    {% if user.has_usable_password %}
-                    <a href="{% url 'profile_user_change_password' %}"
-                       class="btn btn-outline-dark profile-btn">
-
-                        <i class="bi bi-shield-lock"></i>
-                        Password
-
-                    </a>
-                    
-                    {% endif %}
-                
-                </div>
-
-            </div>
-
         </div>
-
+        
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card-new">
+                <div class="stat-icon-circle">
+                    <i class="bi bi-car-front-fill"></i>
+                </div>
+                <div class="stat-number-new">{{ total_vehicles|default:"0" }}</div>
+                <div class="stat-label-new">Total Vehicles</div>
+            </div>
+            <div class="stat-card-new">
+                <div class="stat-icon-circle">
+                    <i class="bi bi-receipt"></i>
+                </div>
+                <div class="stat-number-new">{{ total_orders|default:"0" }}</div>
+                <div class="stat-label-new">Service Orders</div>
+            </div>
+            <div class="stat-card-new">
+                <div class="stat-icon-circle">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+                <div class="stat-number-new">{{ member_since|date:"Y"|default:"New" }}</div>
+                <div class="stat-label-new">Member Since</div>
+            </div>
+        </div>
+        
+        <!-- Contact Information Section -->
+        <div class="info-section">
+            <div class="section-title-new">
+                <i class="bi bi-info-circle-fill"></i>
+                Contact Information
+            </div>
+            <div class="info-row-new">
+                <div class="info-label-new">
+                    <i class="bi bi-telephone-fill"></i> Phone Number
+                </div>
+                <div class="info-value-new">{{ customer.number|default:"Not Added" }}</div>
+            </div>
+            <div class="info-row-new">
+                <div class="info-label-new">
+                    <i class="bi bi-envelope-fill"></i> Email Address
+                </div>
+                <div class="info-value-new">{{ user.email }}</div>
+            </div>
+        </div>
+        
+        <!-- Location Information Section -->
+        <div class="info-section">
+            <div class="section-title-new">
+                <i class="bi bi-geo-alt-fill"></i>
+                Location Details
+            </div>
+            <div class="info-row-new">
+                <div class="info-label-new">
+                    <i class="bi bi-building"></i> City
+                </div>
+                <div class="info-value-new">{{ customer.city.name|default:"Not Added" }}</div>
+            </div>
+            <div class="info-row-new">
+                <div class="info-label-new">
+                    <i class="bi bi-house-door-fill"></i> Address
+                </div>
+                <div class="info-value-new">{{ customer.address|default:"Not Added" }}</div>
+            </div>
+        </div>
+        
+        <!-- Account Settings Section -->
+        <div class="info-section">
+            <div class="section-title-new">
+                <i class="bi bi-shield-lock-fill"></i>
+                Account Settings
+            </div>
+            <div class="info-row-new">
+                <div class="info-label-new">
+                    <i class="bi bi-person-badge"></i> Account Type
+                </div>
+                <div class="info-value-new">Customer Account</div>
+            </div>
+            <div class="info-row-new">
+                <div class="info-label-new">
+                    <i class="bi bi-calendar3"></i> Joined Date
+                </div>
+                <div class="info-value-new">{{ member_since|date:"F d, Y"|default:"Recently" }}</div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons-new">
+            <a href="{% url 'edit_profile_user' customer.id %}" class="btn-new btn-primary-new">
+                <i class="bi bi-pencil-square"></i> Edit Profile
+            </a>
+            {% if user.has_usable_password %}
+            <a href="{% url 'profile_user_change_password' %}" class="btn-new btn-outline-new">
+                <i class="bi bi-shield-lock"></i> Change Password
+            </a>
+            {% endif %}
+        </div>
+        
     </div>
-
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate stats numbers
+        const statNumbers = document.querySelectorAll('.stat-number-new');
+        statNumbers.forEach(stat => {
+            const finalValue = stat.innerText;
+            if (!isNaN(parseInt(finalValue)) && finalValue !== "New") {
+                let current = 0;
+                const target = parseInt(finalValue);
+                const increment = Math.ceil(target / 30);
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        stat.innerText = target;
+                        clearInterval(timer);
+                    } else {
+                        stat.innerText = current;
+                    }
+                }, 20);
+            }
+        });
+        
+        // Add hover effect on stat cards
+        const statCards = document.querySelectorAll('.stat-card-new');
+        statCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                const icon = this.querySelector('.stat-icon-circle i');
+                icon.style.transform = 'scale(1.1)';
+                icon.style.transition = 'transform 0.3s ease';
+            });
+            card.addEventListener('mouseleave', function() {
+                const icon = this.querySelector('.stat-icon-circle i');
+                icon.style.transform = 'scale(1)';
+            });
+        });
+    });
+</script>
 
 {% endblock %}

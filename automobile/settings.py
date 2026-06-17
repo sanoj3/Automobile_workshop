@@ -144,7 +144,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = '/login/'
 
 ACCOUNT_LOGIN_METHODS = {'email'}
@@ -166,3 +166,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+RAZORPAY_KEY_ID = "rzp_test_SuFMstr7DsrOLO"
+RAZORPAY_KEY_SECRET = "58gixL01ZLwwQaj9R5URNUaJ"

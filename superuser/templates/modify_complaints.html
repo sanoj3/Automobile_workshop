@@ -1,0 +1,230 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Modify Complaints{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .parts-wrapper{
+        min-height:90vh;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        padding:30px 15px;
+    }
+
+    .parts-card{
+        width:100%;
+        max-width:600px;
+        background:#fff;
+        border-radius:25px;
+        overflow:hidden;
+        box-shadow:0 15px 40px rgba(0,0,0,0.12);
+        animation:fadeIn 0.5s ease;
+    }
+
+    .parts-header{
+        background:linear-gradient(135deg,#f59e0b,#f97316);
+        color:#fff;
+        text-align:center;
+        padding:35px 20px;
+    }
+
+    .parts-header i{
+        font-size:65px;
+        margin-bottom:12px;
+    }
+
+    .parts-header h2{
+        font-weight:700;
+        margin-bottom:5px;
+    }
+
+    .parts-header p{
+        margin:0;
+        opacity:0.9;
+    }
+
+    .parts-body{
+        padding:35px;
+    }
+
+    .form-label{
+        font-weight:600;
+        margin-bottom:8px;
+    }
+
+    .form-control{
+        border-radius:14px;
+        padding:13px;
+        border:1px solid #d1d5db;
+        transition:0.3s;
+    }
+
+    .form-control:focus{
+        border-color:#f59e0b;
+        box-shadow:0 0 0 0.2rem rgba(245,158,11,0.15);
+    }
+
+    .btn-update{
+        background:linear-gradient(135deg,#f59e0b,#f97316);
+        color:white;
+        border:none;
+        border-radius:14px;
+        padding:13px;
+        font-size:17px;
+        font-weight:600;
+        transition:0.3s;
+    }
+
+    .btn-update:hover{
+        transform:translateY(-2px);
+        opacity:0.95;
+        color:white;
+    }
+
+    .back-link{
+        text-align:center;
+        margin-top:20px;
+    }
+
+    .back-link a{
+        text-decoration:none;
+        color:#f59e0b;
+        font-weight:600;
+    }
+
+    .back-link a:hover{
+        text-decoration:underline;
+    }
+
+    .alert{
+        border-radius:12px;
+    }
+
+    .preview-img{
+        width:100%;
+        max-height:220px;
+        object-fit:cover;
+        border-radius:15px;
+        margin-top:10px;
+        border:2px dashed #ddd;
+        padding:5px;
+    }
+
+    @keyframes fadeIn{
+        from{
+            opacity:0;
+            transform:translateY(20px);
+        }
+        to{
+            opacity:1;
+            transform:translateY(0);
+        }
+    }
+
+</style>
+
+<div class="parts-wrapper">
+
+    <div class="parts-card">
+
+        <!-- Header -->
+        <div class="parts-header">
+
+            <i class="bi bi-pencil-square"></i>
+
+            <h2>Modify Complaints</h2>
+
+            <p>Update your complaints details</p>
+
+        </div>
+
+        <!-- Body -->
+        <div class="parts-body">
+
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success shadow-sm">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Form -->
+            <form method="POST"
+                  enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <!-- Complaint Name -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        <i class="bi bi-tools me-1 text-warning"></i>
+                        Complaint Name
+                    </label>
+
+                    <input type="text"
+                           name="complaint_name"
+                           class="form-control"
+                           value="{{ complaints.complaint_name }}"
+                           placeholder="Enter complaint name"
+                           required>
+
+                </div>
+
+                <!-- Price -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        <i class="bi bi-currency-rupee me-1 text-warning"></i>
+                        Basic Price
+                    </label>
+
+                    <input type="number"
+                           name="basic_price"
+                           class="form-control"
+                           value="{{ complaints.basic_service_price }}"
+                           placeholder="Enter basic price"
+                           required>
+
+                </div>
+
+                <!-- Button -->
+                <div class="d-grid">
+
+                    <button type="submit"
+                            class="btn btn-update">
+
+                        <i class="bi bi-check-circle me-1"></i>
+                        Update Complaint
+
+                    </button>
+
+                </div>
+
+            </form>
+
+            <!-- Back -->
+            <div class="back-link">
+
+                <a href="{% url 'complaint_list_view' %}">
+
+                    <i class="bi bi-arrow-left"></i>
+                    Back to complaint list
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% endblock %}

@@ -1,212 +1,757 @@
 {% extends 'base.html' %}
 
+{% block title %}Service Booking{% endblock %}
 {% block header %}Service Booking{% endblock %}
 
 {% block content %}
 
 <style>
-
-    body{
-        background-color: #f5f5f5;
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
     }
-
-    .booking-card{
-        background: white;
-        border-radius: 20px;
-        padding: 40px;
-        box-shadow: 0px 2px 15px rgba(0,0,0,0.1);
+    
+    @keyframes slideInLeft {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
     }
-
-    .heading{
-        background: #0d6efd;
-        color: white;
+    
+    @keyframes slideInRight {
+        from { opacity: 0; transform: translateX(30px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+    
+    .booking-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
         padding: 20px;
-        border-radius: 15px;
+    }
+    
+    /* Two Column Layout */
+    .booking-layout {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 30px;
+    }
+    
+    /* Left Column - Form Card */
+    .form-card {
+        background: white;
+        border-radius: 24px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        animation: slideInLeft 0.5s ease-out;
+    }
+    
+    .form-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+    }
+    
+    .form-subtitle {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    /* Form Groups */
+    .input-group-custom {
+        margin-bottom: 20px;
+    }
+    
+    .input-group-custom label {
+        display: block;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+    
+    .input-group-custom label i {
+        margin-right: 6px;
+        color: #8b5cf6;
+    }
+    
+    .input-group-custom label .required {
+        color: #ef4444;
+        margin-left: 4px;
+    }
+    
+    .input-group-custom input,
+    .input-group-custom select,
+    .input-group-custom textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 14px;
+        transition: all 0.3s;
+        background: #f8fafc;
+    }
+    
+    .input-group-custom input:focus,
+    .input-group-custom select:focus,
+    .input-group-custom textarea:focus {
+        outline: none;
+        border-color: #8b5cf6;
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        background: white;
+    }
+    
+    .input-group-custom input.error,
+    .input-group-custom select.error,
+    .input-group-custom textarea.error {
+        border-color: #ef4444;
+        background: #fef2f2;
+    }
+    
+    .error-message {
+        font-size: 11px;
+        color: #ef4444;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    /* Services Section */
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-top: 10px;
+    }
+    
+    .service-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .service-card:hover {
+        border-color: #8b5cf6;
+        background: #faf5ff;
+        transform: translateY(-2px);
+    }
+    
+    .service-card.selected {
+        border-color: #8b5cf6;
+        background: #f3e8ff;
+        border-width: 2px;
+    }
+    
+    .service-card input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #8b5cf6;
+        margin: 0;
+    }
+    
+    .service-info {
+        flex: 1;
+    }
+    
+    .service-name {
+        font-weight: 600;
+        color: #1e293b;
+        font-size: 14px;
+    }
+    
+    .service-price {
+        font-size: 12px;
+        color: #8b5cf6;
+        font-weight: 600;
+    }
+    
+    .services-error {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #ef4444;
+        display: none;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    /* Right Column - Summary Card */
+    .summary-card {
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        border-radius: 24px;
+        padding: 30px;
+        color: white;
+        position: sticky;
+        top: 20px;
+        animation: slideInRight 0.5s ease-out;
+        height: fit-content;
+    }
+    
+    .summary-header {
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
-
-    .form-label{
-        font-weight: bold;
+    
+    .summary-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(139, 92, 246, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
     }
-
+    
+    .summary-icon i {
+        font-size: 28px;
+        color: #a78bfa;
+    }
+    
+    .summary-header h4 {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+    
+    .summary-header p {
+        font-size: 12px;
+        color: #94a3b8;
+    }
+    
+    .selected-services-list {
+        margin: 20px 0;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
+    .selected-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 13px;
+    }
+    
+    .selected-item-name {
+        color: #cbd5e1;
+    }
+    
+    .selected-item-price {
+        color: #a78bfa;
+        font-weight: 600;
+    }
+    
+    .empty-selection {
+        text-align: center;
+        color: #64748b;
+        font-size: 13px;
+        padding: 20px;
+    }
+    
+    .divider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
+        margin: 15px 0;
+    }
+    
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        font-size: 18px;
+        font-weight: 700;
+    }
+    
+    .total-amount {
+        color: #a78bfa;
+        font-size: 24px;
+    }
+    
+    .btn-book {
+        width: 100%;
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        border: none;
+        border-radius: 40px;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 700;
+        color: white;
+        margin-top: 20px;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    
+    .btn-book:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
+    }
+    
+    .btn-book:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+    
+    /* Alert */
+    .alert-custom {
+        padding: 12px 16px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        animation: fadeInUp 0.3s ease-out;
+    }
+    
+    .alert-error {
+        background: #fee2e2;
+        color: #dc2626;
+        border-left: 4px solid #ef4444;
+    }
+    
+    .alert-success {
+        background: #dcfce7;
+        color: #16a34a;
+        border-left: 4px solid #22c55e;
+    }
+    
+    /* Character Counter */
+    .char-counter {
+        font-size: 11px;
+        margin-top: 5px;
+        color: #94a3b8;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .char-counter.valid {
+        color: #22c55e;
+    }
+    
+    .char-counter.invalid {
+        color: #ef4444;
+    }
+    
+    /* Responsive */
+    @media (max-width: 900px) {
+        .booking-layout {
+            grid-template-columns: 1fr;
+        }
+        
+        .summary-card {
+            position: static;
+        }
+        
+        .services-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .form-card {
+            padding: 20px;
+        }
+        
+        .summary-card {
+            padding: 20px;
+        }
+    }
 </style>
 
-<div class="container mt-5 mb-5">
-
-    <div class="row justify-content-center">
-
-        <div class="col-md-8">
-
-            <div class="booking-card">
-
-                <!-- Heading -->
-                <div class="heading">
-
-                    <h2>
-                        <i class="bi bi-tools"></i>
-                        Vehicle Service Booking
-                    </h2>
-
+<div class="booking-wrapper">
+    <div class="booking-layout">
+        
+        <!-- Left Column - Form -->
+        <div class="form-card">
+            <h2 class="form-title">Book a Service</h2>
+            <p class="form-subtitle">Fill in the details to schedule your vehicle service</p>
+            
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert-custom {% if message.tags == 'error' %}alert-error{% else %}alert-success{% endif %}">
+                        <i class="bi {% if message.tags == 'error' %}bi-exclamation-circle{% else %}bi-check-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <form method="POST" id="bookingForm">
+                {% csrf_token %}
+                
+                <!-- Vehicle -->
+                <div class="input-group-custom">
+                    <label><i class="bi bi-car-front"></i> Vehicle <span class="required">*</span></label>
+                    <select name="vehicle" id="vehicleSelect">
+                        <option value="">-- Select Vehicle --</option>
+                        {% for vehicle in vehicles %}
+                            <option value="{{ vehicle.id }}">{{ vehicle.vehicle_name }} - {{ vehicle.vehicle_number }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="error-message" id="vehicleError"></span>
                 </div>
-
-                <!-- Form -->
-                <form method="POST">
-
-                    {% csrf_token %}
-
-                    <!-- Vehicle -->
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Select Vehicle
-                        </label>
-
-                        <select name="vehicle"
-                                class="form-select">
-
-                            <option value="">
-                                -- Select Vehicle --
-                            </option>
-
-                            {% for vehicle in vehicles %}
-
-                                <option value="{{ vehicle.id }}">
-
-                                    {{ vehicle.vehicle_name }}
-
-                                </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- City -->
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Select City
-                        </label>
-
-                        <select name="city"
-                                class="form-select">
-
-                            <option value="">
-                                -- Select City --
-                            </option>
-
-                            {% for city in cities %}
-
-                                <option value="{{ city.id }}">
-
-                                    {{ city.name }}
-
-                                </option>
-
-                            {% endfor %}
-
-                        </select>
-
-                    </div>
-
-
-                    <!-- Complaints -->
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Select Complaints
-                        </label>
-
-                        <div class="row">
-
-                            {% for complaint in complaints %}
-
-                            <div class="col-md-6 mb-2">
-
-                                <div class="form-check">
-
-                                    <input class="form-check-input"
-                                           type="checkbox"
-                                           name="complaints"
-                                           value="{{ complaint.id }}"
-                                           id="complaint{{ complaint.id }}">
-
-                                    <label class="form-check-label"
-                                           for="complaint{{ complaint.id }}">
-
-                                        {{ complaint.complaint_name }}
-
-                                        -
-                                        ₹{{ complaint.basic_sevice_price }}
-
-                                    </label>
-
+                
+                <!-- City -->
+                <div class="input-group-custom">
+                    <label><i class="bi bi-geo-alt"></i> City <span class="required">*</span></label>
+                    <select name="city" id="citySelect">
+                        <option value="">-- Select City --</option>
+                        {% for city in cities %}
+                            <option value="{{ city.id }}">{{ city.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="error-message" id="cityError"></span>
+                </div>
+                
+                <!-- Services -->
+                <div class="input-group-custom">
+                    <label><i class="bi bi-wrench"></i> Select Services <span class="required">*</span></label>
+                    <div class="services-grid" id="servicesGrid">
+                        {% for complaint in complaints %}
+                            <div class="service-card" data-id="{{ complaint.id }}" data-name="{{ complaint.complaint_name }}" data-price="{{ complaint.basic_service_price }}">
+                                <input type="checkbox" name="complaints" value="{{ complaint.id }}" id="service{{ complaint.id }}">
+                                <div class="service-info">
+                                    <div class="service-name">{{ complaint.complaint_name }}</div>
+                                    <div class="service-price">₹{{ complaint.basic_service_price }}</div>
                                 </div>
-
                             </div>
-
-                            {% endfor %}
-
-                        </div>
-
+                        {% endfor %}
                     </div>
-
-
-                    <!-- Problem Description -->
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            Problem Description
-                        </label>
-
-                        <textarea name="problem_description"
-                                  class="form-control"
-                                  rows="4"
-                                  placeholder="Enter problem description"></textarea>
-
+                    <div class="services-error" id="servicesError">
+                        <i class="bi bi-exclamation-circle"></i> Please select at least one service
                     </div>
-
-
-                    <!-- Location -->
-                    <div class="mb-4">
-
-                        <label class="form-label">
-                            Service Location
-                        </label>
-
-                        <textarea name="location"
-                                  class="form-control"
-                                  rows="3"
-                                  placeholder="Enter your location"></textarea>
-
+                </div>
+                
+                <!-- Problem Description (NOW REQUIRED) -->
+                <div class="input-group-custom">
+                    <label><i class="bi bi-file-text"></i> Problem Description <span class="required">*</span></label>
+                    <textarea name="problem_description" id="problemDesc" rows="3" placeholder="Describe the issue in detail..."></textarea>
+                    <div class="char-counter" id="problemCounter">
+                        <i class="bi bi-info-circle"></i> Minimum 20 characters
                     </div>
-
-
-                    <!-- Submit -->
-                    <div class="d-grid">
-
-                        <button type="submit"
-                                class="btn btn-primary btn-lg">
-
-                            <i class="bi bi-check-circle"></i>
-
-                            Book Service
-
-                        </button>
-
+                    <span class="error-message" id="problemError"></span>
+                </div>
+                
+                <!-- Location -->
+                <div class="input-group-custom">
+                    <label><i class="bi bi-pin-map"></i> Service Location <span class="required">*</span></label>
+                    <textarea name="location" id="locationText" rows="2" placeholder="Your complete address" required></textarea>
+                    <div class="char-counter" id="locationCounter">
+                        <i class="bi bi-info-circle"></i> Minimum 10 characters
                     </div>
-
-                </form>
-
-            </div>
-
+                    <span class="error-message" id="locationError"></span>
+                </div>
+                
+                <button type="submit" class="btn-book" id="submitBtn">
+                    <i class="bi bi-calendar-check"></i> Confirm Booking
+                </button>
+            </form>
         </div>
-
+        
+        <!-- Right Column - Summary Card -->
+        <div class="summary-card">
+            <div class="summary-header">
+                <div class="summary-icon">
+                    <i class="bi bi-receipt"></i>
+                </div>
+                <h4>Booking Summary</h4>
+                <p>Review your selection</p>
+            </div>
+            
+            <div class="selected-services-list" id="selectedList">
+                <div class="empty-selection">
+                    <i class="bi bi-info-circle"></i><br>
+                    Select services to see summary
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="total-row">
+                <span>Total Amount</span>
+                <span class="total-amount" id="totalAmount">₹0</span>
+            </div>
+        </div>
+        
     </div>
-
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const serviceCards = document.querySelectorAll('.service-card');
+        const selectedList = document.getElementById('selectedList');
+        const totalAmountSpan = document.getElementById('totalAmount');
+        const form = document.getElementById('bookingForm');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Form elements
+        const vehicleSelect = document.getElementById('vehicleSelect');
+        const citySelect = document.getElementById('citySelect');
+        const problemDesc = document.getElementById('problemDesc');
+        const locationText = document.getElementById('locationText');
+        
+        // Error elements
+        const vehicleError = document.getElementById('vehicleError');
+        const cityError = document.getElementById('cityError');
+        const problemError = document.getElementById('problemError');
+        const locationError = document.getElementById('locationError');
+        const servicesError = document.getElementById('servicesError');
+        
+        // Counter elements
+        const problemCounter = document.getElementById('problemCounter');
+        const locationCounter = document.getElementById('locationCounter');
+        
+        // Clear error function
+        function clearError(element) {
+            element.classList.remove('error');
+            const errorSpan = element.parentElement.querySelector('.error-message');
+            if (errorSpan) errorSpan.textContent = '';
+        }
+        
+        // Set error function
+        function setError(element, message) {
+            element.classList.add('error');
+            const errorSpan = element.parentElement.querySelector('.error-message');
+            if (errorSpan) errorSpan.textContent = message;
+        }
+        
+        // Validate single field
+        function validateField(field, errorElement, errorMessage) {
+            if (!field.value || field.value === '') {
+                setError(field, errorMessage);
+                return false;
+            }
+            clearError(field);
+            return true;
+        }
+        
+        // Validate problem description (required + min 20 chars)
+        function validateProblemDescription() {
+            const value = problemDesc.value.trim();
+            const minLength = 20;
+            
+            if (value === '') {
+                setError(problemDesc, 'Please describe the problem');
+                problemCounter.innerHTML = '<i class="bi bi-exclamation-circle"></i> This field is required';
+                problemCounter.classList.add('invalid');
+                problemCounter.classList.remove('valid');
+                return false;
+            }
+            
+            if (value.length < minLength) {
+                setError(problemDesc, `Please enter at least ${minLength} characters (currently ${value.length})`);
+                problemCounter.innerHTML = `<i class="bi bi-exclamation-circle"></i> Need ${minLength - value.length} more characters`;
+                problemCounter.classList.add('invalid');
+                problemCounter.classList.remove('valid');
+                return false;
+            }
+            
+            clearError(problemDesc);
+            problemCounter.innerHTML = '<i class="bi bi-check-circle-fill"></i> Looks good!';
+            problemCounter.classList.add('valid');
+            problemCounter.classList.remove('invalid');
+            return true;
+        }
+        
+        // Validate location (required + min 10 chars)
+        function validateLocation() {
+            const value = locationText.value.trim();
+            const minLength = 10;
+            
+            if (value === '') {
+                setError(locationText, 'Please enter your service location');
+                locationCounter.innerHTML = '<i class="bi bi-exclamation-circle"></i> This field is required';
+                locationCounter.classList.add('invalid');
+                locationCounter.classList.remove('valid');
+                return false;
+            }
+            
+            if (value.length < minLength) {
+                setError(locationText, `Please enter at least ${minLength} characters (currently ${value.length})`);
+                locationCounter.innerHTML = `<i class="bi bi-exclamation-circle"></i> Need ${minLength - value.length} more characters`;
+                locationCounter.classList.add('invalid');
+                locationCounter.classList.remove('valid');
+                return false;
+            }
+            
+            clearError(locationText);
+            locationCounter.innerHTML = '<i class="bi bi-check-circle-fill"></i> Looks good!';
+            locationCounter.classList.add('valid');
+            locationCounter.classList.remove('invalid');
+            return true;
+        }
+        
+        // Validate services selection
+        function validateServices() {
+            const checkboxes = document.querySelectorAll('input[name="complaints"]:checked');
+            if (checkboxes.length === 0) {
+                servicesError.style.display = 'flex';
+                return false;
+            }
+            servicesError.style.display = 'none';
+            return true;
+        }
+        
+        // Real-time validation
+        vehicleSelect.addEventListener('change', function() {
+            if (this.value) clearError(this);
+        });
+        
+        citySelect.addEventListener('change', function() {
+            if (this.value) clearError(this);
+        });
+        
+        problemDesc.addEventListener('input', function() {
+            validateProblemDescription();
+        });
+        
+        locationText.addEventListener('input', function() {
+            validateLocation();
+        });
+        
+        // Update summary function
+        function updateSummary() {
+            const selected = [];
+            let total = 0;
+            
+            serviceCards.forEach(card => {
+                const checkbox = card.querySelector('input[type="checkbox"]');
+                if (checkbox.checked) {
+                    const name = card.dataset.name;
+                    const price = parseInt(card.dataset.price);
+                    selected.push({ name, price });
+                    total += price;
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            });
+            
+            totalAmountSpan.innerText = '₹' + total;
+            
+            if (selected.length === 0) {
+                selectedList.innerHTML = `
+                    <div class="empty-selection">
+                        <i class="bi bi-info-circle"></i><br>
+                        Select services to see summary
+                    </div>
+                `;
+            } else {
+                selectedList.innerHTML = selected.map(item => `
+                    <div class="selected-item">
+                        <span class="selected-item-name">${item.name}</span>
+                        <span class="selected-item-price">₹${item.price}</span>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // Add click handlers to service cards
+        serviceCards.forEach(card => {
+            const checkbox = card.querySelector('input[type="checkbox"]');
+            
+            card.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'INPUT') {
+                    checkbox.checked = !checkbox.checked;
+                    updateSummary();
+                    if (checkbox.checked) {
+                        servicesError.style.display = 'none';
+                    }
+                }
+            });
+            
+            checkbox.addEventListener('change', function() {
+                updateSummary();
+                if (checkbox.checked) {
+                    servicesError.style.display = 'none';
+                }
+            });
+        });
+        
+        // Full form validation before submit
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            
+            // Validate vehicle
+            if (!validateField(vehicleSelect, vehicleError, 'Please select a vehicle')) {
+                vehicleSelect.style.animation = 'shake 0.3s ease';
+                setTimeout(() => vehicleSelect.style.animation = '', 300);
+                isValid = false;
+            }
+            
+            // Validate city
+            if (!validateField(citySelect, cityError, 'Please select a city')) {
+                citySelect.style.animation = 'shake 0.3s ease';
+                setTimeout(() => citySelect.style.animation = '', 300);
+                isValid = false;
+            }
+            
+            // Validate services
+            if (!validateServices()) {
+                document.querySelector('.services-grid').style.animation = 'shake 0.3s ease';
+                setTimeout(() => document.querySelector('.services-grid').style.animation = '', 300);
+                isValid = false;
+            }
+            
+            // Validate problem description
+            if (!validateProblemDescription()) {
+                problemDesc.style.animation = 'shake 0.3s ease';
+                setTimeout(() => problemDesc.style.animation = '', 300);
+                isValid = false;
+            }
+            
+            // Validate location
+            if (!validateLocation()) {
+                locationText.style.animation = 'shake 0.3s ease';
+                setTimeout(() => locationText.style.animation = '', 300);
+                isValid = false;
+            }
+            
+            // If all valid, submit the form
+            if (isValid) {
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Booking...';
+                submitBtn.disabled = true;
+                form.submit();
+            } else {
+                // Scroll to first error
+                const firstError = document.querySelector('.error, .services-error[style*="flex"]');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+        
+        // Remove error on service selection change
+        const serviceCheckboxes = document.querySelectorAll('input[name="complaints"]');
+        serviceCheckboxes.forEach(cb => {
+            cb.addEventListener('change', function() {
+                if (this.checked) {
+                    servicesError.style.display = 'none';
+                }
+            });
+        });
+        
+        // Initial summary update
+        updateSummary();
+    });
+</script>
 
 {% endblock %}

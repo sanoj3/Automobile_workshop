@@ -5,129 +5,303 @@
 
 {% block content %}
 
-<div class="container py-3">
+<style>
+    .edit-wrap {
+        max-width: 580px;
+        margin: 0 auto;
+    }
 
-    <div class="row justify-content-center">
+    .edit-card {
+        background: white;
+        border-radius: 20px;
+        padding: 35px 30px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        border: 1px solid #efe8f5;
+    }
 
-        <div class="col-lg-7 col-md-9">
+    /* Header */
+    .edit-head {
+        text-align: center;
+        margin-bottom: 30px;
+    }
 
-            <div class="card border-0 shadow rounded-4 overflow-hidden">
+    .edit-head h2 {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1e1b2a;
+        margin: 0 0 4px;
+    }
 
-                <!-- Top Banner -->
-                <div class="bg-primary position-relative"
-                     style="height:100px;">
+    .edit-head p {
+        color: #8a8598;
+        font-size: 14px;
+        margin: 0;
+    }
 
-                    <!-- Profile Image -->
-                    <div class="position-absolute start-50 translate-middle"
-                         style="bottom:-40px;">
+    /* Avatar Center */
+    .avatar-center {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 30px;
+    }
 
-                        <div class="rounded-circle bg-white shadow border border-3 border-white overflow-hidden"
-                             style="width:85px;height:85px;">
+    .avatar-wrap {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid #d5cce0;
+        background: #f4f0f8;
+        position: relative;
+        cursor: pointer;
+        transition: 0.3s;
+    }
 
-                            {% if mechanic.profile_pic %}
+    .avatar-wrap:hover {
+        border-color: #8e44ad;
+        transform: scale(1.02);
+    }
 
-                                <img src="{{ mechanic.profile_pic.url }}"
-                                     class="w-100 h-100"
-                                     style="object-fit:cover;">
+    .avatar-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
-                            {% else %}
+    .avatar-wrap .initials {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: 700;
+        color: #6a4b7a;
+    }
 
-                                <div class="bg-primary text-white d-flex align-items-center justify-content-center fw-bold h-100"
-                                     style="font-size:28px;">
+    .avatar-wrap .camera-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,0.5);
+        color: white;
+        font-size: 18px;
+        padding: 6px 0;
+        text-align: center;
+        opacity: 0;
+        transition: 0.3s;
+    }
 
-                                    {{ mechanic.name|slice:":1" }}
+    .avatar-wrap:hover .camera-overlay {
+        opacity: 1;
+    }
 
-                                </div>
+    .avatar-label {
+        font-size: 12px;
+        color: #8a8598;
+        margin-top: 8px;
+    }
 
-                            {% endif %}
+    .file-input-hidden {
+        display: none;
+    }
 
-                        </div>
+    /* Form */
+    .field {
+        margin-bottom: 18px;
+    }
 
-                    </div>
+    .field label {
+        display: block;
+        font-weight: 500;
+        font-size: 13px;
+        color: #1e1b2a;
+        margin-bottom: 5px;
+    }
 
-                </div>
+    .field input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid #e4dcec;
+        border-radius: 10px;
+        font-size: 14px;
+        background: #faf8fc;
+        transition: 0.2s;
+    }
 
-                <!-- Form Body -->
-                <div class="card-body pt-5 mt-2 px-4">
+    .field input:focus {
+        outline: none;
+        border-color: #8e44ad;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(142,68,173,0.06);
+    }
 
-                    <form method="POST"
-                          enctype="multipart/form-data">
+    /* Buttons */
+    .btn-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 6px;
+    }
 
-                        {% csrf_token %}
+    .btn-primary {
+        flex: 1;
+        background: #8e44ad;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
 
-                        <!-- Email -->
-                        <div class="mb-3">
+    .btn-primary:hover {
+        background: #7d3c98;
+        transform: translateY(-1px);
+    }
 
-                            <label class="form-label fw-semibold">
-                                Email
-                            </label>
+    .btn-secondary {
+        flex: 1;
+        background: transparent;
+        color: #6a4b7a;
+        padding: 10px;
+        border: 1.5px solid #e4dcec;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: 0.2s;
+        text-decoration: none;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
 
-                            <input type="email"
-                                   name="email"
-                                   class="form-control rounded-3"
-                                   value="{{ mechanic.email }}"
-                                   required>
+    .btn-secondary:hover {
+        background: #f4f0f8;
+        border-color: #c9bcd8;
+    }
 
-                        </div>
+    @media (max-width: 480px) {
+        .edit-card {
+            padding: 25px 20px;
+        }
 
-                        <!-- Phone -->
-                        <div class="mb-3">
+        .btn-group {
+            flex-direction: column;
+        }
 
-                            <label class="form-label fw-semibold">
-                                Phone Number
-                            </label>
+        .avatar-wrap {
+            width: 80px;
+            height: 80px;
+        }
+    }
+</style>
 
-                            <input type="text"
-                                   name="number"
-                                   class="form-control rounded-3"
-                                   value="{{ mechanic.number }}"
-                                   required>
+<div class="edit-wrap">
+    <div class="edit-card">
 
-                        </div>
-
-                        <!-- Profile Picture -->
-                        <div class="mb-4">
-
-                            <label class="form-label fw-semibold">
-                                Profile Picture
-                            </label>
-
-                            <input type="file"
-                                   name="profile_pic"
-                                   class="form-control rounded-3">
-
-                        </div>
-
-                        <!-- Buttons -->
-                        <div class="d-flex justify-content-center gap-2">
-
-                            <button type="submit"
-                                    class="btn btn-primary rounded-pill px-4">
-
-                                <i class="bi bi-check-circle"></i>
-                                Update
-
-                            </button>
-
-                            <a href="{% url 'profile_page_mechanic' %}"
-                               class="btn btn-outline-dark rounded-pill px-4">
-
-                                Cancel
-
-                            </a>
-
-                        </div>
-
-                    </form>
-
-                </div>
-
-            </div>
-
+        <!-- Header -->
+        <div class="edit-head">
+            <h2>Edit Profile</h2>
+            <p>Update your account information</p>
         </div>
 
-    </div>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
 
+            <!-- Avatar -->
+            <div class="avatar-center">
+                <label for="fileInput" class="avatar-wrap">
+                    {% if mechanic.profile_pic %}
+                        <img src="{{ mechanic.profile_pic.url }}" id="avatarPreview" alt="Profile">
+                    {% else %}
+                        <div class="initials" id="avatarInitials">{{ mechanic.name|slice:":1"|upper }}</div>
+                    {% endif %}
+                    <div class="camera-overlay">
+                        <i class="bi bi-camera"></i>
+                    </div>
+                </label>
+                <span class="avatar-label">Click photo to change</span>
+                <input type="file" name="profile_pic" id="fileInput" class="file-input-hidden" accept="image/*">
+            </div>
+
+            <!-- Email -->
+            <div class="field">
+                <label><i class="bi bi-envelope"></i> Email</label>
+                <input type="email" name="email" value="{{ mechanic.email }}" required>
+            </div>
+
+            <!-- Phone -->
+            <div class="field">
+                <label><i class="bi bi-phone"></i> Phone</label>
+                <input type="text" name="number" value="{{ mechanic.number }}" required>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-group">
+                <button type="submit" class="btn-primary">
+                    <i class="bi bi-check-lg"></i> Save
+                </button>
+                <a href="{% url 'profile_page_mechanic' %}" class="btn-secondary">
+                    <i class="bi bi-x-lg"></i> Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.getElementById('fileInput');
+        const avatarWrap = document.querySelector('.avatar-wrap');
+        const avatarPreview = document.getElementById('avatarPreview');
+        const avatarInitials = document.getElementById('avatarInitials');
+
+        avatarWrap.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    if (avatarPreview) {
+                        avatarPreview.src = event.target.result;
+                    } else {
+                        const img = document.createElement('img');
+                        img.id = 'avatarPreview';
+                        img.src = event.target.result;
+                        img.style.width = '100%';
+                        img.style.height = '100%';
+                        img.style.objectFit = 'cover';
+                        if (avatarInitials) avatarInitials.style.display = 'none';
+                        avatarWrap.insertBefore(img, avatarWrap.querySelector('.camera-overlay'));
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        const phoneInput = document.querySelector('input[name="number"]');
+        if (phoneInput) {
+            phoneInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9+]/g, '');
+            });
+        }
+    });
+</script>
 
 {% endblock %}

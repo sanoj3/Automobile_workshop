@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Booking Success</title>
+    <title>Booking Success - FixiGo</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,61 +11,495 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-
-        body{
-            background-color: #f5f5f5;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .success-box{
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f0ff 0%, #e9d9ff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Circles */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: rgba(142, 68, 173, 0.08);
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(106, 13, 173, 0.06);
+            border-radius: 50%;
+            animation: floatReverse 18s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30px, -20px) scale(1.05); }
+        }
+
+        @keyframes floatReverse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 20px) scale(1.08); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        @keyframes checkmark {
+            0% {
+                stroke-dashoffset: 100;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes confetti {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(142, 68, 173, 0);
+            }
+        }
+
+        .success-container {
+            max-width: 550px;
+            margin: 20px;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Main Card */
+        .success-card {
             background: white;
-            padding: 50px;
+            border-radius: 40px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 30px 50px rgba(106, 13, 173, 0.15);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .success-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 40px 60px rgba(106, 13, 173, 0.2);
+        }
+
+        /* Animated Border Gradient */
+        .success-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #6c3483, #8e44ad, #a569bd, #c39bd3);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Success Icon */
+        .success-icon-wrapper {
+            margin-bottom: 25px;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+
+        .success-icon {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
+        }
+
+        .success-icon i {
+            font-size: 55px;
+            color: white;
+            animation: bounce 0.6s ease-out 0.5s both;
+        }
+
+        /* Confetti Particles */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #8e44ad;
+            opacity: 0;
+            border-radius: 2px;
+        }
+
+        /* Title */
+        .success-title {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6c3483, #8e44ad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+            animation: fadeInUp 0.5s ease-out 0.3s both;
+        }
+
+        /* Subtitle */
+        .success-subtitle {
+            color: #64748b;
+            font-size: 15px;
+            margin-bottom: 10px;
+            animation: fadeInUp 0.5s ease-out 0.4s both;
+        }
+
+        .booking-id {
+            background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin: 15px 0;
+            font-weight: 600;
+            color: #6c3483;
+            font-size: 14px;
+            animation: fadeInUp 0.5s ease-out 0.5s both;
+        }
+
+        .booking-id i {
+            margin-right: 8px;
+        }
+
+        /* Info Cards */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+            animation: fadeInUp 0.5s ease-out 0.6s both;
+        }
+
+        .info-item {
+            background: linear-gradient(135deg, #faf5ff, #f3e9ff);
+            padding: 15px;
             border-radius: 20px;
-            box-shadow: 0px 2px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
 
-        .success-icon{
-            font-size: 80px;
-            color: green;
+        .info-item:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #f3e9ff, #edd9ff);
         }
 
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+        }
+
+        .info-icon i {
+            font-size: 20px;
+            color: #8e44ad;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e9d9ff, #c39bd3, #e9d9ff, transparent);
+            margin: 25px 0;
+            animation: fadeInUp 0.5s ease-out 0.7s both;
+        }
+
+        /* Message */
+        .success-message {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.5s ease-out 0.8s both;
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.5s ease-out 0.9s both;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #8e44ad, #a569bd);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 700;
+            font-size: 14px;
+            color: white;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(142, 68, 173, 0.3);
+            color: white;
+        }
+
+        .btn-outline-custom {
+            background: transparent;
+            border: 2px solid #e9d9ff;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 700;
+            font-size: 14px;
+            color: #6c3483;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-outline-custom:hover {
+            background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+            border-color: #c39bd3;
+            transform: translateY(-2px);
+            color: #4a1d6d;
+        }
+
+        /* Responsive */
+        @media (max-width: 576px) {
+            .success-card {
+                padding: 35px 25px;
+            }
+
+            .success-title {
+                font-size: 26px;
+            }
+
+            .success-icon {
+                width: 80px;
+                height: 80px;
+            }
+
+            .success-icon i {
+                font-size: 45px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-primary-custom, .btn-outline-custom {
+                justify-content: center;
+            }
+        }
     </style>
-
 </head>
 <body>
 
-<div class="container mt-5">
-
-    <div class="row justify-content-center">
-
-        <div class="col-md-6">
-
-            <div class="success-box text-center">
-
-                <i class="bi bi-check-circle-fill success-icon"></i>
-
-                <h2 class="mt-4">
-                    Booking Successful
-                </h2>
-
-                <p class="mt-3">
-                    Your service booking has been submitted successfully.
-                </p>
-
-                <a href="{% url 'home' %}"
-                   class="btn btn-primary mt-3">
-
-                    Go Home
-
-                </a>
-
+<div class="success-container">
+    <div class="success-card">
+        
+        <!-- Success Icon -->
+        <div class="success-icon-wrapper">
+            <div class="success-icon">
+                <i class="bi bi-check-lg"></i>
             </div>
-
         </div>
-
+        
+        <!-- Title -->
+        <h2 class="success-title">Booking Confirmed!</h2>
+        <p class="success-subtitle">Your service request has been successfully submitted</p>
+        
+        <!-- Booking ID (if available) -->
+        <div class="booking-id">
+            <i class="bi bi-receipt"></i> Booking ID: #{{ booking.id|default:"FIX2024" }}
+        </div>
+        
+        <!-- Information Grid -->
+        <div class="info-grid">
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="bi bi-car-front"></i>
+                </div>
+                <div class="info-label">Vehicle</div>
+                <div class="info-value">{{ booking.vehicle.vehicle_name|default:"Your Vehicle" }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <i class="bi bi-geo-alt"></i>
+                </div>
+                <div class="info-label">Service Location</div>
+                <div class="info-value">{{ booking.location|default:"Your City" }}</div>
+            </div>
+        </div>
+        
+        <div class="divider"></div>
+        
+        <!-- Success Message -->
+        <div class="success-message">
+            <i class="bi bi-envelope-paper" style="color: #8e44ad; margin-right: 8px;"></i>
+            A confirmation has been sent to your email. Our team will contact you shortly to confirm the service schedule.
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="button-group">
+            <a href="{% url 'home' %}" class="btn-primary-custom">
+                <i class="bi bi-house-door"></i> Go Home
+            </a>
+            <a href="{% url 'order_details' %}" class="btn-outline-custom">
+                <i class="bi bi-receipt"></i> View Orders
+            </a>
+        </div>
+        
     </div>
-
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#8e44ad', '#a569bd', '#c39bd3', '#6c3483', '#9b59b6'];
+            const container = document.querySelector('.success-card');
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.width = Math.random() * 8 + 4 + 'px';
+                confetti.style.height = Math.random() * 8 + 4 + 'px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.position = 'absolute';
+                confetti.style.top = '-20px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                confetti.style.animation = `confetti ${Math.random() * 2 + 2}s ease-out forwards`;
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                container.appendChild(confetti);
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, 4000);
+            }
+        }
+        
+        // Trigger confetti on load
+        createConfetti();
+        
+        // Add hover effect for buttons
+        const buttons = document.querySelectorAll('.btn-primary-custom, .btn-outline-custom');
+        buttons.forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Optional: Play success sound (commented out - uncomment if needed)
+        // const audio = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
+        // audio.play().catch(e => console.log('Audio play failed'));
+    });
+</script>
 
 </body>
 </html>

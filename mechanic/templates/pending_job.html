@@ -6,424 +6,630 @@
 
 {% block content %}
 
-<div class="container py-4">
+<style>
+    /* Modern Reset */
+    .job-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
 
+    /* Header Section */
+    .job-header {
+        background: linear-gradient(135deg, #6c3483, #8e44ad);
+        border-radius: 24px;
+        padding: 25px 30px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .job-header h2 {
+        color: white;
+        font-weight: 700;
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .job-header h2 i {
+        margin-right: 10px;
+        color: #ffd966;
+    }
+
+    .job-header p {
+        color: rgba(255,255,255,0.85);
+        margin: 5px 0 0;
+        font-size: 14px;
+    }
+
+    .btn-back {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        border-radius: 50px;
+        padding: 10px 24px;
+        color: white;
+        font-weight: 600;
+        transition: 0.2s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-back:hover {
+        background: rgba(255,255,255,0.3);
+        color: white;
+        transform: translateX(-3px);
+    }
+
+    /* Two Column Layout */
+    .two-columns {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 25px;
+    }
+
+    /* Left Column Cards */
+    .card-modern {
+        background: white;
+        border-radius: 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .card-title {
+        padding: 18px 24px;
+        font-weight: 700;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid #f0e8ff;
+    }
+
+    .card-title i {
+        font-size: 20px;
+    }
+
+    .card-content {
+        padding: 24px;
+    }
+
+    /* Info Grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info-label {
+        font-size: 12px;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+
+    .info-value {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    /* Complaints List */
+    .complaints-list {
+        background: #faf5ff;
+        border-radius: 12px;
+        padding: 5px 0;
+    }
+
+    .complaint-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-bottom: 1px solid #e9d9ff;
+    }
+
+    .complaint-row:last-child {
+        border-bottom: none;
+    }
+
+    .complaint-name {
+        font-weight: 500;
+        color: #334155;
+    }
+
+    .complaint-price {
+        font-weight: 700;
+        color: #8e44ad;
+    }
+
+    /* Problem Box */
+    .problem-box {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 16px;
+        color: #475569;
+        line-height: 1.6;
+    }
+
+    /* Stock Items */
+    .stock-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .stock-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: #faf5ff;
+        border-radius: 12px;
+        transition: 0.2s;
+    }
+
+    .stock-row:hover {
+        background: #f3e9ff;
+    }
+
+    .stock-img {
+        width: 55px;
+        height: 55px;
+        border-radius: 10px;
+        object-fit: cover;
+        background: white;
+    }
+
+    .stock-details {
+        flex: 1;
+    }
+
+    .stock-name {
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 3px;
+    }
+
+    .stock-price {
+        font-size: 13px;
+        color: #8e44ad;
+        font-weight: 600;
+    }
+
+    .stock-qty {
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    .stock-input {
+        width: 80px;
+        padding: 8px;
+        border: 1px solid #e9d9ff;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .stock-input:focus {
+        outline: none;
+        border-color: #8e44ad;
+    }
+
+    /* Extra Parts Row */
+    .extra-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .extra-input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #e9d9ff;
+        border-radius: 12px;
+        transition: 0.2s;
+    }
+
+    .extra-input:focus {
+        outline: none;
+        border-color: #8e44ad;
+        box-shadow: 0 0 0 3px rgba(142,68,173,0.1);
+    }
+
+    /* Labour Input */
+    .labour-input {
+        width: 100%;
+        padding: 14px;
+        font-size: 16px;
+        border: 1px solid #e9d9ff;
+        border-radius: 12px;
+    }
+
+    .labour-input:focus {
+        outline: none;
+        border-color: #8e44ad;
+    }
+
+    /* Buttons */
+    .btn-start-work {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 28px;
+        color: white;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+    }
+
+    .btn-start-work:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(245,158,11,0.3);
+        color: white;
+    }
+
+    .btn-generate {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        border: none;
+        border-radius: 12px;
+        padding: 14px 32px;
+        color: white;
+        font-weight: 700;
+        font-size: 16px;
+        width: 100%;
+        transition: 0.2s;
+    }
+
+    .btn-generate:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(34,197,94,0.3);
+    }
+
+    /* Right Column - Mechanic Card */
+    .mechanic-card {
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        border-radius: 20px;
+        overflow: hidden;
+        position: sticky;
+        top: 20px;
+    }
+
+    .mechanic-header {
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        text-align: center;
+    }
+
+    .mechanic-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #ffd966;
+        margin-bottom: 12px;
+    }
+
+    .mechanic-name {
+        color: white;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .mechanic-role {
+        color: #ffd966;
+        font-size: 12px;
+    }
+
+    .mechanic-body {
+        padding: 20px;
+    }
+
+    .mechanic-detail {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .mechanic-detail i {
+        width: 24px;
+        color: #a78bfa;
+    }
+
+    .mechanic-detail span {
+        color: #cbd5e1;
+        font-size: 14px;
+    }
+
+    .mechanic-detail strong {
+        color: white;
+        font-weight: 600;
+        margin-left: auto;
+    }
+
+    .btn-edit-work {
+        background: rgba(59,130,246,0.2);
+        border: 1px solid #3b82f6;
+        border-radius: 12px;
+        padding: 10px;
+        color: #3b82f6;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+        margin-top: 15px;
+        transition: 0.2s;
+    }
+
+    .btn-edit-work:hover {
+        background: #3b82f6;
+        color: white;
+    }
+
+    .btn-reject {
+        background: rgba(239,68,68,0.2);
+        border: 1px solid #ef4444;
+        border-radius: 12px;
+        padding: 10px;
+        color: #ef4444;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+        margin-top: 12px;
+        transition: 0.2s;
+    }
+
+    .btn-reject:hover {
+        background: #ef4444;
+        color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .two-columns {
+            grid-template-columns: 1fr;
+        }
+        
+        .mechanic-card {
+            position: static;
+        }
+        
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+        
+        .stock-row {
+            flex-wrap: wrap;
+        }
+        
+        .extra-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="job-container">
+    
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-
+    <div class="job-header">
         <div>
-            <h2 class="fw-bold text-warning mb-1">
-                <i class="bi bi-tools"></i>
-                Pending Job Details
-            </h2>
-
-            <p class="text-muted mb-0">
-                Manage service work and generate bill
-            </p>
+            <h2><i class="bi bi-wrench"></i> Pending Job Details</h2>
+            <p>Manage service request and generate bill</p>
         </div>
-
-        <a href="{% url 'pending_jobs_list' %}"
-           class="btn btn-outline-secondary rounded-pill">
-
-            <i class="bi bi-arrow-left"></i> Back
-
+        <a href="{% url 'pending_jobs_list' %}" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Back to Jobs
         </a>
-
     </div>
 
     <form method="POST">
-
         {% csrf_token %}
 
-        <div class="row g-4 align-items-start">
-
-            <!-- LEFT SIDE -->
-            <div class="col-lg-8">
-
-                <!-- Job Information -->
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
-
-                    <div class="card-header bg-warning text-dark py-3 rounded-top-4">
-
-                        <h5 class="mb-0 fw-bold">
-                            <i class="bi bi-clipboard-check"></i>
-                            Job Information
-                        </h5>
-
+        <div class="two-columns">
+            
+            <!-- LEFT COLUMN -->
+            <div>
+                
+                <!-- Customer & Vehicle Info -->
+                <div class="card-modern">
+                    <div class="card-title" style="background: #8e44ad; color: white;">
+                        <i class="bi bi-person-badge"></i>
+                        Customer & Vehicle Details
                     </div>
-
-                    <div class="card-body p-4">
-
-                        <div class="row g-3 mb-3">
-
-                            <div class="col-md-6">
-
-                                <label class="fw-semibold text-muted d-block mb-1">
-                                    Customer Name
-                                </label>
-
-                                <p class="fs-5 mb-0">
-                                    {{ job.booking.customer.name }}
-                                </p>
-
+                    <div class="card-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Customer Name</span>
+                                <span class="info-value">{{ job.booking.customer.name }}</span>
                             </div>
-
-                            <div class="col-md-6">
-
-                                <label class="fw-semibold text-muted d-block mb-1">
-                                    Phone Number
-                                </label>
-
-                                <p class="fs-5 mb-0">
-                                    {{ job.booking.customer.number }}
-                                </p>
-
+                            <div class="info-item">
+                                <span class="info-label">Phone Number</span>
+                                <span class="info-value">{{ job.booking.customer.number }}</span>
                             </div>
-
+                            <div class="info-item">
+                                <span class="info-label">Vehicle Name</span>
+                                <span class="info-value">{{ job.booking.vehicle.vehicle_name }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Vehicle Number</span>
+                                <span class="info-value">{{ job.booking.vehicle.vehicle_number }}</span>
+                            </div>
                         </div>
-
-                        <div class="row g-3 mb-3">
-
-                            <div class="col-md-6">
-
-                                <label class="fw-semibold text-muted d-block mb-1">
-                                    Vehicle Name
-                                </label>
-
-                                <p class="fs-5 mb-0">
-                                    {{ job.booking.vehicle.vehicle_name }}
-                                </p>
-
-                            </div>
-
-                            <div class="col-md-6">
-
-                                <label class="fw-semibold text-muted d-block mb-1">
-                                    Vehicle Number
-                                </label>
-
-                                <p class="fs-5 mb-0">
-                                    {{ job.booking.vehicle.vehicle_number }}
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <!-- Complaints -->
-                        <div class="mb-4">
-
-                            <label class="fw-semibold text-muted d-block mb-2">
-                                Complaints
-                            </label>
-
-                            <div class="bg-light rounded-4 p-3">
-
-                                {% for complaint in job.booking.complaints.all %}
-
-                                <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-
-                                    <span>
-                                        {{ complaint.complaint_name }}
-                                    </span>
-
-                                    <span class="fw-bold text-danger">
-                                        ₹ {{ complaint.basic_sevice_price }}
-                                    </span>
-
-                                </div>
-
-                                {% empty %}
-
-                                <p class="text-muted mb-0">
-                                    No complaints added
-                                </p>
-
-                                {% endfor %}
-
-                            </div>
-
-                        </div>
-
-                        <!-- Problem -->
-                        <div>
-
-                            <label class="fw-semibold text-muted d-block mb-2">
-                                Problem Description
-                            </label>
-
-                            <div class="bg-light rounded-4 p-3">
-
-                                {{ job.booking.problem_description }}
-
-                            </div>
-
-                        </div>
-
                     </div>
+                </div>
 
+                <!-- Complaints -->
+                <div class="card-modern">
+                    <div class="card-title" style="background: #475569; color: white;">
+                        <i class="bi bi-list-check"></i>
+                        Service Complaints
+                    </div>
+                    <div class="card-content">
+                        <div class="complaints-list">
+                            {% for complaint in job.booking.complaints.all %}
+                            <div class="complaint-row">
+                                <span class="complaint-name">{{ complaint.complaint_name }}</span>
+                                <span class="complaint-price">₹ {{ complaint.basic_service_price }}</span>
+                            </div>
+                            {% empty %}
+                            <div class="complaint-row">
+                                <span class="text-muted">No complaints added</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Problem Description -->
+                <div class="card-modern">
+                    <div class="card-title" style="background: #0891b2; color: white;">
+                        <i class="bi bi-chat-text"></i>
+                        Problem Description
+                    </div>
+                    <div class="card-content">
+                        <div class="problem-box">
+                            {{ job.booking.problem_description }}
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Start Work Button -->
                 {% if job.status == "Accepted" %}
-
-                <div class="mb-4">
-
-                    <a href="{% url 'inprogress_status' job.id %}"
-                       class="btn btn-warning rounded-pill px-4 py-2">
-
-                        <i class="bi bi-play-circle"></i>
-                        Start Work
-
+                <div style="margin-bottom: 25px;">
+                    <a href="{% url 'inprogress_status' job.id %}" class="btn-start-work">
+                        <i class="bi bi-play-circle"></i> Start Work
                     </a>
-
                 </div>
-
                 {% endif %}
 
+                <!-- Work In Progress Section -->
                 {% if job.booking.status == "In_progress" %}
-
-                <!-- Available Stock -->
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
-
-                    <div class="card-header bg-dark text-white py-3 rounded-top-4">
-
-                        <h5 class="mb-0 fw-bold">
-                            <i class="bi bi-box-seam"></i>
-                            Available Spare Parts
-                        </h5>
-
+                
+                <!-- Spare Parts -->
+                <div class="card-modern">
+                    <div class="card-title" style="background: #1e293b; color: white;">
+                        <i class="bi bi-box-seam"></i>
+                        Spare Parts
                     </div>
-
-                    <div class="card-body p-4">
-
-                        {% for stock in stocks %}
-
-                        <div class="row align-items-center g-3 border-bottom pb-3 mb-3">
-
-                            <div class="col-md-2 text-center">
-
-                                {% if stock.stock_pic %}
-
-                                <img src="{{ stock.stock_pic.url }}"
-                                     class="img-fluid rounded-3 border"
-                                     style="height:70px; width:70px; object-fit:cover;">
-
-                                {% endif %}
-
+                    <div class="card-content">
+                        <div class="stock-grid">
+                            {% for stock in stocks %}
+                            <div class="stock-row">
+                                <div class="stock-img">
+                                    {% if stock.stock_pic %}
+                                    <img src="{{ stock.stock_pic.url }}" class="stock-img" style="width:100%;height:100%;object-fit:cover;">
+                                    {% else %}
+                                    <div style="width:55px;height:55px;background:#e9d9ff;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+                                        <i class="bi bi-box"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="stock-details">
+                                    <div class="stock-name">{{ stock.item_name }}</div>
+                                    <div class="stock-price">₹ {{ stock.price }}</div>
+                                    <div class="stock-qty">Stock: {{ stock.quantity }}</div>
+                                </div>
+                                <input type="hidden" name="stock_id" value="{{ stock.id }}">
+                                <input type="number" name="quantity" class="stock-input" min="0" max="{{ stock.quantity }}" placeholder="Qty">
                             </div>
-
-                            <div class="col-md-3">
-
-                                <strong>
-                                    {{ stock.item_name }}
-                                </strong>
-
-                            </div>
-
-                            <div class="col-md-2">
-
-                                ₹ {{ stock.price }}
-
-                            </div>
-
-                            <div class="col-md-2">
-
-                                Stock : {{ stock.quantity }}
-
-                            </div>
-
-                            <div class="col-md-3">
-
-                                <input type="hidden"
-                                       name="stock_id"
-                                       value="{{ stock.id }}">
-
-                                <input type="number"
-                                       name="quantity"
-                                       class="form-control rounded-3"
-                                       min="0"
-                                       placeholder="Qty">
-
-                            </div>
-
+                            {% empty %}
+                            <div class="text-center text-muted py-3">No spare parts available</div>
+                            {% endfor %}
                         </div>
-
-                        {% empty %}
-
-                        <div class="alert alert-danger rounded-4 mb-0">
-
-                            No stock available
-
-                        </div>
-
-                        {% endfor %}
-
                     </div>
-
                 </div>
 
-                <!-- Extra Spare Parts -->
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
-
-                    <div class="card-header bg-primary text-white py-3 rounded-top-4">
-
-                        <h5 class="mb-0 fw-bold">
-                            <i class="bi bi-plus-circle"></i>
-                            Extra Spare Parts
-                        </h5>
-
+                <!-- Extra Parts -->
+                <div class="card-modern">
+                    <div class="card-title" style="background: #8e44ad; color: white;">
+                        <i class="bi bi-plus-circle"></i>
+                        Extra Parts
                     </div>
-
-                    <div class="card-body p-4">
-
-                        <div class="row g-3">
-
-                            <div class="col-md-6">
-
-                                <label class="fw-semibold mb-2">
-                                    Spare Part Name
-                                </label>
-
-                                <input type="text"
-                                       name="extra_part_name"
-                                       class="form-control rounded-3"
-                                       placeholder="Enter Part Name">
-
-                            </div>
-
-                            <div class="col-md-6">
-
-                                <label class="fw-semibold mb-2">
-                                    Spare Part Price
-                                </label>
-
-                                <input type="number"
-                                       step="0.01"
-                                       name="extra_part_price"
-                                       class="form-control rounded-3"
-                                       placeholder="Enter Price">
-
-                            </div>
-
+                    <div class="card-content">
+                        <div class="extra-row">
+                            <input type="text" name="extra_part_name" class="extra-input" placeholder="Part name">
+                            <input type="number" step="0.01" name="extra_part_price" class="extra-input" placeholder="Price ₹">
                         </div>
-
                     </div>
-
                 </div>
 
                 <!-- Labour Charge -->
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
-
-                    <div class="card-header bg-success text-white py-3 rounded-top-4">
-
-                        <h5 class="mb-0 fw-bold">
-                            <i class="bi bi-cash-stack"></i>
-                            Labour Charge
-                        </h5>
-
+                <div class="card-modern">
+                    <div class="card-title" style="background: #16a34a; color: white;">
+                        <i class="bi bi-cash-stack"></i>
+                        Labour Charge
                     </div>
-
-                    <div class="card-body p-4">
-
-                        <input type="number"
-                               step="0.01"
-                               name="labour_charge"
-                               class="form-control form-control-lg rounded-3"
-                               placeholder="Enter Labour Charge">
-
+                    <div class="card-content">
+                        <input type="number" step="0.01" name="labour_charge" class="labour-input" placeholder="Enter labour charge amount">
                     </div>
-
                 </div>
 
-                <!-- Submit -->
-                <div class="text-end mb-4">
-
-                    <button type="submit"
-                            class="btn btn-success btn-lg rounded-pill px-5">
-
-                        <i class="bi bi-receipt"></i>
-                        Generate Bill
-
-                    </button>
-
-                </div>
+                <!-- Generate Bill -->
+                <button type="submit" class="btn-generate">
+                    <i class="bi bi-receipt"></i> Generate Bill
+                </button>
 
                 {% endif %}
 
             </div>
 
-            <!-- RIGHT SIDE -->
-            <div class="col-lg-4">
-
-                <div class="card border-0 shadow-sm rounded-4">
-
-                    <div class="card-header bg-dark text-white py-3 rounded-top-4">
-
-                        <h5 class="mb-0 fw-bold">
-                            <i class="bi bi-person-workspace"></i>
-                            Allocated Mechanic
-                        </h5>
-
-                    </div>
-
-                    <div class="card-body text-center p-4">
-
+            <!-- RIGHT COLUMN - Mechanic Info -->
+            <div>
+                <div class="mechanic-card">
+                    <div class="mechanic-header">
                         {% if mechanic.profile_pic %}
-
-                        <img src="{{ mechanic.profile_pic.url }}"
-                             class="rounded-circle shadow-sm mb-3 border"
-                             width="120"
-                             height="120"
-                             style="object-fit:cover;">
-
-                        {% endif %}
-
-                        <h4 class="fw-bold mb-1">
-                            {{ mechanic.name }}
-                        </h4>
-
-                        <p class="text-muted mb-3">
-                            {{ mechanic.email }}
-                        </p>
-
-                        <hr>
-
-                        <div class="text-start">
-
-                            <p class="mb-2">
-                                <strong>Phone :</strong>
-                                {{ mechanic.number }}
-                            </p>
-
-                            <p class="mb-2">
-                                <strong>City :</strong>
-                                {{ mechanic.city }}
-                            </p>
-
+                        <img src="{{ mechanic.profile_pic.url }}" class="mechanic-avatar" alt="Mechanic">
+                        {% else %}
+                        <div class="mechanic-avatar" style="background:#475569; display:flex;align-items:center;justify-content:center;">
+                            <i class="bi bi-person fs-1 text-white"></i>
                         </div>
-
-                        <!-- ✅ EDIT WORK BUTTON -->
-{% if job.status == "In_progress" %}
-
-<div class="mb-4 d-flex gap-2">
-
-    <a href="{% url 'edit_booking' job.id %}"
-       class="btn btn-primary rounded-pill px-4 py-2">
-
-        <i class="bi bi-pencil-square"></i>
-        Edit Work
-
-    </a>
-
-</div>
-
-{% endif %}
-
+                        {% endif %}
+                        <div class="mechanic-name">{{ mechanic.name }}</div>
+                        <div class="mechanic-role">Senior Mechanic</div>
                     </div>
-
+                    <div class="mechanic-body">
+                        <div class="mechanic-detail">
+                            <i class="bi bi-envelope"></i>
+                            <span>Email</span>
+                            <strong>{{ mechanic.email }}</strong>
+                        </div>
+                        <div class="mechanic-detail">
+                            <i class="bi bi-telephone"></i>
+                            <span>Phone</span>
+                            <strong>{{ mechanic.number }}</strong>
+                        </div>
+                        <div class="mechanic-detail">
+                            <i class="bi bi-geo-alt"></i>
+                            <span>City</span>
+                            <strong>{{ mechanic.city }}</strong>
+                        </div>
+                        
+                        {% if job.status == "In_progress" %}
+                        <a href="{% url 'edit_booking' job.id %}" class="btn-edit-work">
+                            <i class="bi bi-pencil-square"></i> Edit Work
+                        </a>
+                        {% endif %}
+                        
+                        <a href="{% url 'cancel_booking_mechanic' job.id %}" class="btn-reject" onclick="return confirm('Are you sure?')">
+                            <i class="bi bi-x-circle"></i> Reject Job
+                        </a>
+                    </div>
                 </div>
-
             </div>
 
         </div>
@@ -431,5 +637,16 @@
     </form>
 
 </div>
+
+<script>
+    // Validate quantity inputs
+    document.querySelectorAll('.stock-input').forEach(input => {
+        input.addEventListener('change', function() {
+            let max = parseInt(this.getAttribute('max'));
+            if (parseInt(this.value) > max) this.value = max;
+            if (parseInt(this.value) < 0) this.value = 0;
+        });
+    });
+</script>
 
 {% endblock %}

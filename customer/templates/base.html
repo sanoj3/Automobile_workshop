@@ -1,290 +1,579 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Dashboard{% endblock %}</title>
-
-    <!-- Bootstrap -->
+    <title>{% block title %}FixiGo | Auto Workshop{% endblock %}</title>
+    
+    <!-- Bootstrap 5 + Icons + Fonts -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
     <style>
-
-        *{
-            font-family: 'Poppins', sans-serif;
+        /* ----- GLOBAL PURPLE THEME (BASE) ----- */
+        :root {
+            --purple-deep: #4a1d6d;
+            --purple-primary: #8e44ad;
+            --purple-light: #b07dce;
+            --purple-glow: #c39bd3;
+            --purple-bg-light: #f9f5ff;
+            --gold-accent: #ffd966;
         }
-
-        body{
-            background: #f4f7fb;
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #fcf9ff 0%, #f2ebfa 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             overflow-x: hidden;
         }
-
-        /* Sidebar */
-
-        .sidebar{
-            width: 260px;
-            height: 100vh;
-            position: fixed;
-            background: linear-gradient(180deg,#0f172a,#1e293b);
-            padding-top: 25px;
-            overflow-y: auto;
-            z-index: 1000;
+        
+        /* custom scroll */
+        ::-webkit-scrollbar {
+            width: 6px;
         }
-
-        .logo{
-            text-align: center;
-            color: white;
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 35px;
+        ::-webkit-scrollbar-track {
+            background: #e6d9f0;
+            border-radius: 10px;
         }
-
-        .sidebar a{
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #cbd5e1;
-            padding: 14px 22px;
-            text-decoration: none;
-            margin: 8px 14px;
-            border-radius: 14px;
-            transition: 0.3s;
-            font-size: 15px;
-            font-weight: 500;
+        ::-webkit-scrollbar-thumb {
+            background: #9b59b6;
+            border-radius: 10px;
         }
-
-        .sidebar a:hover{
-            background: rgba(255,255,255,0.08);
-            color: white;
-            transform: translateX(5px);
+        
+        /* ----- HEADER (PURPLE NAVBAR WITH GLASS) ----- */
+        .navbar-fixigo {
+            background: linear-gradient(105deg, #6c3483 0%, #8e44ad 45%, #a569bd 100%);
+            backdrop-filter: blur(2px);
+            padding: 0.7rem 2rem;
+            box-shadow: 0 15px 30px -12px rgba(106, 13, 173, 0.3);
+            border-bottom: 1px solid rgba(255,255,240,0.2);
+            transition: all 0.2s;
+            position: relative;
+            z-index: 1030;
         }
-
-        .sidebar a.active{
-            background: linear-gradient(90deg,#2563eb,#3b82f6);
-            color: white;
-            box-shadow: 0 8px 20px rgba(37,99,235,0.35);
+        
+        .brand-icon {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.7rem;
+            background: linear-gradient(125deg, #fff, #ffecb3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
         }
-
-        .logout-btn{
-            background: rgba(239,68,68,0.12);
-            color: #f87171 !important;
+        .brand-icon i {
+            background: none;
+            color: #ffd966;
+            margin-right: 6px;
         }
-
-        .logout-btn:hover{
-            background: #ef4444 !important;
+        
+        .nav-link-custom {
+            font-weight: 600;
+            margin: 0 5px;
+            padding: 8px 20px !important;
+            border-radius: 40px;
+            color: rgba(255,255,245,0.92) !important;
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+        }
+        .nav-link-custom i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+        .nav-link-custom:hover {
+            background: rgba(255, 245, 220, 0.2);
+            transform: translateY(-2px);
             color: white !important;
         }
-
-        /* Main */
-
-        .main{
-            margin-left: 260px;
-            padding: 25px;
+        .nav-link-custom.active {
+            background: rgba(255, 217, 102, 0.22);
+            border-bottom: 2px solid #ffd966;
+            color: #fff3d1 !important;
         }
-
-        /* Topbar */
-
-        .topbar{
+        
+        /* Profile dropdown (clickable) - FIXED */
+        .profile-dropdown-wrapper {
+            position: relative;
+        }
+        
+        .profile-pill {
+            background: rgba(255,255,240,0.15);
+            border-radius: 60px;
+            padding: 4px 15px 4px 8px;
+            backdrop-filter: blur(4px);
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile-pill:hover {
+            background: rgba(255,255,240,0.3);
+        }
+        
+        /* Dropdown menu - HIGH Z-INDEX FIX */
+        .profile-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
             background: white;
-            padding: 18px 24px;
-            border-radius: 18px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 20px;
+            min-width: 240px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            padding: 0.5rem 0;
+            z-index: 9999 !important;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(142, 68, 173, 0.15);
         }
-
-        .topbar h5{
-            margin: 0;
-            font-weight: 700;
+        .profile-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
-
-        .welcome-box{
+        .profile-dropdown-menu a {
             display: flex;
             align-items: center;
             gap: 12px;
+            padding: 10px 20px;
+            color: #2c0b3a;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.15s;
+            font-size: 0.9rem;
         }
-
-        .profile-circle{
-            width: 45px;
-            height: 45px;
+        .profile-dropdown-menu a i {
+            width: 22px;
+            font-size: 1.1rem;
+            color: #8e44ad;
+        }
+        .profile-dropdown-menu a:hover {
+            background: #f3e9ff;
+            color: #6c3483;
+        }
+        .dropdown-divider-custom {
+            height: 1px;
+            background: #e9d9ff;
+            margin: 0.4rem 0;
+        }
+        .logout-dropdown-item {
+            color: #e74c3c !important;
+        }
+        .logout-dropdown-item i {
+            color: #e74c3c !important;
+        }
+        .logout-dropdown-item:hover {
+            background: #fee2e2 !important;
+            color: #c0392b !important;
+        }
+        
+        .avatar-base {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(145deg, #ffd966, #f39c12);
             border-radius: 50%;
-            background: linear-gradient(135deg,#2563eb,#3b82f6);
-            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #4a1d6d;
+            box-shadow: 0 5px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .avatar-base img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* ----- MAIN CONTENT (DYNAMIC BLOCK) ----- */
+        .main-base {
+            flex: 1;
+            padding: 2rem 2rem;
+            animation: fadeSlideUp 0.45s ease-out;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(18px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        
+        /* cards / utilities */
+        .glass-card-base {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(2px);
+            border-radius: 32px;
+            border: 1px solid rgba(142, 68, 173, 0.2);
+            box-shadow: 0 20px 32px -10px rgba(106, 13, 173, 0.12);
+            transition: all 0.25s;
+        }
+        .btn-purple-base {
+            background: linear-gradient(95deg, #8e44ad, #9b59b6);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 28px;
             font-weight: 600;
-            font-size: 18px;
+            color: white;
+            transition: all 0.2s;
+            box-shadow: 0 8px 16px rgba(110, 37, 144, 0.25);
         }
-
-        /* Alerts */
-
-        .alert{
-            border: none;
-            border-radius: 12px;
+        .btn-purple-base:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(95deg, #7d3c98, #8e44ad);
+            box-shadow: 0 12px 22px rgba(110, 37, 144, 0.35);
+            color: white;
         }
-
-        /* Cards */
-
-        .card{
-            border: none;
-            border-radius: 18px;
-            box-shadow: 0 5px 18px rgba(0,0,0,0.05);
+        
+        /* Dashboard card grid */
+        .dashboard-card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.8rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(142,68,173,0.1);
+            cursor: pointer;
         }
-
-        /* Responsive */
-
-        @media(max-width:992px){
-
-            .sidebar{
-                width: 85px;
-            }
-
-            .sidebar a span{
-                display: none;
-            }
-
-            .logo{
-                font-size: 16px;
-            }
-
-            .main{
-                margin-left: 85px;
-            }
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 35px -12px rgba(106,13,173,0.2);
+            border-color: #c39bd3;
         }
-
+        .dashboard-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #f3e9ff, #e9d9ff);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.2rem;
+            font-size: 2rem;
+            color: #8e44ad;
+        }
+        
+        /* ----- FOOTER (PURPLE THEME) ----- */
+        .footer-base {
+            background: linear-gradient(90deg, #1f0930, #3c1a54, #1f0930);
+            color: #e2c6ff;
+            padding: 1.4rem 2rem;
+            margin-top: auto;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            font-size: 0.85rem;
+            border-top: 1px solid #a569bd40;
+        }
+        .footer-base a {
+            color: #e2b0ff;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .footer-base a:hover {
+            color: #ffd966;
+            letter-spacing: 0.3px;
+        }
+        
+        /* Toast messages base */
+        .toast-message {
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-fixigo { padding: 0.6rem 1rem; }
+            .main-base { padding: 1.2rem; }
+            .nav-link-custom span { font-size: 0.75rem; }
+            .nav-link-custom { padding: 8px 12px !important; }
+            .profile-pill .user-label { display: none; }
+            .profile-dropdown-menu { right: -10px; min-width: 200px; }
+        }
     </style>
-
+    
+    {% block extra_css %}{% endblock %}
 </head>
-
 <body>
 
-    <!-- ✅ Messages -->
-{% if messages %}
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-    {% for message in messages %}
-    <div class="toast show align-items-center text-white 
-        {% if message.tags == 'error' %}bg-danger
-        {% elif message.tags == 'warning' %}bg-warning
-        {% else %}bg-success{% endif %}
-        border-0 mb-2 shadow" role="alert">
-
-        <div class="d-flex">
-            <div class="toast-body">
-                {{ message }}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto"></button>
-        </div>
-
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
-
-<!-- Auto remove messages -->
-<script>
-setTimeout(() => {
-    let toasts = document.querySelectorAll('.toast');
-    toasts.forEach(t => t.remove());
-}, 3000);
-</script>
-
-
-
-    <!-- Sidebar -->
-
-    <div class="sidebar">
-
-        <div class="logo">
-            🚗 AutoCare
-        </div>
-
-        <a href="{% url 'home' %}" class="active">
-            <i class="bi bi-grid-fill"></i>
-            <span>Dashboard</span>
-        </a>
-
-        <a href="{% url 'service_booking' %}">
-            <i class="bi bi-calendar-check"></i>
-            <span>Book Service</span>
-        </a>
-
-        <a href="{% url 'order_details' %}">
-            <i class="bi bi-box-seam"></i>
-            <span>Orders</span>
-        </a>
-
-        <a href="{% url 'vehicle_list' %}">
-            <i class="bi bi-car-front-fill"></i>
-            <span>Vehicles</span>
-        </a>
-
-        <a href="{% url 'profile_user' %}">
-            <i class="bi bi-person-circle"></i>
-            <span>Profile</span>
-        </a>
-
-        <a href="{% url 'logout' %}" class="logout-btn">
-            <i class="bi bi-box-arrow-right"></i>
-            <span>Logout</span>
-        </a>
-
-    </div>
-
-    <!-- Main -->
-
-    <div class="main">
-
-        <!-- Topbar -->
-
-        <div class="topbar d-flex justify-content-between align-items-center">
-
-            <div>
-                <h5>{% block header %}Dashboard{% endblock %}</h5>
-
-                <small class="text-muted">
-                    Automobile Workshop Management System
-                </small>
-            </div>
-
-            <div class="welcome-box">
-
-                <div class="profile-circle">
-                    {{ request.user.customer.name|slice:":1"|upper }}
+    <!-- ======================== MESSAGES BLOCK ======================== -->
+    {% if messages %}
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999; max-width: 380px;" id="message-container-base">
+        {% for message in messages %}
+        <div class="toast show align-items-center text-white 
+            {% if message.tags == 'error' %}bg-danger
+            {% elif message.tags == 'warning' %}bg-warning text-dark
+            {% else %}bg-success{% endif %} 
+            border-0 mb-2 shadow-lg rounded-4 toast-message" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% elif message.tags == 'error' %}bi-x-circle-fill{% else %}bi-info-circle-fill{% endif %} me-2"></i>
+                    {{ message }}
                 </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('#message-container-base .toast').forEach(t => t.remove());
+        }, 3800);
+    </script>
+    {% endif %}
 
-                <div>
-                    <div class="fw-semibold">
-                        {{ request.user.customer.name }}
+    <!-- ========================= HEADER ========================= -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-fixigo">
+            <div class="container-fluid px-0 px-md-2">
+                <a class="navbar-brand brand-icon" href="{% url 'home' %}">
+                    <i class="bi bi-tools"></i> FixiGo
+                </a>
+                <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#baseNavbar">
+                    <i class="bi bi-list fs-1 text-white"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="baseNavbar">
+                    <!-- Navigation links -->
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0 align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
+                                <i class="bi bi-house-door-fill"></i> <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="#">
+                                <i class="bi bi-info-circle-fill"></i> <span>About</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'profile_user' %}active{% endif %}" href="{% url 'profile_user' %}">
+                                <i class="bi bi-person-circle"></i> <span>Profile</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'order_details' %}active{% endif %}" href="{% url 'order_details' %}">
+                                <i class="bi bi-box-seam"></i> <span>Orders</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-custom {% if request.resolver_match.url_name == 'contact_us' %}active{% endif %}" href="#">
+                                <i class="bi bi-envelope-paper-fill"></i> <span>Contact Us</span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Profile dropdown wrapper (FIXED: proper positioning) -->
+                    <div class="profile-dropdown-wrapper">
+                        <div class="profile-pill" id="profilePillBtn">
+                            <div class="avatar-base">
+                                {% if request.user.customer.profile_pic %}
+                                    <img src="{{ request.user.customer.profile_pic.url }}" alt="avatar">
+                                {% else %}
+                                    {{ request.user.customer.name|slice:":1"|upper|default:"U" }}
+                                {% endif %}
+                            </div>
+                            <div class="user-label">
+                                <div class="fw-semibold text-white" style="font-size: 0.85rem;">
+                                    {{ request.user.customer.name|default:"Guest User" }}
+                                </div>
+                                <small class="text-white-50">Customer</small>
+                            </div>
+                            <i class="bi bi-chevron-down text-white-50 small"></i>
+                        </div>
+                        
+                        <!-- Dropdown menu (Logout inside) -->
+                        <div class="profile-dropdown-menu" id="profileDropdownMenu">
+                            <a href="{% url 'profile_user' %}">
+                                <i class="bi bi-person-badge"></i> My Account
+                            </a>
+                            <a href="{% url 'order_details' %}">
+                                <i class="bi bi-receipt"></i> My Orders
+                            </a>
+                            <a href="{% url 'vehicle_list' %}">
+                                <i class="bi bi-car-front"></i> Vehicles
+                            </a>
+                            <div class="dropdown-divider-custom"></div>
+                            <a href="{% url 'logout' %}" class="logout-dropdown-item">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a>
+                        </div>
                     </div>
-
-                    <small class="text-muted">
-                        Customer
-                    </small>
                 </div>
-
             </div>
+        </nav>
+    </header>
 
-        </div>
-
-        <!-- Content -->
-
+    <!-- ========================= MAIN CONTENT ========================= -->
+    <main class="main-base">
         {% block content %}
+        <!-- Welcome Dashboard Content -->
+        <div data-aos="fade-up">
+            <div class="mb-4">
+                <h1 class="display-5 fw-bold" style="color: #4a235a;">
+                    <i class="bi bi-emoji-wave"></i> Welcome Back, {{ request.user.customer.name|default:"Guest" }} 👋
+                </h1>
+                <p class="text-muted">Your automobile care hub – manage everything from one place.</p>
+            </div>
+            
+            <!-- Dashboard Cards Grid -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-6 col-lg-3">
+                    <div class="dashboard-card"
+                        data-url="{% url 'service_booking' %}"
+                        onclick="window.location.href=this.dataset.url">
+      
+                        <div class="dashboard-icon">
+                            <i class="bi bi-calendar-check-fill"></i>
+                        </div>
+                        <h5 class="fw-bold" style="color: #4a235a;">Book Service</h5>
+                        <p class="text-muted small">Request a new vehicle service easily.</p>
+                        <span class="badge bg-purple-base px-3 py-2 rounded-pill" style="background:#8e44ad;">Book Now →</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="dashboard-card"
+                        data-url="{% url 'order_details' %}"
+                        onclick="window.location.href=this.dataset.url"> 
+                    
+                        <div class="dashboard-icon">
+                            <i class="bi bi-box-seam-fill"></i>
+                        </div>
+                        <h5 class="fw-bold" style="color: #4a235a;">Orders</h5>
+                        <p class="text-muted small">Track your service and repair requests.</p>
+                        <span class="badge bg-purple-base px-3 py-2 rounded-pill" style="background:#8e44ad;">View Orders →</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="dashboard-card"
+                        data-url="{% url 'vehicle_list' %}"
+                        onclick="window.location.href=this.dataset.url"> 
+                    
+                        <div class="dashboard-icon">
+                            <i class="bi bi-car-front-fill"></i>
+                        </div>
+                        <h5 class="fw-bold" style="color: #4a235a;">Vehicles</h5>
+                        <p class="text-muted small">Add, edit and manage your vehicles.</p>
+                        <span class="badge bg-purple-base px-3 py-2 rounded-pill" style="background:#8e44ad;">Manage →</span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="dashboard-card" 
+                        data-url="{% url 'profile_user' %}"
+                        onclick="window.location.href=this.dataset.url">
+                 
+                        <div class="dashboard-icon">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <h5 class="fw-bold" style="color: #4a235a;">Profile</h5>
+                        <p class="text-muted small">View and update your account details.</p>
+                        <span class="badge bg-purple-base px-3 py-2 rounded-pill" style="background:#8e44ad;">Open Profile →</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Activity / Quick Stats -->
+            <div class="glass-card-base p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <h5><i class="bi bi-clock-history"></i> Recent Activity</h5>
+                        <ul class="list-unstyled mt-3">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Oil Change completed - June 12, 2026</li>
+                            <li class="mb-2"><i class="bi bi-gear-fill text-warning me-2"></i> Brake inspection scheduled - June 18, 2026</li>
+                            <li><i class="bi bi-car-front text-info me-2"></i> New vehicle added: Toyota Camry</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <div class="p-3 rounded-4" style="background: #f3e9ff;">
+                            <i class="bi bi-shield-check fs-1" style="color: #8e44ad;"></i>
+                            <h6 class="mt-2">Premium Care Package Active</h6>
+                            <small class="text-muted">Next service reminder in 15 days</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endblock %}
+    </main>
 
-    </div>
+    <!-- ========================= FOOTER ========================= -->
+    <footer class="footer-base">
+        <div class="container-fluid">
+            <div class="row gy-3 align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <i class="bi bi-gear-wide-connected"></i> FixiGo Pro Workshop | © {% now "Y" %} All rights reserved.
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="me-3"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="me-3"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="me-3"><i class="bi bi-facebook"></i></a>
+                    <a href="#"><i class="bi bi-envelope-fill"></i> care@fixigo.com</a>
+                </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col text-center small opacity-75">
+                    <i class="bi bi-shield-check"></i> 100% Genuine Parts | 24/7 Roadside Assistance
+                </div>
+            </div>
+        </div>
+    </footer>
 
-    <!-- Bootstrap JS -->
-
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({ duration: 700, once: true, offset: 20 });
+        
+        // PROFILE DROPDOWN TOGGLE - FIXED (proper click handling)
+        document.addEventListener('DOMContentLoaded', function() {
+            const profilePill = document.getElementById('profilePillBtn');
+            const dropdownMenu = document.getElementById('profileDropdownMenu');
+            
+            if (profilePill && dropdownMenu) {
+                // Toggle dropdown on click
+                profilePill.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropdownMenu.classList.toggle('show');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!profilePill.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                        dropdownMenu.classList.remove('show');
+                    }
+                });
+                
+                // Prevent dropdown from closing when clicking inside menu
+                dropdownMenu.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+            
+            // Auto-dismiss toasts
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                setTimeout(() => {
+                    if(toast && toast.remove) toast.remove();
+                }, 3500);
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
 </body>
-
 </html>

@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import transaction
 from django.http import JsonResponse
+from django.db.models import Avg, Count
 
 import json
 from decimal import Decimal
@@ -11,6 +12,7 @@ from decimal import Decimal
 from .models import Mechanic, StockManagement, Active_mechanic
 from customer.models import City
 from services.models import MechanicRequest, Bill, BookingSparePart, ServiceBooking
+from services.models import Feedback
 
 from customer.views import name_validation, email_validation, number_validation, password_validation
 
@@ -43,6 +45,7 @@ def apply_mechanic(request):
     if request.method == 'POST':
         name = request.POST.get('name')
         email = request.POST.get('email','').strip()
+        address = request.POST.get('address')
         aadhaar = request.POST.get('aadhaar','').strip()
         number = request.POST.get('number','').strip()
         certificate = request.FILES.get('certificate')  
@@ -70,13 +73,19 @@ def apply_mechanic(request):
             messages.error(request, email_error)
             return redirect('apply')
         
+        # .............Address Validate.............
+        address_error = name_validation(address)
+        if address_error:
+            messages.error(request, address_error)
+            return redirect('apply')
+        
         # .............Number Validate.............
         number_error = number_validation(number)
         if number_error:
             messages.error(request, number_error)
             return redirect('apply')
 
-        required_fields = [name, email, aadhaar, number, certificate, city, password]
+        required_fields = [name, email,address, aadhaar, number, certificate, city, password]
         if not all(required_fields):
             messages.error(request, 'All fields are required.')
             return redirect('apply')
@@ -141,6 +150,9 @@ def apply_mechanic(request):
 
 #::::::::::::::::::::::Login Mechanic::::::::::::::::::::::
 def login_mechanic(request):
+    if request.session.get('mechanic_id'):
+        return redirect('home_mechanic')
+    
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -194,6 +206,7 @@ def home_page_mechanic(request):
 
     if mechanic is None:
         return redirect('login_mechanic')
+    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
     if mechanic == 'reject':
@@ -207,7 +220,8 @@ def home_page_mechanic(request):
     ).order_by('-created_at')
 
     return render(request, 'home_mechanic.html', {
-        'mechanic': mech,
+        'mechanic' : mechanic,
+        'mech': mech,
         'requests': requests
     })
  
@@ -217,14 +231,57 @@ def profile_page_mechanic(request):
 
     if mechanic is None:
         return redirect('login_mechanic')
+    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
     if mechanic == 'reject':
         return render(request, 'application_rejected.html')
+    
 
-    return render(request, 'profile_mechanic.html', {
-        'mechanic': mechanic
-    })
+    rating_data = Feedback.objects.filter(
+    mechanic=mechanic
+    ).aggregate(
+        average=Avg('rating'),
+        total_reviews=Count('id')
+    )
+
+    completed_jobs = ServiceBooking.objects.filter(
+        mechanic=mechanic,
+        status='Completed'
+    )
+
+    total_jobs = completed_jobs.count()
+
+    # Earnings
+    bills = Bill.objects.filter(
+        booking__mechanic=mechanic,
+        booking__status='Completed'
+    )
+
+    total_earnings = 0
+
+    for bill in bills:
+        total_earnings += (
+            bill.grand_total
+            - bill.extra_parts_total
+            - bill.spare_parts_total
+        )
+
+    context = {
+        'mechanic': mechanic,
+
+        'total_jobs': total_jobs,
+        'completed_jobs': total_jobs,
+        'total_earnings': round(total_earnings, 2),
+
+        'average_rating': round(rating_data['average'], 1) if rating_data['average'] else 0,
+        'review_count': rating_data['total_reviews'],
+
+        'member_since': mechanic.created_at,
+    }
+
+    return render(request, 'profile_mechanic.html', context)
+
 
 #::::::::::::::::::::::Edit Profile Mechanic::::::::::::::::::::::
 def profile_page_edit_mechanic(request, id):
@@ -233,6 +290,7 @@ def profile_page_edit_mechanic(request, id):
 
     if mechanic is None:
         return redirect('login_mechanic')
+    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
     if mechanic == 'reject':
@@ -285,6 +343,7 @@ def profile_mechanic_change_password(request):
 
     if mechanic is None:
         return redirect('login_mechanic')
+    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
     if mechanic == 'reject':
@@ -326,7 +385,9 @@ def profile_mechanic_change_password(request):
         messages.success(request, 'Password changed successfully.')
         return redirect('login_mechanic')
     
-    return render(request, 'profile_mechanic_change_password.html')
+    return render(request, 'profile_mechanic_change_password.html',{
+        'mechanic' : mechanic
+    })
 
 
 #::::::::::::::::::::::Spareparts List::::::::::::::::::::::
@@ -335,6 +396,7 @@ def vehicle_parts_list(request):
 
     if mechanic is None:
         return redirect('login_mechanic')
+    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
     if mechanic == 'reject':
@@ -354,6 +416,7 @@ def add_vehicle_parts(request):
 
     if mechanic is None:
         return redirect('login_mechanic')
+    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
     if mechanic == 'reject':
@@ -409,7 +472,9 @@ def add_vehicle_parts(request):
         messages.success(request, 'Vehicle spare parts successfully created.')
         return redirect('vehicle_parts_list')
     
-    return render(request, 'add_vehicle_parts.html')
+    return render(request, 'add_vehicle_parts.html',{
+        'mechanic' : mechanic
+    })
 
 
 #::::::::::::::::::::::Delete Spareparts::::::::::::::::::::::
@@ -418,6 +483,7 @@ def delete_vehicle_parts(request, id):
 
     if mechanic is None:
         return redirect('login_mechanic')
+    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
     if mechanic == 'reject':
@@ -439,6 +505,7 @@ def modify_vehicle_parts(request, id):
 
     if mechanic is None:
         return redirect('login_mechanic')
+    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
     if mechanic == 'reject':
@@ -501,6 +568,7 @@ def modify_vehicle_parts(request, id):
         return redirect('vehicle_parts_list')
 
     return render(request, 'modify_vehicle_parts.html', {
+        'mechanic' : mechanic,
         'parts': parts
     })
 
@@ -515,6 +583,7 @@ def toggle_mechanic_status(request):
 
     if mechanic is None:
         return redirect('login_mechanic')
+    
     if mechanic == 'not_valid':
         return render(request, 'application_submitted.html')
     if mechanic == 'reject':
@@ -544,6 +613,10 @@ def toggle_mechanic_status(request):
 #::::::::::::::::::::::Pending Jobs List::::::::::::::::::::::
 def pending_jobs_list(request):
     mechanic = check_mechanic_access(request)
+
+    if mechanic is None:
+        return redirect('login_mechanic')
+    
     jobs = MechanicRequest.objects.filter(mechanic=mechanic, 
                                           status__in = ["Accepted", "In_progress"]
                                           ).exclude(booking__status="Completed"
@@ -559,6 +632,10 @@ def pending_jobs_list(request):
 #::::::::::::::::::::::Pending Job::::::::::::::::::::::
 def pending_job(request, id):
     mechanic = check_mechanic_access(request)
+
+    if mechanic is None:
+        return redirect('login_mechanic')
+    
     job = get_object_or_404(MechanicRequest, id=id, mechanic=mechanic,
         status__in = ["Accepted", "In_progress"]
     )
@@ -577,7 +654,7 @@ def pending_job(request, id):
 
         for complaint in booking.complaints.all():
 
-            complaint_total += complaint.basic_sevice_price
+            complaint_total += complaint.basic_service_price
 
 
         # .............Labour Charge.............
@@ -662,16 +739,11 @@ def pending_job(request, id):
         # .............Update Booking.............
         booking.labour_charge = labour_charge
         booking.total_price = grand_total
-        booking.status = "Completed"
+
         booking.save()
-        job.status = "Completed"
-        job.save()
-        active_mechanic, created = Active_mechanic.objects.get_or_create(mechanic=mechanic)
-        active_mechanic.is_available = True
-        active_mechanic.save()
 
         messages.success(request, f'Bill Generated Successfully ₹{grand_total}')
-        return redirect('pending_jobs_list')
+        return redirect('bill_generate',booking.id)
 
     return render(request, 'pending_job.html', {
         'job': job,
@@ -680,10 +752,35 @@ def pending_job(request, id):
     })
 
 
+
+#::::::::::::::::::::::Bill Generation::::::::::::::::::::::
+def bill_generate(request, id):
+    mechanic = check_mechanic_access(request)
+
+    if mechanic is None:
+        return redirect('login_mechanic')
+    
+    booking = get_object_or_404(ServiceBooking, id=id)
+    bill = get_object_or_404(Bill, booking=booking)
+
+    spare_parts = BookingSparePart.objects.filter(bill=bill)
+
+    return render(request, 'bill_generate.html', {
+        'mechanic' : mechanic,
+        'booking': booking,
+        'bill': bill,
+        'spare_parts': spare_parts
+    })
+
+
+
 #::::::::::::::::::::::Inprogress Status::::::::::::::::::::::
 def inprogress_status(request, id):
     mechanic = check_mechanic_access(request)
 
+    if mechanic is None:
+        return redirect('login_mechanic')
+    
     job = get_object_or_404(MechanicRequest, id=id, mechanic=mechanic, status='Accepted')
     
     job.status = 'In_progress'
@@ -697,15 +794,74 @@ def inprogress_status(request, id):
     return redirect('pending_job', id=job.id)
 
 
-#::::::::::::::::::::::Completed Job List::::::::::::::::::::::
+
+#::::::::::::::::::::::Complete Service Job::::::::::::::::::::::
+def complete_job(request, id):
+    mechanic = check_mechanic_access(request)
+
+    if mechanic is None:
+        return redirect('login_mechanic')
+    
+    booking = get_object_or_404(ServiceBooking, id=id, mechanic=mechanic)
+
+    booking.status = "Completed"
+    booking.save()
+
+    mechanic_request = MechanicRequest.objects.filter(
+        booking=booking,
+        mechanic=mechanic
+    ).first()
+
+    if mechanic_request:
+        mechanic_request.status = "Completed"
+        mechanic_request.save()
+
+    active_mechanic, created = Active_mechanic.objects.get_or_create(
+        mechanic=mechanic
+    )
+
+    active_mechanic.is_available = True
+    active_mechanic.save()
+
+    messages.success(
+        request,
+        "Job Completed Successfully"
+    )
+
+    return redirect('pending_jobs_list')
+
+
+
+#::::::::::::::::::::::Completed Service Job List::::::::::::::::::::::
 def completed_jobs_list(request):
     mechanic = check_mechanic_access(request)
 
-    job = ServiceBooking.objects.filter(mechanic=mechanic, status='Completed')
+    if mechanic is None:
+        return redirect('login_mechanic')
+    
+    jobs = (ServiceBooking.objects.filter(
+        mechanic=mechanic,
+        status='Completed'
+    )
+    .select_related('customer', 'vehicle', 'feedback')
+    .prefetch_related('complaints')
+    .order_by('-id')
+    )
+
+    for job in jobs:
+        try:
+            feedback = job.feedback
+
+            job.average_rating = feedback.rating
+            job.review_text = feedback.message
+
+        except Feedback.DoesNotExist:
+            job.average_rating = None
+            job.review_text = None
 
     return render(request, 'completed_job_list.html', {
         'mechanic' : mechanic,
-       'jobs' : job 
+        'jobs' : jobs
     })
 
 
@@ -713,9 +869,70 @@ def completed_jobs_list(request):
 def job_completed_view(request, id):
     mechanic = check_mechanic_access(request)
 
-    job = get_object_or_404(ServiceBooking, id=id, mechanic=mechanic)
+    if mechanic is None:
+        return redirect('login_mechanic')
+
+    job = get_object_or_404(
+        ServiceBooking.objects.select_related(
+            'customer',
+            'vehicle',
+            'city',
+            'feedback'
+        ).prefetch_related('complaints'),
+        id=id,
+        mechanic=mechanic,
+        status='Completed'
+    )
+    feedback = job.feedback      
 
     return render(request, 'job_completed_view.html', {
-        'mechanic' : mechanic,
-        'jobs' : job
+        'mechanic': mechanic,
+        'job': job,
+        'feedback': feedback
+    })
+
+
+#::::::::::::::::::::::Mechanic Earnings::::::::::::::::::::::
+def earnings(request):
+    mechanic = check_mechanic_access(request)
+
+    if mechanic is None:
+        return redirect('login_mechanic')
+    
+    # Get all completed bills for this mechanic
+    bills = Bill.objects.filter(
+        booking__mechanic=mechanic,
+        booking__status='Completed'
+    ).select_related(
+        'booking',
+        'booking__customer',
+        'booking__vehicle'
+    ).order_by('-id')
+
+    # Calculate earnings for each bill
+    total_earnings = 0
+    for bill in bills:
+        # Earning = Grand Total - Extra Parts - Spare Parts
+        bill.earning = (
+            bill.grand_total - bill.extra_parts_total - bill.spare_parts_total
+        )
+        total_earnings += bill.earning
+
+    total_jobs = bills.count()
+    avg_earning = total_earnings / total_jobs if total_jobs > 0 else 0
+    
+    # Get average rating from feedback
+    rating = Feedback.objects.filter(
+        mechanic=mechanic
+    ).aggregate(
+        average=Avg('rating')
+    )['average'] or 0
+
+    return render(request, 'earnings.html', {
+        'mechanic': mechanic,
+        'bills': bills,
+        'total_earnings': total_earnings,
+        'avg_earning': avg_earning,
+        'rating': rating,
+        'total_jobs': total_jobs,
     })

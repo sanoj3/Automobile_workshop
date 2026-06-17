@@ -17,6 +17,7 @@ class Mechanic(models.Model):
     profile_pic = models.ImageField(upload_to='mechanic_profile_pic/', blank=True, null=True)
     is_valid = models.BooleanField(default=False)
     is_reject = models.BooleanField(default=False)
+    account_suspend = models.BooleanField(default=False)
     last_login_date = models.DateTimeField(blank=True, null=True)
     application_created_at = models.DateTimeField(auto_now_add=True)
     created_at = models.DateTimeField(blank=True, null=True)
