@@ -229,6 +229,221 @@
         margin-bottom: 10px;
     }
 
+    /* Custom Modal Styles */
+    .custom-modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+        animation: fadeInUp 0.3s ease-out;
+    }
+
+    .custom-modal-overlay.active {
+        display: flex;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    .custom-modal {
+        background: white;
+        border-radius: 28px;
+        max-width: 450px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: scaleIn 0.3s ease-out;
+        overflow: hidden;
+        margin: 20px;
+    }
+
+    .custom-modal-header {
+        background: linear-gradient(135deg, #6c3483, #8e44ad);
+        color: white;
+        padding: 1.5rem 2rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .custom-modal-header h5 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.25rem;
+    }
+
+    .custom-modal-close {
+        position: absolute;
+        right: 1.5rem;
+        top: 1.5rem;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        opacity: 0.8;
+        transition: opacity 0.3s;
+    }
+
+    .custom-modal-close:hover {
+        opacity: 1;
+    }
+
+    .custom-modal-body {
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .custom-modal-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #fee2e2, #fecaca);
+        border-radius: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.2rem;
+    }
+
+    .custom-modal-icon i {
+        font-size: 40px;
+        color: #dc2626;
+    }
+
+    .custom-modal-body h5 {
+        color: #1a1a1a;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .custom-modal-body .part-name-highlight {
+        color: #dc2626;
+    }
+
+    .custom-modal-part-detail {
+        background: #f8f5ff;
+        border-radius: 12px;
+        padding: 10px 15px;
+        margin: 10px auto;
+        display: inline-block;
+        font-weight: 600;
+        color: #4a1d6d;
+    }
+
+    .custom-modal-part-detail i {
+        margin-right: 5px;
+        color: #8e44ad;
+    }
+
+    .custom-modal-warning {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-top: 1rem;
+    }
+
+    .custom-modal-warning i {
+        color: #f59e0b;
+    }
+
+    .custom-modal-footer {
+        padding: 1rem 2rem 1.5rem;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        border-top: 1px solid #f0e8ff;
+    }
+
+    .btn-modal-cancel {
+        background: #f3e9ff;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 30px;
+        font-weight: 600;
+        color: #6c3483;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        min-width: 140px;
+    }
+
+    .btn-modal-cancel:hover {
+        background: #e9d9ff;
+        color: #4a1d6d;
+    }
+
+    .btn-modal-delete {
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
+        border: none;
+        border-radius: 50px;
+        padding: 10px 30px;
+        font-weight: 600;
+        color: white;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        min-width: 140px;
+    }
+
+    .btn-modal-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn-modal-delete:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    @media (max-width: 576px) {
+        .custom-modal {
+            width: 95%;
+            margin: 10px;
+        }
+        
+        .custom-modal-header {
+            padding: 1rem 1.5rem;
+        }
+        
+        .custom-modal-body {
+            padding: 1.5rem;
+        }
+        
+        .custom-modal-footer {
+            padding: 1rem 1.5rem 1.5rem;
+            flex-direction: column;
+        }
+        
+        .btn-modal-cancel,
+        .btn-modal-delete {
+            width: 100%;
+            min-width: unset;
+        }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .parts-table thead th {
@@ -336,12 +551,12 @@
                             <a href="{% url 'modify_vehicle_parts' s.id %}" class="btn-action btn-edit-part" title="Edit Part">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <form action="{% url 'delete_vehicle_parts' s.id %}" method="POST" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn-action btn-delete-part" title="Delete Part" onclick="return confirm('Are you sure you want to delete this part?')">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
+                            <button type="button" 
+                                    class="btn-action btn-delete-part"
+                                    onclick="openDeleteModal('{{ s.id }}', '{{ s.item_name }}', '{{ s.price }}', '{{ s.quantity }}')"
+                                    title="Delete Part">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </td>
                     </tr>
                     {% endfor %}
@@ -365,9 +580,90 @@
 
 </div>
 
+<!-- Custom Delete Confirmation Modal -->
+<div class="custom-modal-overlay" id="deleteModal">
+    <div class="custom-modal">
+        <div class="custom-modal-header">
+            <h5><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Deletion</h5>
+            <button type="button" class="custom-modal-close" onclick="closeDeleteModal()">&times;</button>
+        </div>
+        <div class="custom-modal-body">
+            <div class="custom-modal-icon">
+                <i class="bi bi-gear"></i>
+            </div>
+            <h5>Delete <span class="part-name-highlight" id="modalPartName"></span>?</h5>
+            <div class="custom-modal-part-detail">
+                <i class="bi bi-currency-rupee"></i>
+                <span id="modalPartPrice"></span>
+                <span style="margin: 0 10px;">|</span>
+                <i class="bi bi-box-seam"></i>
+                <span id="modalPartQuantity"></span> in stock
+            </div>
+            <p class="custom-modal-warning">
+                <i class="bi bi-info-circle me-1"></i>
+                This action cannot be undone. All associated data will be permanently removed.
+            </p>
+        </div>
+        <div class="custom-modal-footer">
+            <button type="button" class="btn-modal-cancel" onclick="closeDeleteModal()">
+                <i class="bi bi-x-circle me-2"></i>Cancel
+            </button>
+            <form id="deleteForm" method="POST" style="display: inline;" onsubmit="handleFormSubmit()">
+                {% csrf_token %}
+                <button type="submit" class="btn-modal-delete" id="confirmDeleteBtn">
+                    <i class="bi bi-trash me-2"></i>Yes, Delete Part
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+    // Get the base URL from Django template
+    const deleteUrl = "{% url 'delete_vehicle_parts' 0 %}".replace('0', '');
+    
+    // Open delete modal with part details
+    function openDeleteModal(partId, partName, partPrice, partQuantity) {
+        // Set the part details in the modal
+        document.getElementById('modalPartName').textContent = partName;
+        document.getElementById('modalPartPrice').textContent = '₹ ' + partPrice;
+        document.getElementById('modalPartQuantity').textContent = partQuantity;
+        
+        // Set the form action URL using Django URL reverse
+        const deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = "{% url 'delete_vehicle_parts' 0 %}".replace('0', partId);
+        
+        // Show the modal
+        document.getElementById('deleteModal').classList.add('active');
+        
+        // Reset the delete button state
+        const deleteBtn = document.getElementById('confirmDeleteBtn');
+        deleteBtn.innerHTML = '<i class="bi bi-trash me-2"></i>Yes, Delete Part';
+        deleteBtn.disabled = false;
+    }
+    
+    // Close delete modal
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('active');
+    }
+    
+    // Handle form submission - show loading state
+    function handleFormSubmit() {
+        const deleteBtn = document.getElementById('confirmDeleteBtn');
+        deleteBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Deleting...';
+        deleteBtn.disabled = true;
+        return true;
+    }
+    
+    // Close modal when clicking outside
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDeleteModal();
+        }
+    });
+    
+    // Add hover animation for action buttons
     document.addEventListener('DOMContentLoaded', function() {
-        // Add hover animation for action buttons
         const actionBtns = document.querySelectorAll('.btn-action');
         actionBtns.forEach(btn => {
             btn.addEventListener('mouseenter', function() {

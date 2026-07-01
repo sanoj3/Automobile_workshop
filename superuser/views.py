@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Superadmin
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
+from django.utils import timezone
+from django.db.models import Count
 
+from .models import Superadmin
 from mechanic.models import Mechanic, StockManagement, Active_mechanic
-from customer.models import Customer, Vehicle
+from customer.models import Customer, Vehicle, City, User
 from services.models import Complaints, ServiceBooking, MechanicRequest, Bill
 
 from customer.views import username_validation, password_validation, email_validation, number_validation, name_validation
@@ -73,6 +75,7 @@ def logout_view_superuser(request):
 #::::::::::::::::::::::Home Page Superuser::::::::::::::::::::::
 def home_page_superuser(request):
     superuser = check_superuser_access(request)
+
 
     if superuser is None:
         return redirect('login_superuser')
@@ -148,11 +151,26 @@ def all_customer_detail(request):
     if superuser is None:
         return redirect('login_superuser')
     
-    customers = Customer.objects.select_related('user','city')
+    customers = Customer.objects.select_related('user','city').exclude(user__username="admin")
+
+    active_count = customers.filter(user__is_active=True).count()
+    inactive_count = customers.filter(user__is_active=False).count()
+
+    now = timezone.now()
+    new_this_month = customers.filter(
+        user__date_joined__year=now.year,
+        user__date_joined__month=now.month
+    ).count()
+
+    cities = City.objects.all().order_by('name')
 
     return render(request, 'all_customer_details.html',{
         'superuser' : superuser,
-        'customers':customers
+        'customers':customers,
+        'active_count': active_count,
+        'inactive_count': inactive_count,
+        'new_this_month': new_this_month,
+        'cities': cities,
     })
 
 #::::::::::::::::::::::View Customer(Vehicle & Service Order) Details::::::::::::::::::::::
@@ -173,6 +191,26 @@ def customer_detail(request, id):
         'service_order' : service_order
     })
 
+
+#::::::::::::::::::::::Block Customer::::::::::::::::::::::
+def block_customer(request, id):
+    superuser = check_superuser_access(request)
+    
+    if superuser is None:
+        return redirect('login_superuser')
+    
+    customer = get_object_or_404(Customer, id=id)
+    
+    if customer.is_active:
+        customer.is_active = False
+        customer.save()
+        messages.warning(request, f"Account for {customer.name} has been blocked.")
+    else:
+        customer.is_active = True
+        customer.save()
+        messages.success(request, f"Account for {customer.name} has been activated.")
+    
+    return redirect('customer_detail', id=customer.id)
 
 
 #::::::::::::::::::::::View Customer Service Order Details::::::::::::::::::::::
@@ -210,11 +248,33 @@ def all_mechanic_details(request):
         return redirect('login_superuser')
     
     mechanic = Mechanic.objects.select_related('city').filter(is_valid=True)
+   
+    total_mechanics = mechanic.count()
+    active_mechanics = mechanic.filter(account_suspend=False).count()
+    inactive_mechanics = mechanic.filter(account_suspend=True).count()
+    
+    first_day_of_month = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    new_this_month = mechanic.filter(created_at__gte=first_day_of_month).count()
+    
+    top_mechanics = mechanic.annotate(
+        order_count=Count('servicebooking')
+    ).order_by('-order_count')[:5]
+    
+    cities = mechanic.values('city__id', 'city__name').distinct().order_by('city__name')
+    cities = [city for city in cities if city['city__name']]
+    context = {
+        'superuser': superuser,
+        'mechanic': mechanic,
+        'total_mechanics': total_mechanics,
+        'active_count': active_mechanics,
+        'inactive_count': inactive_mechanics,
+        'new_this_month': new_this_month,
+        'cities': cities,
+        'top_mechanics': top_mechanics,
+    }
+    
+    return render(request, 'all_mechanic_details.html', context)
 
-    return render(request, 'all_mechanic_details.html',{
-        'superuser' : superuser,
-        'mechanic':mechanic
-    })
 
 
 #::::::::::::::::::::::View Mechanic Details::::::::::::::::::::::
@@ -631,10 +691,20 @@ def service_not_assign_view(request, id):
 
         mechanic = get_object_or_404(Mechanic, id=mechanic_id)
 
+         # Directly assign the mechanic
+        service.mechanic = mechanic          # Assuming ServiceBooking has a mechanic FK
+        service.status = "Accepted"          
+        service.save()
+
         MechanicRequest.objects.filter(
             booking=service,
             mechanic=mechanic
-        ).update(status='Pending')
+        ).update(status='Accepted')
+
+        # Update mechanic availability
+        Active_mechanic.objects.filter(mechanic=mechanic).update(
+            is_available=False
+        )
 
         return redirect('service_not_assign')
 
@@ -670,14 +740,104 @@ def active_service_booking_view(request, id):
 
     if superuser is None:
         return redirect('login_superuser')
-    
+
     service = get_object_or_404(
         ServiceBooking,
         id=id,
         status__in=['Assigned', 'Accepted', 'In_progress']
     )
 
-    return render(request, 'active_service_view.html', {
-        'superuser': superuser,
-        'service': service
+    if request.method == "POST":
+
+        action = request.POST.get("action")
+
+        # ---------------- CANCEL BOOKING ----------------
+        if action == "cancel":
+
+            old_mechanic = service.mechanic
+
+            service.status = "Cancelled"
+            service.cancelled_by = "Admin"
+            service.save()
+
+            MechanicRequest.objects.filter(
+                booking=service
+            ).exclude(
+                status="Completed"
+            ).update(
+                status="Cancelled"
+            )
+
+            if old_mechanic:
+                Active_mechanic.objects.filter(
+                    mechanic=old_mechanic
+                ).update(
+                    is_available=True
+                )
+
+            messages.success(request, "Booking cancelled successfully.")
+            return redirect("active_service_booking")
+
+        # ---------------- REASSIGN MECHANIC ----------------
+        elif action == "reassign":
+
+            mechanic_id = request.POST.get("mechanic")
+
+            new_mechanic = get_object_or_404(
+                Mechanic,
+                id=mechanic_id
+            )
+
+            old_mechanic = service.mechanic
+
+            # Make old mechanic available
+            if old_mechanic:
+                Active_mechanic.objects.filter(
+                    mechanic=old_mechanic
+                ).update(
+                    is_available=True
+                )
+
+                # Cancel previous request
+                MechanicRequest.objects.filter(
+                    booking=service,
+                    mechanic=old_mechanic
+                ).update(
+                    status="Cancelled"
+                )
+
+            # Assign new mechanic
+            service.mechanic = new_mechanic
+            service.status = "Accepted"
+            service.save()
+
+            # Create or update request
+            MechanicRequest.objects.update_or_create(
+                booking=service,
+                mechanic=new_mechanic,
+                defaults={
+                    "status": "Accepted"
+                }
+            )
+
+            # Make new mechanic unavailable
+            Active_mechanic.objects.filter(
+                mechanic=new_mechanic
+            ).update(
+                is_available=False
+            )
+
+            messages.success(request, "Mechanic reassigned successfully.")
+            return redirect("active_service_booking")
+
+    mechanics = Active_mechanic.objects.filter(
+        is_available=True,
+        is_online=True
+    )
+
+    return render(request, "active_service_view.html", {
+        "superuser": superuser,
+        "service": service,
+        "mechanics": mechanics
     })
+

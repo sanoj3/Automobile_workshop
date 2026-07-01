@@ -1,689 +1,1001 @@
 {% extends 'base_admin.html' %}
+{% load static %}
 
 {% block content %}
 
+<style>
+    .bg-purple-gradient {
+        background: linear-gradient(135deg, #6C3CE1 0%, #8B5CF6 50%, #A78BFA 100%);
+    }
+    
+    .text-purple { color: #6C3CE1; }
+    .border-purple { border-color: #6C3CE1 !important; }
+    
+    .profile-header {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+    
+    .profile-header::after {
+        content: '';
+        position: absolute;
+        bottom: -40%;
+        left: -10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+    
+    .profile-header .position-relative {
+        z-index: 1;
+    }
+    
+    .detail-card {
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid rgba(108, 60, 225, 0.08);
+    }
+    
+    .detail-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(108, 60, 225, 0.08) !important;
+        border-color: rgba(108, 60, 225, 0.15);
+    }
+    
+    .detail-card .card-header {
+        background: linear-gradient(95deg, #F8F5FF, #EDE9FE);
+        border-bottom: 2px solid rgba(108, 60, 225, 0.1);
+        padding: 12px 20px;
+    }
+    
+    .detail-card .card-header h5 {
+        color: #4C1D95;
+        font-weight: 700;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .detail-card .card-header h5 i {
+        color: #6C3CE1;
+        font-size: 18px;
+    }
+    
+    .detail-card .card-body {
+        padding: 20px;
+    }
+    
+    .profile-avatar {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+        object-fit: cover;
+    }
+    
+    .profile-avatar:hover {
+        transform: scale(1.05) rotate(-3deg);
+    }
+    
+    .profile-avatar-placeholder {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 55px;
+        color: #6C3CE1;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+        border: 4px solid white;
+    }
+    
+    .profile-avatar-placeholder:hover {
+        transform: scale(1.05) rotate(-3deg);
+    }
+    
+    .status-badge {
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .status-badge.active {
+        background: #D1FAE5;
+        color: #059669;
+    }
+    
+    .status-badge.inactive {
+        background: #FEE2E2;
+        color: #DC2626;
+    }
+    
+    .info-card {
+        background: rgba(255,255,255,0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(108, 60, 225, 0.08);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .info-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(108, 60, 225, 0.1);
+        border-color: rgba(108, 60, 225, 0.2);
+    }
+    
+    .info-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
+        font-size: 24px;
+        color: white;
+        box-shadow: 0 8px 25px rgba(108, 60, 225, 0.3);
+    }
+    
+    .info-icon.purple {
+        background: linear-gradient(135deg, #6C3CE1, #8B5CF6);
+    }
+    
+    .info-icon.green {
+        background: linear-gradient(135deg, #10B981, #34D399);
+    }
+    
+    .info-icon.orange {
+        background: linear-gradient(135deg, #F59E0B, #FBBF24);
+    }
+    
+    .info-icon.red {
+        background: linear-gradient(135deg, #EF4444, #F87171);
+    }
+    
+    /* Address Card Redesign */
+    .address-card {
+        background: white;
+        border: 1px solid rgba(108, 60, 225, 0.08);
+        border-radius: 16px;
+        padding: 20px 24px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .address-card:hover {
+        border-color: rgba(108, 60, 225, 0.2);
+        box-shadow: 0 8px 25px rgba(108, 60, 225, 0.06);
+        transform: translateY(-2px);
+    }
+    
+    .address-icon-wrapper {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #6C3CE1, #8B5CF6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 4px 15px rgba(108, 60, 225, 0.25);
+    }
+    
+    .address-icon-wrapper i {
+        font-size: 20px;
+        color: white;
+    }
+    
+    .address-content {
+        flex: 1;
+    }
+    
+    .address-content .label {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6B7280;
+        display: block;
+        margin-bottom: 4px;
+    }
+    
+    .address-content .address-text {
+        font-size: 15px;
+        font-weight: 600;
+        color: #1F1A3E;
+        margin: 0;
+        line-height: 1.6;
+    }
+    
+    .address-content .address-text i {
+        color: #6C3CE1;
+        margin-right: 6px;
+    }
+    
+    .address-badge {
+        background: #EDE9FE;
+        color: #4C1D95;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 6px;
+    }
+    
+    .address-badge i {
+        font-size: 10px;
+    }
+    
+    .tab-btn {
+        color: #6C3CE1;
+        border: 2px solid #6C3CE1;
+        border-radius: 50px;
+        padding: 10px 28px;
+        transition: all 0.3s ease;
+        background: transparent;
+        font-weight: 600;
+    }
+    
+    .tab-btn:hover {
+        background: rgba(108, 60, 225, 0.05);
+        transform: translateY(-2px);
+    }
+    
+    .tab-btn.active {
+        background: linear-gradient(135deg, #6C3CE1, #8B5CF6);
+        color: white;
+        border-color: #6C3CE1;
+        box-shadow: 0 4px 20px rgba(108, 60, 225, 0.3);
+    }
+    
+    .btn-purple {
+        background: linear-gradient(135deg, #6C3CE1, #8B5CF6);
+        color: white;
+        border: none;
+        padding: 12px 32px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-purple:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(108, 60, 225, 0.3);
+        color: white;
+    }
+    
+    .btn-outline-purple {
+        border: 2px solid #6C3CE1;
+        color: #6C3CE1;
+        background: transparent;
+        padding: 12px 32px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-outline-purple:hover {
+        background: linear-gradient(135deg, #6C3CE1, #8B5CF6);
+        color: white;
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(108, 60, 225, 0.2);
+    }
+    
+    .btn-danger-gradient {
+        background: linear-gradient(135deg, #DC3545, #FF6B6B);
+        color: white;
+        border: none;
+        padding: 12px 32px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-danger-gradient:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(220, 53, 69, 0.3);
+        color: white;
+    }
+    
+    .btn-success-gradient {
+        background: linear-gradient(135deg, #10B981, #34D399);
+        color: white;
+        border: none;
+        padding: 12px 32px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .btn-success-gradient:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+        color: white;
+    }
+    
+    .part-status {
+        padding: 4px 14px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+    
+    .part-status.in-stock {
+        background: #D1FAE5;
+        color: #059669;
+    }
+    
+    .part-status.low-stock {
+        background: #FEF3C7;
+        color: #D97706;
+    }
+    
+    .part-status.out-stock {
+        background: #FEE2E2;
+        color: #DC2626;
+    }
+    
+    .account-status-card {
+        background: linear-gradient(95deg, #F8F5FF, #EDE9FE);
+        border: 1px solid rgba(108, 60, 225, 0.1);
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    .animate-fade-up {
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+    }
+    
+    .animate-slide-right {
+        animation: slideInRight 0.6s ease forwards;
+        opacity: 0;
+    }
+    
+    .animate-fade-up:nth-child(1) { animation-delay: 0.05s; }
+    .animate-fade-up:nth-child(2) { animation-delay: 0.10s; }
+    .animate-fade-up:nth-child(3) { animation-delay: 0.15s; }
+    .animate-fade-up:nth-child(4) { animation-delay: 0.20s; }
+    
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+    
+    .table tbody tr:hover {
+        background: #FAF7FF;
+    }
+    
+    .modal-content {
+        animation: modalPop 0.3s ease;
+    }
+    
+    @keyframes modalPop {
+        from {
+            opacity: 0;
+            transform: scale(0.9) translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+    
+    /* Responsive */
+    @media(max-width: 768px) {
+        .profile-header .row {
+            flex-direction: column;
+            text-align: center;
+        }
+        .profile-header .col-md-9 {
+            margin-top: 16px;
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+        }
+        .profile-avatar-placeholder {
+            width: 100px;
+            height: 100px;
+            font-size: 40px;
+        }
+        .info-card {
+            padding: 12px;
+        }
+        .tab-btn {
+            padding: 8px 18px;
+            font-size: 13px;
+        }
+        .address-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .address-icon-wrapper {
+            width: 56px;
+            height: 56px;
+        }
+    }
+    
+    @media(max-width: 576px) {
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+        }
+        .profile-avatar-placeholder {
+            width: 80px;
+            height: 80px;
+            font-size: 32px;
+        }
+        .status-badge {
+            font-size: 11px;
+            padding: 4px 12px;
+        }
+        .btn-purple, .btn-outline-purple, .btn-danger-gradient, .btn-success-gradient {
+            padding: 8px 20px;
+            font-size: 13px;
+        }
+        .address-card {
+            padding: 16px;
+        }
+        .address-content .address-text {
+            font-size: 14px;
+        }
+    }
+</style>
+
 <div class="container py-4">
-
     <div class="row justify-content-center">
-
         <div class="col-lg-11">
-
+            
             <!-- Main Card -->
-            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden animate-fade-up">
+                
                 <!-- Header -->
-                <div class="bg-primary text-white p-4">
-
-                    <div class="row align-items-center">
-
+                <div class="profile-header bg-purple-gradient text-white p-4">
+                    <div class="row align-items-center position-relative">
+                        
                         <!-- Profile -->
                         <div class="col-md-3 text-center">
-
                             {% if mechanic.profile_pic %}
-
                                 <img src="{{ mechanic.profile_pic.url }}"
-                                     class="rounded-circle border border-4 border-white shadow"
-                                     style="width:120px;height:120px;object-fit:cover;">
-
+                                     class="profile-avatar">
                             {% else %}
-
-                                <div class="bg-white text-primary rounded-circle d-flex align-items-center justify-content-center mx-auto shadow"
-                                     style="width:120px;height:120px;font-size:50px;">
-
+                                <div class="profile-avatar-placeholder">
                                     <i class="bi bi-person-fill"></i>
-
                                 </div>
-
                             {% endif %}
-
                         </div>
-
-                        <!-- Customer Info -->
+                        
+                        <!-- Mechanic Info -->
                         <div class="col-md-9 mt-4 mt-md-0">
-
-                            <h2 class="fw-bold mb-2">
-                                {{ mechanic.name }}
-                            </h2>
-
-                            <p class="mb-2">
-                                <i class="bi bi-envelope-fill"></i>
+                            <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                <h2 class="fw-bold mb-0 text-white">
+                                    {{ mechanic.name }}
+                                </h2>
+                                <span class="badge bg-white text-purple px-3 py-2 rounded-pill shadow-sm">
+                                    <i class="bi bi-person-badge"></i> Mechanic
+                                </span>
+                            </div>
+                            
+                            <p class="mb-2 text-white-50">
+                                <i class="bi bi-envelope-fill me-2"></i>
                                 {{ mechanic.email }}
                             </p>
-
-                            <div class="d-flex flex-wrap gap-2">
-
-                                <span class="badge bg-light text-dark px-3 py-2 rounded-pill">
-                                    <i class="bi bi-person-badge"></i>
-                                    Mechanic
-                                </span>
-
+                            
+                            <div class="d-flex flex-wrap gap-2 mt-3">
                                 {% if not mechanic.account_suspend %}
-
-                                    <span class="badge bg-success px-3 py-2 rounded-pill">
+                                    <span class="status-badge active">
                                         <i class="bi bi-check-circle-fill"></i>
                                         Active
                                     </span>
-
                                 {% else %}
-
-                                    <span class="badge bg-danger px-3 py-2 rounded-pill">
+                                    <span class="status-badge inactive">
                                         <i class="bi bi-x-circle-fill"></i>
-                                        In Active
+                                        Inactive
                                     </span>
-
                                 {% endif %}
-
+                                
+                                <span class="badge bg-light text-dark px-4 py-2 rounded-pill shadow-sm">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    Joined: {{ mechanic.created_at|date:"d M Y" }}
+                                </span>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>
-
+                
                 <!-- Body -->
-                <div class="card-body p-4">
-
+                <div class="card-body p-4" style="background: #f8f7ff;">
+                    
                     <!-- Info Cards -->
                     <div class="row g-4 mb-4">
-
-                        <!-- Phone -->
                         <div class="col-md-6 col-lg-3">
-
-                            <div class="card border-0 bg-light rounded-4 h-100 shadow-sm">
-
-                                <div class="card-body text-center">
-
-                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
-                                         style="width:55px;height:55px;">
-
+                            <div class="card border-0 rounded-4 h-100 shadow-sm info-card">
+                                <div class="card-body text-center p-4">
+                                    <div class="info-icon purple">
                                         <i class="bi bi-telephone-fill"></i>
-
                                     </div>
-
-                                    <small class="text-muted">
-                                        Phone Number
-                                    </small>
-
-                                    <h6 class="fw-bold mt-2 mb-0">
-                                        {{ mechanic.number }}
-                                    </h6>
-
+                                    <small class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Phone</small>
+                                    <h6 class="fw-bold mt-2 mb-0 text-purple">{{ mechanic.number }}</h6>
                                 </div>
-
                             </div>
-
                         </div>
-
-                        <!-- City -->
+                        
                         <div class="col-md-6 col-lg-3">
-
-                            <div class="card border-0 bg-light rounded-4 h-100 shadow-sm">
-
-                                <div class="card-body text-center">
-
-                                    <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
-                                         style="width:55px;height:55px;">
-
+                            <div class="card border-0 rounded-4 h-100 shadow-sm info-card">
+                                <div class="card-body text-center p-4">
+                                    <div class="info-icon green">
                                         <i class="bi bi-geo-alt-fill"></i>
-
                                     </div>
-
-                                    <small class="text-muted">
-                                        City
-                                    </small>
-
-                                    <h6 class="fw-bold mt-2 mb-0">
-                                        {{ mechanic.city }}
-                                    </h6>
-
+                                    <small class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">City</small>
+                                    <h6 class="fw-bold mt-2 mb-0 text-purple">{{ mechanic.city }}</h6>
                                 </div>
-
                             </div>
-
                         </div>
-
-                        <!-- Joined -->
+                        
                         <div class="col-md-6 col-lg-3">
-
-                            <div class="card border-0 bg-light rounded-4 h-100 shadow-sm">
-
-                                <div class="card-body text-center">
-
-                                    <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
-                                         style="width:55px;height:55px;">
-
+                            <div class="card border-0 rounded-4 h-100 shadow-sm info-card">
+                                <div class="card-body text-center p-4">
+                                    <div class="info-icon orange">
                                         <i class="bi bi-calendar-check-fill"></i>
-
                                     </div>
-
-                                    <small class="text-muted">
-                                        Joined Date
-                                    </small>
-
-                                    <h6 class="fw-bold mt-2 mb-0">
-                                        {{ mechanic.created_at|date:"d M Y" }}
-                                    </h6>
-
+                                    <small class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Joined</small>
+                                    <h6 class="fw-bold mt-2 mb-0 text-purple">{{ mechanic.created_at|date:"d M Y" }}</h6>
                                 </div>
-
                             </div>
-
                         </div>
-
-                        <!-- Last Login -->
+                        
                         <div class="col-md-6 col-lg-3">
-
-                            <div class="card border-0 bg-light rounded-4 h-100 shadow-sm">
-
-                                <div class="card-body text-center">
-
-                                    <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
-                                         style="width:55px;height:55px;">
-
+                            <div class="card border-0 rounded-4 h-100 shadow-sm info-card">
+                                <div class="card-body text-center p-4">
+                                    <div class="info-icon red">
                                         <i class="bi bi-clock-history"></i>
-
                                     </div>
-
-                                    <small class="text-muted">
-                                        Last Login
-                                    </small>
-
-                                    <h6 class="fw-bold mt-2 mb-0">
-
-                                        {{ mechanic.last_login_date|default:"Never Logged In" }}
-
-                                    </h6>
-
+                                    <small class="text-muted text-uppercase fw-bold" style="font-size: 11px; letter-spacing: 0.5px;">Last Login</small>
+                                    <h6 class="fw-bold mt-2 mb-0 text-purple">{{ mechanic.last_login_date|default:"Never" }}</h6>
                                 </div>
-
                             </div>
-
                         </div>
-
-                    </div>
-
-                    <!-- Address -->
-                    <div class="card border-0 bg-light rounded-4 shadow-sm mb-4">
-
-                        <div class="card-body">
-
-                            <div class="d-flex align-items-center">
-
-                                <div class="bg-dark text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                                     style="width:55px;height:55px;">
-
-                                    <i class="bi bi-house-door-fill"></i>
-
-                                </div>
-
-                                <div>
-
-                                    <small class="text-muted">
-                                        Address
-                                    </small>
-
-                                    <h6 class="fw-bold mb-0 mt-1">
-                                        {{ mechanic.address }}
-                                    </h6>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
                     </div>
                     
-                    <ul class="nav nav-pills mb-4 justify-content-center">
-
-    <li class="nav-item">
-        <button class="nav-link active"
-                data-bs-toggle="pill"
-                data-bs-target="#parts">
-            <i class="bi bi-tools"></i>
-            Vehicle Parts
-        </button>
-    </li>
-
-    <li class="nav-item">
-        <button class="nav-link"
-                data-bs-toggle="pill"
-                data-bs-target="#services">
-            <i class="bi bi-car-front-fill"></i>
-            Service Orders
-        </button>
-    </li>
-
-</ul>
-
-<div class="tab-content">
-
-    <!-- Vehicle Parts Tab -->
-    <div class="tab-pane fade show active"
-         id="parts">
-
-                <!-- Vehicle Parts list -->
-                <div class="card border-0 shadow-sm rounded-4">
-
-            <div class="card-header bg-white border-0 py-3">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <h5 class="fw-bold mb-1">
-                            <i class="bi bi-tools text-danger"></i>
-                            Available Vehicle Parts
-                        </h5>
-
-                        <small class="text-muted">
-                            Total Parts : {{ vehicle_parts|length }}
-                        </small>
-
+                    <!-- Address Card - Redesigned -->
+                    <div class="address-card mb-4">
+                        <div class="address-icon-wrapper">
+                            <i class="bi bi-house-door-fill"></i>
+                        </div>
+                        <div class="address-content">
+                            <span class="label">
+                                <i class="bi bi-pin-map me-1"></i>
+                                Address
+                            </span>
+                            <p class="address-text">
+                                <i class="bi bi-geo-alt"></i>
+                                {{ mechanic.address }}
+                            </p>
+                            <span class="address-badge">
+                                <i class="bi bi-check-circle-fill"></i>
+                                Verified Location
+                            </span>
+                        </div>
                     </div>
-
-                </div>
-
-            </div>
-
-            <div class="card-body p-0">
-
-                {% if vehicle_parts %}
-
-                <div class="table-responsive">
-
-                    <table class="table align-middle table-hover mb-0">
-
-                        <thead class="table-light">
-
-                            <tr>
-                                <th class="ps-4">#</th>
-                                <th>Part Name</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Status</th>
-                            </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                            {% for vp in vehicle_parts %}
-
-                            <tr>
-
-                                <td class="ps-4 fw-semibold">
-                                    {{ forloop.counter }}
-                                </td>
-
-                                <td>
-
-                                    <div class="d-flex align-items-center">
-
-                                        <div class="bg-danger bg-opacity-10
-                                                    rounded-circle
-                                                    d-flex
-                                                    align-items-center
-                                                    justify-content-center me-3"
-                                            style="width:55px;height:55px;">
-
-                                            <i class="bi bi-tools text-danger fs-5"></i>
-
-                                        </div>
-
+                    
+                    <!-- Tabs -->
+                    <ul class="nav nav-pills mb-4 justify-content-center gap-2" id="mechanicTab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active tab-btn"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#parts"
+                                    type="button">
+                                <i class="bi bi-tools me-2"></i>
+                                Vehicle Parts
+                                <span class="badge bg-white text-purple ms-2">{{ vehicle_parts|length }}</span>
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link tab-btn"
+                                    data-bs-toggle="pill"
+                                    data-bs-target="#services"
+                                    type="button">
+                                <i class="bi bi-car-front-fill me-2"></i>
+                                Service Orders
+                                <span class="badge bg-white text-purple ms-2">{{ service_order|length }}</span>
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Tab Content -->
+                    <div class="tab-content">
+                        
+                        <!-- Vehicle Parts Tab -->
+                        <div class="tab-pane fade show active" id="parts">
+                            <div class="card border-0 shadow-sm rounded-4">
+                                <div class="card-header bg-white border-0 py-3">
+                                    <div class="d-flex justify-content-between align-items-center">
                                         <div>
-
-                                            <h6 class="mb-0 fw-bold">
-                                                {{ vp.item_name }}
-                                            </h6>
-
-                                            <small class="text-muted">
-                                                Vehicle Spare Part
-                                            </small>
-
+                                            <h5 class="fw-bold mb-0">
+                                                <i class="bi bi-tools text-purple me-2"></i>
+                                                Vehicle Parts
+                                            </h5>
+                                            <small class="text-muted">Total: {{ vehicle_parts|length }} parts</small>
                                         </div>
-
                                     </div>
-
-                                </td>
-
-                                <td>
-
-                                    <span class="fw-bold text-dark">
-                                        ₹ {{ vp.price }}
-                                    </span>
-
-                                </td>
-
-                                <td>
-
-                                    {% if vp.quantity > 10 %}
-
-                                        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill">
-                                            {{ vp.quantity }} In Stock
-                                        </span>
-
-                                    {% elif vp.quantity > 0 %}
-
-                                        <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill">
-                                            {{ vp.quantity }} Low Stock
-                                        </span>
-
+                                </div>
+                                <div class="card-body p-0">
+                                    {% if vehicle_parts %}
+                                    <div class="table-responsive">
+                                        <table class="table align-middle table-hover mb-0">
+                                            <thead style="background: linear-gradient(95deg, #F8F5FF, #EDE9FE);">
+                                                <tr>
+                                                    <th class="ps-4">#</th>
+                                                    <th>Part Name</th>
+                                                    <th>Price</th>
+                                                    <th>Quantity</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for vp in vehicle_parts %}
+                                                <tr>
+                                                    <td class="ps-4">
+                                                        <span class="badge bg-purple bg-opacity-10 text-purple rounded-circle" 
+                                                              style="width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;">
+                                                            {{ forloop.counter }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="bg-purple bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
+                                                                 style="width:45px;height:45px;">
+                                                                <i class="bi bi-tools text-purple fs-5"></i>
+                                                            </div>
+                                                            <div>
+                                                                <h6 class="mb-0 fw-bold">{{ vp.item_name }}</h6>
+                                                                <small class="text-muted">Spare Part</small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span class="fw-bold text-purple">₹ {{ vp.price }}</span>
+                                                    </td>
+                                                    <td>
+                                                        {% if vp.quantity > 10 %}
+                                                            <span class="part-status in-stock">
+                                                                <i class="bi bi-check-circle-fill me-1"></i>
+                                                                {{ vp.quantity }} In Stock
+                                                            </span>
+                                                        {% elif vp.quantity > 0 %}
+                                                            <span class="part-status low-stock">
+                                                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                                                {{ vp.quantity }} Low Stock
+                                                            </span>
+                                                        {% else %}
+                                                            <span class="part-status out-stock">
+                                                                <i class="bi bi-x-circle-fill me-1"></i>
+                                                                Out of Stock
+                                                            </span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if vp.quantity > 0 %}
+                                                            <span class="badge bg-success px-3 py-2 rounded-pill">
+                                                                <i class="bi bi-check-circle-fill me-1"></i>
+                                                                Available
+                                                            </span>
+                                                        {% else %}
+                                                            <span class="badge bg-danger px-3 py-2 rounded-pill">
+                                                                <i class="bi bi-x-circle-fill me-1"></i>
+                                                                Unavailable
+                                                            </span>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                     {% else %}
-
-                                        <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill">
-                                            Out of Stock
-                                        </span>
-
+                                    <div class="text-center py-5">
+                                        <div class="bg-purple bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                             style="width:100px;height:100px;">
+                                            <i class="bi bi-tools text-purple" style="font-size:50px;"></i>
+                                        </div>
+                                        <h5 class="mt-4 fw-bold text-purple">No Vehicle Parts Found</h5>
+                                        <p class="text-muted">This mechanic has not added any spare parts yet.</p>
+                                    </div>
                                     {% endif %}
-
-                                </td>
-
-                                <td>
-
-                                    {% if vp.quantity > 0 %}
-
-                                        <span class="badge bg-success rounded-pill px-3 py-2">
-                                            Available
-                                        </span>
-
-                                    {% else %}
-
-                                        <span class="badge bg-danger rounded-pill px-3 py-2">
-                                            Unavailable
-                                        </span>
-
-                                    {% endif %}
-
-                                </td>
-
-                            </tr>
-
-                            {% endfor %}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-                {% else %}
-
-                <div class="text-center py-5">
-
-                    <div class="mb-4">
-
-                        <div class="bg-danger bg-opacity-10
-                                    rounded-circle d-inline-flex
-                                    align-items-center
-                                    justify-content-center shadow-sm"
-                            style="width:110px;height:110px;">
-
-                            <i class="bi bi-tools text-danger"
-                            style="font-size:55px;"></i>
-
+                                </div>
+                            </div>
                         </div>
-
+                        
+                        <!-- Service Orders Tab -->
+                        <div class="tab-pane fade" id="services">
+                            <div class="card border-0 shadow-sm rounded-4">
+                                <div class="card-header bg-white border-0 py-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="fw-bold mb-0">
+                                                <i class="bi bi-car-front-fill text-purple me-2"></i>
+                                                Service Orders
+                                            </h5>
+                                            <small class="text-muted">Total: {{ service_order|length }} orders</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    {% if service_order %}
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle">
+                                            <thead style="background: linear-gradient(95deg, #F8F5FF, #EDE9FE);">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Booking ID</th>
+                                                    <th>Customer</th>
+                                                    <th>Vehicle No</th>
+                                                    <th>Status</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for order in service_order %}
+                                                <tr style="cursor:pointer;"
+                                                    onclick="window.location.href='/superuser/mechanic/{{order.mechanic.id}}/service-order/{{order.id}}/'"
+                                                    onmouseover="this.style.background='#FAF7FF'"
+                                                    onmouseout="this.style.background='transparent'">
+                                                    <td>
+                                                        <span class="badge bg-purple bg-opacity-10 text-purple rounded-circle"
+                                                              style="width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;">
+                                                            {{ forloop.counter }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="fw-bold text-purple">#{{ order.id }}</span>
+                                                    </td>
+                                                    <td>{{ order.customer.name }}</td>
+                                                    <td>
+                                                        <span class="badge bg-light text-dark px-3 py-2">
+                                                            {{ order.vehicle.vehicle_number }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        {% if order.status == 'Completed' %}
+                                                            <span class="badge bg-success px-3 py-2">
+                                                                <i class="bi bi-check-circle-fill me-1"></i>
+                                                                {{ order.status }}
+                                                            </span>
+                                                        {% elif order.status == 'Pending' %}
+                                                            <span class="badge bg-warning text-dark px-3 py-2">
+                                                                <i class="bi bi-clock-fill me-1"></i>
+                                                                {{ order.status }}
+                                                            </span>
+                                                        {% elif order.status == 'Cancelled' %}
+                                                            <span class="badge bg-danger px-3 py-2">
+                                                                <i class="bi bi-x-circle-fill me-1"></i>
+                                                                {{ order.status }}
+                                                            </span>
+                                                        {% else %}
+                                                            <span class="badge bg-primary px-3 py-2">
+                                                                <i class="bi bi-info-circle-fill me-1"></i>
+                                                                {{ order.status }}
+                                                            </span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <span class="text-muted">
+                                                            <i class="bi bi-calendar3 me-1"></i>
+                                                            {{ order.created_at|date:"d M Y" }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {% else %}
+                                    <div class="text-center py-5">
+                                        <div class="bg-purple bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto"
+                                             style="width:100px;height:100px;">
+                                            <i class="bi bi-car-front text-purple" style="font-size:50px;"></i>
+                                        </div>
+                                        <h5 class="mt-4 fw-bold text-purple">No Service Orders Found</h5>
+                                        <p class="text-muted">This mechanic has not received any service orders yet.</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
-
-                    <h4 class="fw-bold mb-2">
-                        No Vehicle Parts Found
-                    </h4>
-
-                    <p class="text-muted mb-0">
-                        This mechanic has not added any spare parts yet.
-                    </p>
-
-                </div>
-
-                {% endif %}
-
-            </div>
-
-        </div>
-
-
-    </div>
-
-    <!-- Service Orders Tab -->
-    <div class="tab-pane fade"
-         id="services">
-
-        <div class="card border-0 shadow-sm rounded-4">
-
-            <div class="card-header bg-white border-0 py-3">
-
-                <h5 class="fw-bold mb-0">
-                    <i class="bi bi-tools text-success"></i>
-                    Service Orders
-                </h5>
-
-                <small class="text-muted">
-                    Total Orders : {{ service_order|length }}
-                </small>
-
-            </div>
-
-            <div class="card-body">
-
-                {% if service_order %}
-
-                <div class="table-responsive">
-
-                    <table class="table table-hover">
-
-                        <thead class="table-light">
-                            <tr>
-                                <th>#</th>
-                                <th>Booking ID</th>
-                                <th>Customer</th>
-                                <th>Vehicle No</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            {% for order in service_order %}
-
-                            <tr style="cursor:pointer;"
-                                    onclick="window.location.href='/superuser/mechanic/{{order.mechanic.id}}/service-order/{{order.id}}/'">
-
-                                <td>{{ forloop.counter }}</td>
-
-                                <td>#{{ order.id }}</td>
-
-                                <td>{{ order.customer.name }}</td>
-
-                                <td>{{ order.vehicle.vehicle_number }}</td>
-
-                                <td>
-                                    <span class="badge bg-primary">
-                                        {{ order.status }}
-                                    </span>
-                                </td>
-
-                                <td>
-                                    {{ order.created_at|date:"d M Y" }}
-                                </td>
-
-                            </tr>
-
-                            {% endfor %}
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-                {% else %}
-
-                <div class="text-center py-5">
-                    <h5>No Service Orders Found</h5>
-                </div>
-
-                {% endif %}
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
                     
-                   
-            <div class="card border-0 shadow-sm rounded-4 mt-4">
-
-    <div class="card-body">
-
-        <div class="d-flex justify-content-between align-items-center flex-wrap">
-
-            <div>
-
-                <h5 class="fw-bold mb-1">
-                    Account Status
-                </h5>
-
-                {% if mechanic.account_suspend %}
-
-                    <p class="text-danger mb-0">
-                        <i class="bi bi-person-x-fill"></i>
-                        This mechanic account is currently suspended.
-                    </p>
-
-                {% else %}
-
-                    <p class="text-success mb-0">
-                        <i class="bi bi-person-check-fill"></i>
-                        This mechanic account is active and working.
-                    </p>
-
-                {% endif %}
-
-            </div>
-
-            <div>
-
-                {% if mechanic.account_suspend %}
-
-                    <a href="{% url 'suspend_mechanic' mechanic.id %}"
-                       class="btn btn-success btn-lg rounded-pill px-4">
-
-                        <i class="bi bi-check-circle-fill"></i>
-                        Activate Account
-
-                    </a>
-
-                {% else %}
-
-                    <button class="btn btn-danger btn-lg rounded-pill px-4"
-                            data-bs-toggle="modal"
-                            data-bs-target="#suspendModal">
-
-                        <i class="bi bi-ban-fill"></i>
-                        Suspend Account
-
-                    </button>
-
-                {% endif %}
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-                    <!-- Buttons -->
-                    <div class="text-center mt-4">
-
-                        <a href="{% url 'all_mechanic_details' %}"
-                           class="btn btn-outline-primary px-4 py-2 rounded-3">
-
-                            <i class="bi bi-arrow-left"></i>
-                            Back
-
-                        </a>
-
+                    <!-- Account Status -->
+                    <div class="card border-0 shadow-sm rounded-4 mt-4 account-status-card">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div>
+                                    <h5 class="fw-bold mb-1">
+                                        <i class="bi bi-shield-check text-purple me-2"></i>
+                                        Account Status
+                                    </h5>
+                                    {% if mechanic.account_suspend %}
+                                        <p class="text-danger mb-0">
+                                            <i class="bi bi-person-x-fill me-1"></i>
+                                            This account is currently suspended
+                                        </p>
+                                    {% else %}
+                                        <p class="text-success mb-0">
+                                            <i class="bi bi-person-check-fill me-1"></i>
+                                            This account is active and working
+                                        </p>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    {% if mechanic.account_suspend %}
+                                        <button class="btn-success-gradient"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#activateModal">
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+                                            Activate Account
+                                        </button>
+                                    {% else %}
+                                        <button class="btn-danger-gradient"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#suspendModal">
+                                            <i class="bi bi-ban-fill me-2"></i>
+                                            Suspend Account
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
+                    
+                    <!-- Back Button
+                    <div class="text-center mt-4">
+                        <a href="{% url 'all_mechanic_details' %}"
+                           class="btn-outline-purple">
+                            <i class="bi bi-arrow-left me-2"></i>
+                            Back to Mechanics
+                        </a>
+                    </div>
+                     -->
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
-
-
-<div class="modal fade"
-     id="suspendModal"
-     tabindex="-1">
-
+<!-- Suspend Modal -->
+<div class="modal fade" id="suspendModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-
-        <div class="modal-content border-0 shadow">
-
-            <div class="modal-header bg-danger text-white">
-
-                <h5 class="modal-title">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #DC3545, #FF6B6B);">
+                <h5 class="modal-title text-white fw-bold">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
                     Confirm Suspension
                 </h5>
-
-                <button type="button"
-                        class="btn-close btn-close-white"
-                        data-bs-dismiss="modal">
-                </button>
-
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-
-            <div class="modal-body text-center py-4">
-
-                <i class="bi bi-exclamation-triangle-fill text-danger"
-                   style="font-size:60px;">
-                </i>
-
-                <h4 class="mt-3">
-                    Suspend {{ mechanic.name }} ?
-                </h4>
-
-                <p class="text-muted">
-                    The mechanic will not be able to access the system until reactivated.
-                </p>
-
+            <div class="modal-body p-5 text-center">
+                <div class="bg-danger bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4"
+                     style="width:100px;height:100px;">
+                    <i class="bi bi-person-x text-danger" style="font-size:50px;"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Suspend {{ mechanic.name }}?</h4>
+                <p class="text-muted mb-0">The mechanic will not be able to access the system until reactivated.</p>
             </div>
-
-            <div class="modal-footer">
-
-                <button type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal">
+            <div class="modal-footer border-0 justify-content-center gap-3 pb-4">
+                <button type="button" class="btn btn-light rounded-pill px-4 py-2" data-bs-dismiss="modal"
+                        onmouseover="this.style.transform='scale(1.05)'"
+                        onmouseout="this.style.transform='scale(1)'">
+                    <i class="bi bi-x-circle me-2"></i>
                     Cancel
                 </button>
-
                 <a href="{% url 'suspend_mechanic' mechanic.id %}"
-                   class="btn btn-danger">
-
-                    <i class="bi bi-ban-fill"></i>
+                   class="btn-danger-gradient"
+                   onmouseover="this.style.transform='scale(1.05)'"
+                   onmouseout="this.style.transform='scale(1)'">
+                    <i class="bi bi-ban-fill me-2"></i>
                     Yes, Suspend
-
                 </a>
-
             </div>
-
         </div>
-
     </div>
+</div>
 
+<!-- Activate Modal -->
+<div class="modal fade" id="activateModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-0" style="background: linear-gradient(135deg, #10B981, #34D399);">
+                <h5 class="modal-title text-white fw-bold">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Confirm Activation
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-5 text-center">
+                <div class="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4"
+                     style="width:100px;height:100px;">
+                    <i class="bi bi-person-check text-success" style="font-size:50px;"></i>
+                </div>
+                <h4 class="fw-bold mb-2">Activate {{ mechanic.name }}?</h4>
+                <p class="text-muted mb-0">The mechanic will regain access to the system.</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center gap-3 pb-4">
+                <button type="button" class="btn btn-light rounded-pill px-4 py-2" data-bs-dismiss="modal"
+                        onmouseover="this.style.transform='scale(1.05)'"
+                        onmouseout="this.style.transform='scale(1)'">
+                    <i class="bi bi-x-circle me-2"></i>
+                    Cancel
+                </button>
+                <a href="{% url 'suspend_mechanic' mechanic.id %}"
+                   class="btn-success-gradient"
+                   onmouseover="this.style.transform='scale(1.05)'"
+                   onmouseout="this.style.transform='scale(1)'">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    Yes, Activate
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
-
-

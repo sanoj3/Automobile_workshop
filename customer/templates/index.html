@@ -400,19 +400,19 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-purple shadow border-0 rounded-4 p-2">
                         <li>
-                            <a class="dropdown-item rounded-3 py-2" href="{% url 'login' %}">
+                            <a class="dropdown-item rounded-3 py-2" href="{% url 'login' %}" target="_blank">
                                 <i class="bi bi-person-circle text-purple-light me-2"></i>
                                 Customer Login
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item rounded-3 py-2" href="{% url 'login_mechanic' %}">
+                            <a class="dropdown-item rounded-3 py-2" href="{% url 'login_mechanic' %}" target="_blank">
                                 <i class="bi bi-tools text-warning me-2"></i>
                                 Mechanic Login
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item rounded-3 py-2" href="{% url 'login_superuser' %}">
+                            <a class="dropdown-item rounded-3 py-2" href="{% url 'login_superuser' %}" target="_blank">
                                 <i class="bi bi-shield-lock text-danger me-2"></i>
                                 Admin Login
                             </a>
@@ -440,24 +440,24 @@
                     Smart vehicle service management platform for customers, mechanics, and administrators. Book services, track repairs, manage spare parts, and generate bills easily.
                 </p>
                 <div class="hero-btn">
-                    <a href="{% url 'login' %}" class="btn btn-light-purple btn-lg">
+                    <a href="{% url 'login' %}" class="btn btn-light-purple btn-lg" target="_blank">
                         <i class="bi bi-person"></i>
                         Customer Portal
                     </a>
-                    <a href="{% url 'login_mechanic' %}" class="btn btn-warning btn-lg">
+                    <a href="{% url 'login_mechanic' %}" class="btn btn-warning btn-lg" target="_blank">
                         <i class="bi bi-tools"></i>
                         Mechanic Portal
                     </a>
-                    <a href="{% url 'login_superuser' %}" class="btn btn-danger btn-lg">
+                    <a href="{% url 'login_superuser' %}" class="btn btn-danger btn-lg" target="_blank">
                         <i class="bi bi-shield-lock"></i>
                         Admin Portal
                     </a><br><br>
                     <a href="{% if request.user.is_authenticated %}{% url 'service_booking' %}{% else %}{% url 'login' %}{% endif %}" 
-                        class="btn btn-purple btn-lg">
+                        class="btn btn-purple btn-lg" target="_blank">
                         <i class="bi bi-calendar-check"></i>
                         Book Service
                     </a>
-                    <a href="#services" class="btn btn-outline-purple-light btn-lg">
+                    <a href="#services" class="btn btn-outline-purple-light btn-lg" target="_blank">
                         Explore Services
                     </a>
                 </div>
@@ -606,7 +606,7 @@
                 Book your service today and get professional support from expert mechanics.
             </p>
             <a href="{% if request.user.is_authenticated %}{% url 'service_booking' %}{% else %}{% url 'login' %}{% endif %}" 
-                class="btn btn-cta-purple btn-lg rounded-pill px-5">
+                class="btn btn-cta-purple btn-lg rounded-pill px-5" target="_blank">
                 <i class="bi bi-arrow-right-circle"></i>
                 Book Now
             </a>

@@ -17,6 +17,7 @@ class Customer(models.Model):
     address = models.TextField()
     profile_pic = models.ImageField(upload_to='profile_pic/',null=True, blank=True)
     city = models.ForeignKey('customer.City', on_delete=models.CASCADE)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name

@@ -293,6 +293,7 @@
         </div>
     </div>
 
+
     {% endif %}
 </div>
 
@@ -420,11 +421,27 @@ if (toggle) {
             },
             body: JSON.stringify({ is_online: toggle.checked })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status) updateBadge(toggle.checked);
-        })
-        .catch(error => console.log("Error:", error));
+        .then(async response => {
+    const data = await response.json();
+
+    if (!response.ok) {
+        // Switch back to ON because mechanic is busy
+        toggle.checked = true;
+        updateBadge(true);
+
+        alert(data.message);
+        return;
+    }
+
+    updateBadge(toggle.checked);
+})
+.catch(error => {
+    console.log("Error:", error);
+
+    // Restore previous state if request fails
+    toggle.checked = !toggle.checked;
+    updateBadge(toggle.checked);
+});
     });
 }
 </script>

@@ -5,161 +5,816 @@
 
 {% block content %}
 
+<style>
+    .bg-purple-gradient {
+        background: linear-gradient(135deg, #6C3CE1 0%, #8B5CF6 50%, #A78BFA 100%);
+    }
+    
+    .text-purple { color: #6C3CE1; }
+    .border-purple { border-color: #6C3CE1 !important; }
+    
+    .page-header h2 {
+        font-size: 28px;
+        font-weight: 800;
+        color: #1F1A3E;
+        font-family: 'Space Grotesk', monospace;
+    }
+    
+    .page-header h2 i {
+        background: linear-gradient(135deg, #7C3AED, #A855F7);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-right: 10px;
+    }
+    
+    .page-header p {
+        color: #6B7280;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+    
+    .total-badge {
+        background: linear-gradient(95deg, #7C3AED, #A855F7);
+        color: white;
+        padding: 10px 28px;
+        border-radius: 50px;
+        font-size: 15px;
+        font-weight: 600;
+        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: transform 0.3s ease;
+    }
+    
+    .total-badge:hover {
+        transform: scale(1.03);
+    }
+    
+    .total-badge strong {
+        font-size: 20px;
+        font-weight: 800;
+    }
+    
+    /* Stats Cards */
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 18px;
+        margin-bottom: 30px;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 20px 24px;
+        border: 1px solid rgba(167, 139, 250, 0.12);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(124, 58, 237, 0.08);
+        border-color: rgba(124, 58, 237, 0.2);
+    }
+    
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        flex-shrink: 0;
+    }
+    
+    .stat-icon.purple {
+        background: linear-gradient(145deg, #7C3AED, #A855F7);
+    }
+    
+    .stat-icon.green {
+        background: linear-gradient(145deg, #10B981, #34D399);
+    }
+    
+    .stat-icon.orange {
+        background: linear-gradient(145deg, #F59E0B, #FBBF24);
+    }
+    
+    .stat-icon.red {
+        background: linear-gradient(145deg, #EF4444, #F87171);
+    }
+    
+    .stat-info h4 {
+        font-size: 24px;
+        font-weight: 800;
+        color: #1F1A3E;
+        margin: 0;
+        font-family: 'Space Grotesk', monospace;
+    }
+    
+    .stat-info p {
+        font-size: 13px;
+        color: #6B7280;
+        margin: 0;
+    }
+    
+    /* Search & Filter Bar */
+    .filter-bar {
+        background: white;
+        border-radius: 24px;
+        padding: 20px 25px;
+        border: 1px solid rgba(167, 139, 250, 0.12);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        margin-bottom: 25px;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-bar:hover {
+        box-shadow: 0 8px 30px rgba(124, 58, 237, 0.06);
+    }
+    
+    .filter-bar .form-control,
+    .filter-bar .form-select {
+        border-radius: 50px;
+        border: 1.5px solid #E5E7EB;
+        padding: 10px 20px;
+        font-size: 14px;
+        background: #FAF8FF;
+        transition: all 0.3s ease;
+        height: 48px;
+    }
+    
+    .filter-bar .form-control:focus,
+    .filter-bar .form-select:focus {
+        border-color: #7C3AED;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        background: white;
+    }
+    
+    .filter-bar .input-group-text {
+        background: transparent;
+        border: none;
+        color: #7C3AED;
+        padding-right: 6px;
+    }
+    
+    .btn-outline-purple {
+        background: transparent;
+        color: #7C3AED;
+        border: 2px solid #7C3AED;
+        padding: 8px 22px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 48px;
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .btn-outline-purple:hover {
+        background: #7C3AED;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.2);
+    }
+    
+    /* Table */
+    .table-container {
+        background: white;
+        border-radius: 24px;
+        border: 1px solid rgba(167, 139, 250, 0.12);
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
+    }
+    
+    .table-container:hover {
+        box-shadow: 0 12px 40px rgba(124, 58, 237, 0.06);
+    }
+    
+    .table thead th {
+        background: linear-gradient(95deg, #EDE9FE, #F8F5FF);
+        color: #4C1D95;
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 16px 18px;
+        border-bottom: 2px solid rgba(167, 139, 250, 0.15);
+    }
+    
+    .table thead th:first-child {
+        padding-left: 24px;
+    }
+    
+    .table tbody td {
+        padding: 14px 18px;
+        vertical-align: middle;
+        font-size: 14px;
+        border-bottom: 1px solid #F3F0FA;
+        transition: background 0.2s ease;
+    }
+    
+    .table tbody td:first-child {
+        padding-left: 24px;
+    }
+    
+    .table tbody tr {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .table tbody tr:hover {
+        background: #FAF7FF;
+    }
+    
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .mechanic-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid rgba(167, 139, 250, 0.2);
+        background: linear-gradient(145deg, #7C3AED, #A855F7);
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
+    }
+    
+    .mechanic-avatar:hover {
+        transform: scale(1.08);
+    }
+    
+    .mechanic-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .mechanic-avatar .avatar-text {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 20px;
+        font-weight: 700;
+    }
+    
+    .mechanic-name {
+        font-weight: 700;
+        color: #1F1A3E;
+        margin-bottom: 2px;
+        font-size: 14px;
+    }
+    
+    .mechanic-id {
+        font-size: 12px;
+        color: #6B7280;
+    }
+    
+    .badge-status {
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    
+    .badge-active {
+        background: #D1FAE5;
+        color: #059669;
+    }
+    
+    .badge-inactive {
+        background: #FEE2E2;
+        color: #DC2626;
+    }
+    
+    .city-badge {
+        padding: 4px 12px;
+        border-radius: 50px;
+        background: #EDE9FE;
+        color: #4C1D95;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .city-badge i {
+        font-size: 10px;
+    }
+    
+    /* Top Mechanics Card */
+    .top-mechanic-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+    
+    .top-mechanic-card:hover {
+        transform: translateY(-4px) scale(1.02);
+        border-color: rgba(124, 58, 237, 0.2);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.1);
+    }
+    
+    .top-mechanic-card .mechanic-avatar {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .top-mechanic-card .mechanic-avatar .avatar-text {
+        font-size: 18px;
+    }
+    
+    /* Empty State */
+    .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+    }
+    
+    .empty-state i {
+        font-size: 64px;
+        color: #C4B5FD;
+        display: block;
+        margin-bottom: 16px;
+    }
+    
+    .empty-state h5 {
+        font-weight: 700;
+        color: #1F1A3E;
+        margin-bottom: 8px;
+    }
+    
+    .empty-state p {
+        color: #6B7280;
+        margin: 0;
+    }
+    
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-fade-up {
+        animation: fadeInUp 0.6s ease forwards;
+        opacity: 0;
+    }
+    
+    .animate-fade-down {
+        animation: fadeInDown 0.6s ease forwards;
+        opacity: 0;
+    }
+    
+    .table tbody tr {
+        animation: fadeInUp 0.5s ease forwards;
+        opacity: 0;
+    }
+    
+    .table tbody tr:nth-child(1) { animation-delay: 0.05s; }
+    .table tbody tr:nth-child(2) { animation-delay: 0.10s; }
+    .table tbody tr:nth-child(3) { animation-delay: 0.15s; }
+    .table tbody tr:nth-child(4) { animation-delay: 0.20s; }
+    .table tbody tr:nth-child(5) { animation-delay: 0.25s; }
+    .table tbody tr:nth-child(6) { animation-delay: 0.30s; }
+    .table tbody tr:nth-child(7) { animation-delay: 0.35s; }
+    .table tbody tr:nth-child(8) { animation-delay: 0.40s; }
+    .table tbody tr:nth-child(9) { animation-delay: 0.45s; }
+    .table tbody tr:nth-child(10) { animation-delay: 0.50s; }
+    
+    /* Responsive */
+    @media(max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 12px;
+        }
+        .page-header h2 {
+            font-size: 24px;
+        }
+        .total-badge {
+            font-size: 13px;
+            padding: 8px 18px;
+        }
+        .total-badge strong {
+            font-size: 17px;
+        }
+        .stats-row {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .stat-card {
+            padding: 16px 18px;
+        }
+        .stat-info h4 {
+            font-size: 20px;
+        }
+        .filter-bar {
+            padding: 16px 18px;
+        }
+        .filter-bar .row {
+            gap: 10px;
+        }
+        .table thead th {
+            font-size: 11px;
+            padding: 12px 12px;
+        }
+        .table tbody td {
+            padding: 12px 12px;
+            font-size: 13px;
+        }
+        .mechanic-avatar {
+            width: 40px;
+            height: 40px;
+        }
+        .table thead th:first-child,
+        .table tbody td:first-child {
+            padding-left: 16px;
+        }
+        .top-mechanic-card .mechanic-avatar {
+            width: 40px;
+            height: 40px;
+        }
+    }
+    
+    @media(max-width: 576px) {
+        .page-header h2 {
+            font-size: 20px;
+        }
+        .stats-row {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .stat-card {
+            padding: 14px 16px;
+        }
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            font-size: 18px;
+        }
+        .stat-info h4 {
+            font-size: 18px;
+        }
+        .stat-info p {
+            font-size: 11px;
+        }
+        .table thead th {
+            font-size: 10px;
+            padding: 10px 8px;
+        }
+        .table tbody td {
+            padding: 10px 8px;
+            font-size: 12px;
+        }
+        .mechanic-avatar {
+            width: 36px;
+            height: 36px;
+        }
+        .mechanic-name {
+            font-size: 13px;
+        }
+        .badge-status {
+            font-size: 10px;
+            padding: 4px 12px;
+        }
+        .city-badge {
+            font-size: 10px;
+            padding: 3px 10px;
+        }
+        .table thead th:first-child,
+        .table tbody td:first-child {
+            padding-left: 12px;
+        }
+        .top-mechanic-card .mechanic-avatar {
+            width: 36px;
+            height: 36px;
+        }
+        .top-mechanic-card .mechanic-avatar .avatar-text {
+            font-size: 14px;
+        }
+    }
+</style>
+
 <div class="container py-4">
 
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-
+    <div class="d-flex justify-content-between align-items-center mb-4 page-header animate-fade-down">
         <div>
-            <h2 class="fw-bold text-primary mb-1">
-                <i class="bi bi-people-fill"></i>
+            <h2>
+                <i class="bi bi-wrench"></i>
                 Mechanic List
             </h2>
-
-            <p class="text-muted mb-0">
-                Manage all registered mechanics
-            </p>
+            <p>Manage all registered mechanics</p>
         </div>
-
-        <div class="bg-primary text-white px-4 py-2 rounded-3 shadow-sm">
-            Total Mechanics : <strong>{{ mechanic|length }}</strong>
+        <div class="total-badge">
+            <i class="bi bi-person-fill"></i>
+            Total : <strong>{{ total_mechanics }}</strong>
         </div>
+    </div>
 
+    <!-- Stats Cards -->
+    <div class="stats-row animate-fade-up">
+        <div class="stat-card">
+            <div class="stat-icon purple">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div class="stat-info">
+                <h4>{{ total_mechanics }}</h4>
+                <p>Total Mechanics</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div class="stat-info">
+                <h4>{{ active_count }}</h4>
+                <p>Active Mechanics</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon red">
+                <i class="bi bi-x-circle-fill"></i>
+            </div>
+            <div class="stat-info">
+                <h4>{{ inactive_count }}</h4>
+                <p>Inactive Mechanics</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange">
+                <i class="bi bi-calendar-plus"></i>
+            </div>
+            <div class="stat-info">
+                <h4>{{ new_this_month }}</h4>
+                <p>New This Month</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Mechanics Section -->
+    {% if top_mechanics %}
+    <div class="mb-4 animate-fade-up">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-transparent border-0 py-3">
+                <h5 class="fw-bold mb-0 text-purple">
+                    <i class="bi bi-trophy me-2"></i>
+                    Top Performing Mechanics
+                    <span class="badge bg-purple-gradient text-white ms-2">🏆</span>
+                </h5>
+            </div>
+            <div class="card-body pt-0">
+                <div class="row g-3">
+                    {% for mechanic in top_mechanics %}
+                    <div class="col-md-2 col-4">
+                        <div class="text-center p-3 bg-light rounded-3 top-mechanic-card"
+                             onclick="window.location.href='/superuser/mechanic/{{ mechanic.id }}/'"
+                             onmouseover="this.style.background='#EDE9FE'"
+                             onmouseout="this.style.background='#F8F9FA'">
+                            <div class="mechanic-avatar mx-auto" style="width: 50px; height: 50px;">
+                                {% if mechanic.profile_pic %}
+                                    <img src="{{ mechanic.profile_pic.url }}" alt="{{ mechanic.name }}">
+                                {% else %}
+                                    <div class="avatar-text" style="font-size: 18px;">
+                                        {{ mechanic.name|slice:":1"|upper }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <h6 class="fw-bold mt-2 mb-0" style="font-size: 13px;">{{ mechanic.name }}</h6>
+                            <small class="text-muted">
+                                <i class="bi bi-clipboard-check me-1"></i>
+                                {{ mechanic.order_count }} orders
+                            </small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Search & Filter Bar -->
+    <div class="filter-bar animate-fade-up">
+        <div class="row align-items-center g-3">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text"
+                           class="form-control"
+                           id="searchInput"
+                           placeholder="Search by name, email or phone..."
+                           onkeyup="searchMechanics()">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="statusFilter" onchange="filterMechanics()">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select class="form-select" id="cityFilter" onchange="filterMechanics()">
+                    <option value="">All Cities</option>
+                    {% for city in cities %}
+                        <option value="{{ city.city__name }}">{{ city.city__name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button class="btn-outline-purple" onclick="resetFilters()" title="Reset Filters">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Table -->
-    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
-
-        <div class="card-body p-0">
-
-            <div class="table-responsive">
-
-                <table class="table table-hover align-middle mb-0">
-
-                    <thead class="table-primary">
-                        <tr>
-                            <th class="ps-4">Mechanic</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>City</th>
-                            <th>Joined</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        {% for m in mechanic %}
-
-                        <!-- CLICKABLE ROW -->
-                        <tr style="cursor:pointer;"
-                            onclick="window.location.href='/superuser/mechanic/{{ m.id }}/'">
-
-                            <!-- Customer -->
-                            <td class="ps-4">
-
-                                <div class="d-flex align-items-center">
-
-                                    <div class="me-3">
-
-                                        {% if m.profile_pic %}
-                                            <img src="{{ m.profile_pic.url }}"
-                                                alt="{{ m.name }}"
-                                                class="rounded-circle border"
-                                                style="width:50px;height:50px;object-fit:cover;">
-                                        {% else %}
-                                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
-                                                style="width:50px;height:50px;font-size:20px;">
-
-                                                {{ m.name|slice:":1"|upper }}
-
-                                            </div>
-                                        {% endif %}
-
-                                    </div>
-
-                                    <div>
-                                        <h6 class="mb-0 fw-semibold">
-                                            {{ m.name }}
-                                        </h6>
-
-                                        <small class="text-muted">
-                                            ID: {{ m.id }}
-                                        </small>
-                                    </div>
-
+    <div class="table-container animate-fade-up">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="mechanicTable">
+                <thead>
+                    <tr>
+                        <th>Mechanic</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>City</th>
+                        <th>Joined</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="mechanicTableBody">
+                    {% for m in mechanic %}
+                    <tr data-status="{% if not m.account_suspend %}active{% else %}inactive{% endif %}"
+                        data-city="{{ m.city.name|default:'-' }}"
+                        data-name="{{ m.name|lower }}"
+                        data-email="{{ m.email|lower }}"
+                        data-phone="{{ m.number }}"
+                        onclick="window.location.href='/superuser/mechanic/{{ m.id }}/'">
+                        
+                        <!-- Mechanic -->
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="mechanic-avatar">
+                                    {% if m.profile_pic %}
+                                        <img src="{{ m.profile_pic.url }}" alt="{{ m.name }}">
+                                    {% else %}
+                                        <div class="avatar-text">
+                                            {{ m.name|slice:":1"|upper }}
+                                        </div>
+                                    {% endif %}
                                 </div>
+                                <div>
+                                    <div class="mechanic-name">{{ m.name }}</div>
+                                    <div class="mechanic-id">#{{ m.id }}</div>
+                                </div>
+                            </div>
+                        </td>
 
-                            </td>
-
-                            <!-- Email -->
-                            <td>
+                        <!-- Email -->
+                        <td>
+                            <span style="color: #1F1A3E;">
                                 {{ m.email|default:"-" }}
-                            </td>
+                            </span>
+                        </td>
 
-                            <!-- Phone -->
-                            <td>
-                                {{ m.number }}
-                            </td>
+                        <!-- Phone -->
+                        <td>
+                            {{ m.number }}
+                        </td>
 
-                            <!-- City -->
-                            <td>
-                                {{ m.city.name|default:"-" }}
-                            </td>
+                        <!-- City -->
+                        <td>
+                            {% if m.city %}
+                            <span class="city-badge">
+                                <i class="bi bi-geo-alt"></i>
+                                {{ m.city.name }}
+                            </span>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
 
-                            <!-- Joined -->
-                            <td>
-                                {{ m.created_at }}
-                            </td>
+                        <!-- Joined -->
+                        <td style="font-size: 13px; color: #6B7280;">
+                            {{ m.created_at|date:"d M Y" }}
+                        </td>
 
-                            <td>
-                                {% if not m.account_suspend %}
+                        <!-- Status -->
+                        <td>
+                            {% if not m.account_suspend %}
+                                <span class="badge-status badge-active">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Active
+                                </span>
+                            {% else %}
+                                <span class="badge-status badge-inactive">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                    Inactive
+                                </span>
+                            {% endif %}
+                        </td>
 
-                                    <span class="badge bg-success px-3 py-2 rounded-pill">
-                                        <i class="bi bi-check-circle-fill"></i>
-                                        Active
-                                    </span>
-
-                                {% else %}
-
-                                    <span class="badge bg-danger px-3 py-2 rounded-pill">
-                                        <i class="bi bi-x-circle-fill"></i>
-                                        In Active
-                                    </span>
-
-                                {% endif %}
-                            </td>
-
-                        </tr>
-
-                        {% empty %}
-
-                        <tr>
-                            <td colspan="5" class="text-center py-5">
-
-                                <i class="bi bi-people display-4 text-secondary"></i>
-
-                                <h5 class="mt-3">No Mechanic Found</h5>
-
-                                <p class="text-muted mb-0">
-                                    There are currently no registered mechanics.
-                                </p>
-
-                            </td>
-                        </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="bi bi-wrench"></i>
+                                <h5>No Mechanics Found</h5>
+                                <p>There are currently no registered mechanics.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-
     </div>
 
 </div>
+
+<script>
+    // Search functionality
+    function searchMechanics() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase();
+        const rows = document.querySelectorAll('#mechanicTableBody tr');
+
+        rows.forEach(row => {
+            const name = row.getAttribute('data-name') || '';
+            const email = row.getAttribute('data-email') || '';
+            const phone = row.getAttribute('data-phone') || '';
+            const text = name + email + phone;
+            row.style.display = text.indexOf(filter) > -1 ? '' : 'none';
+        });
+    }
+
+    // Filter by status and city
+    function filterMechanics() {
+        const statusFilter = document.getElementById('statusFilter').value;
+        const cityFilter = document.getElementById('cityFilter').value;
+        const rows = document.querySelectorAll('#mechanicTableBody tr');
+
+        rows.forEach(row => {
+            const status = row.getAttribute('data-status') || '';
+            const city = row.getAttribute('data-city') || '';
+            let show = true;
+
+            if (statusFilter && status !== statusFilter) show = false;
+            if (cityFilter && city !== cityFilter) show = false;
+
+            row.style.display = show ? '' : 'none';
+        });
+    }
+
+    // Reset filters
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('statusFilter').value = '';
+        document.getElementById('cityFilter').value = '';
+        document.querySelectorAll('#mechanicTableBody tr').forEach(row => {
+            row.style.display = '';
+        });
+    }
+</script>
 
 {% endblock %}

@@ -2,222 +2,498 @@
 
 {% block title %}Modify Complaints{% endblock %}
 
+{% block header %}Modify Complaints{% endblock %}
+
 {% block content %}
 
 <style>
-
-    .parts-wrapper{
-        min-height:90vh;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        padding:30px 15px;
+    :root {
+        --purple-900: #1E1B2E;
+        --purple-800: #2D1B4E;
+        --purple-700: #4C1D95;
+        --purple-600: #6D28D9;
+        --purple-500: #7C3AED;
+        --purple-400: #A855F7;
+        --purple-300: #C084FC;
+        --purple-200: #D8B4FE;
+        --purple-100: #EDE9FE;
+        --purple-50: #F8F5FF;
     }
 
-    .parts-card{
-        width:100%;
-        max-width:600px;
-        background:#fff;
-        border-radius:25px;
-        overflow:hidden;
-        box-shadow:0 15px 40px rgba(0,0,0,0.12);
-        animation:fadeIn 0.5s ease;
+    .edit-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        min-height: 80vh;
+        align-items: center;
+        padding: 20px 0;
     }
 
-    .parts-header{
-        background:linear-gradient(135deg,#f59e0b,#f97316);
-        color:#fff;
-        text-align:center;
-        padding:35px 20px;
+    /* Left Side - Info Panel */
+    .info-panel {
+        background: linear-gradient(145deg, #2D1B4E 0%, #4C1D95 50%, #7C3AED 100%);
+        border-radius: 28px;
+        padding: 50px 40px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
-    .parts-header i{
-        font-size:65px;
-        margin-bottom:12px;
+    .info-panel::before {
+        content: '';
+        position: absolute;
+        top: -30%;
+        right: -20%;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+        border-radius: 50%;
     }
 
-    .parts-header h2{
-        font-weight:700;
-        margin-bottom:5px;
+    .info-panel::after {
+        content: '';
+        position: absolute;
+        bottom: -20%;
+        left: -20%;
+        width: 250px;
+        height: 250px;
+        background: radial-gradient(circle, rgba(168,85,247,0.1) 0%, transparent 70%);
+        border-radius: 50%;
     }
 
-    .parts-header p{
-        margin:0;
-        opacity:0.9;
+    .info-panel .icon-large {
+        font-size: 72px;
+        margin-bottom: 24px;
+        color: rgba(255, 255, 255, 0.9);
+        position: relative;
+        z-index: 2;
     }
 
-    .parts-body{
-        padding:35px;
+    .info-panel h2 {
+        font-size: 32px;
+        font-weight: 800;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 2;
+        font-family: 'Space Grotesk', monospace;
     }
 
-    .form-label{
-        font-weight:600;
-        margin-bottom:8px;
+    .info-panel p {
+        font-size: 15px;
+        opacity: 0.85;
+        line-height: 1.7;
+        margin-bottom: 30px;
+        position: relative;
+        z-index: 2;
     }
 
-    .form-control{
-        border-radius:14px;
-        padding:13px;
-        border:1px solid #d1d5db;
-        transition:0.3s;
+    .info-features {
+        list-style: none;
+        padding: 0;
+        position: relative;
+        z-index: 2;
     }
 
-    .form-control:focus{
-        border-color:#f59e0b;
-        box-shadow:0 0 0 0.2rem rgba(245,158,11,0.15);
+    .info-features li {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 16px;
+        font-size: 14px;
+        color: #E9D5FF;
     }
 
-    .btn-update{
-        background:linear-gradient(135deg,#f59e0b,#f97316);
-        color:white;
-        border:none;
-        border-radius:14px;
-        padding:13px;
-        font-size:17px;
-        font-weight:600;
-        transition:0.3s;
+    .info-features li i {
+        width: 32px;
+        height: 32px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: white;
+        flex-shrink: 0;
     }
 
-    .btn-update:hover{
-        transform:translateY(-2px);
-        opacity:0.95;
-        color:white;
+    .info-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(4px);
+        padding: 6px 18px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #D8B4FE;
+        position: relative;
+        z-index: 2;
+        align-self: flex-start;
+        margin-top: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .back-link{
-        text-align:center;
-        margin-top:20px;
+    /* Right Side - Form Panel */
+    .form-panel {
+        background: white;
+        border-radius: 28px;
+        padding: 40px 35px;
+        border: 1px solid rgba(167, 139, 250, 0.12);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
     }
 
-    .back-link a{
-        text-decoration:none;
-        color:#f59e0b;
-        font-weight:600;
+    .form-panel:hover {
+        box-shadow: 0 15px 40px rgba(124, 58, 237, 0.08);
     }
 
-    .back-link a:hover{
-        text-decoration:underline;
+    .form-panel .form-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1F1A3E;
+        margin-bottom: 6px;
+        font-family: 'Space Grotesk', monospace;
     }
 
-    .alert{
-        border-radius:12px;
+    .form-panel .form-subtitle {
+        color: #6B7280;
+        font-size: 14px;
+        margin-bottom: 25px;
     }
 
-    .preview-img{
-        width:100%;
-        max-height:220px;
-        object-fit:cover;
-        border-radius:15px;
-        margin-top:10px;
-        border:2px dashed #ddd;
-        padding:5px;
+    .form-panel .form-subtitle i {
+        color: #7C3AED;
     }
 
-    @keyframes fadeIn{
-        from{
-            opacity:0;
-            transform:translateY(20px);
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        font-size: 13px;
+        color: #374151;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .form-group label i {
+        color: #7C3AED;
+        margin-right: 6px;
+    }
+
+    .form-control {
+        height: 48px;
+        border-radius: 14px;
+        border: 1.5px solid #E5E7EB;
+        padding: 0 16px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background: #FAF8FF;
+        width: 100%;
+    }
+
+    .form-control:focus {
+        border-color: #7C3AED;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .form-control::placeholder {
+        color: #9CA3AF;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    .btn-purple-edit {
+        width: 100%;
+        height: 50px;
+        border: none;
+        border-radius: 50px;
+        background: linear-gradient(95deg, #7C3AED, #A855F7);
+        color: white;
+        font-weight: 700;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        margin-top: 6px;
+    }
+
+    .btn-purple-edit:hover {
+        background: linear-gradient(95deg, #6D28D9, #9333EA);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.35);
+    }
+
+    .btn-purple-edit i {
+        font-size: 18px;
+    }
+
+    .back-link {
+        text-align: center;
+        margin-top: 18px;
+    }
+
+    .back-link a {
+        text-decoration: none;
+        color: #7C3AED;
+        font-weight: 600;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .back-link a:hover {
+        color: #6D28D9;
+        text-decoration: underline;
+    }
+
+    .alert-custom {
+        border-radius: 14px;
+        border: none;
+        padding: 12px 18px;
+        font-size: 13px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-custom.error {
+        background: #FEF2F2;
+        color: #991B1B;
+        border-left: 4px solid #dc2626;
+    }
+
+    .alert-custom.success {
+        background: #ECFDF5;
+        color: #065F46;
+        border-left: 4px solid #10b981;
+    }
+
+    .alert-custom.warning {
+        background: #FFFBEB;
+        color: #92400E;
+        border-left: 4px solid #f59e0b;
+    }
+
+    .alert-custom i {
+        font-size: 18px;
+    }
+
+    /* Animation */
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
         }
-        to{
-            opacity:1;
-            transform:translateY(0);
+        to {
+            opacity: 1;
+            transform: translateX(0);
         }
     }
 
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .info-panel {
+        animation: fadeInLeft 0.6s ease forwards;
+    }
+
+    .form-panel {
+        animation: fadeInRight 0.6s ease forwards;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+    }
+
+    .info-panel .icon-large {
+        animation: float 4s ease-in-out infinite;
+    }
+
+    /* Responsive */
+    @media(max-width: 992px) {
+        .edit-container {
+            grid-template-columns: 1fr;
+        }
+        .info-panel {
+            padding: 35px 30px;
+            min-height: auto;
+        }
+        .info-panel h2 {
+            font-size: 28px;
+        }
+        .form-panel {
+            padding: 30px 25px;
+        }
+    }
+
+    @media(max-width: 576px) {
+        .info-panel {
+            padding: 25px 20px;
+        }
+        .info-panel h2 {
+            font-size: 24px;
+        }
+        .info-panel .icon-large {
+            font-size: 48px;
+        }
+        .info-features li {
+            font-size: 13px;
+        }
+        .form-panel {
+            padding: 25px 18px;
+        }
+        .form-panel .form-title {
+            font-size: 20px;
+        }
+        .form-row {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+        .form-control {
+            height: 44px;
+            font-size: 13px;
+        }
+        .btn-purple-edit {
+            height: 44px;
+            font-size: 14px;
+        }
+    }
 </style>
 
-<div class="parts-wrapper">
+<div class="container-fluid py-4">
 
-    <div class="parts-card">
+    <div class="edit-container">
 
-        <!-- Header -->
-        <div class="parts-header">
+        <!-- Left Side - Info Panel -->
+        <div class="info-panel">
+            <div class="icon-large">
+                <i class="bi bi-pencil-square"></i>
+            </div>
+            <h2>Modify Complaint</h2>
+            <p>Update the complaint details to keep your service management accurate and up-to-date.</p>
 
-            <i class="bi bi-pencil-square"></i>
+            <ul class="info-features">
+                <li>
+                    <i class="bi bi-check-lg"></i>
+                    <span>Update complaint name and pricing</span>
+                </li>
+                <li>
+                    <i class="bi bi-check-lg"></i>
+                    <span>Changes reflect instantly in bookings</span>
+                </li>
+                <li>
+                    <i class="bi bi-check-lg"></i>
+                    <span>Keep your service catalog current</span>
+                </li>
+                <li>
+                    <i class="bi bi-check-lg"></i>
+                    <span>Maintain accurate billing records</span>
+                </li>
+            </ul>
 
-            <h2>Modify Complaints</h2>
-
-            <p>Update your complaints details</p>
-
+            <span class="info-badge">
+                <i class="bi bi-pencil me-1"></i>
+                Editing: {{ complaints.complaint_name|default:"Complaint" }}
+            </span>
         </div>
 
-        <!-- Body -->
-        <div class="parts-body">
+        <!-- Right Side - Form Panel -->
+        <div class="form-panel">
+
+            <h3 class="form-title">
+                <i class="bi bi-pencil-square" style="color: #7C3AED;"></i>
+                Edit Complaint Details
+            </h3>
+            <p class="form-subtitle">
+                <i class="bi bi-info-circle"></i>
+                Update the complaint information below
+            </p>
 
             <!-- Messages -->
             {% if messages %}
                 {% for message in messages %}
-                    <div class="alert alert-success shadow-sm">
+                    <div class="alert-custom {% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}warning{% endif %}">
+                        <i class="bi bi-{% if message.tags == 'error' %}exclamation-circle-fill{% elif message.tags == 'success' %}check-circle-fill{% else %}info-circle-fill{% endif %}"></i>
                         {{ message }}
                     </div>
                 {% endfor %}
             {% endif %}
 
             <!-- Form -->
-            <form method="POST"
-                  enctype="multipart/form-data">
-
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 <!-- Complaint Name -->
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        <i class="bi bi-tools me-1 text-warning"></i>
-                        Complaint Name
+                <div class="form-group">
+                    <label for="complaint_name">
+                        <i class="bi bi-tag-fill"></i> Complaint Name
                     </label>
-
                     <input type="text"
+                           id="complaint_name"
                            name="complaint_name"
                            class="form-control"
                            value="{{ complaints.complaint_name }}"
                            placeholder="Enter complaint name"
                            required>
-
                 </div>
 
-                <!-- Price -->
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        <i class="bi bi-currency-rupee me-1 text-warning"></i>
-                        Basic Price
+                <!-- Basic Price -->
+                <div class="form-group">
+                    <label for="basic_price">
+                        <i class="bi bi-currency-rupee"></i> Basic Price
                     </label>
-
                     <input type="number"
+                           id="basic_price"
                            name="basic_price"
                            class="form-control"
                            value="{{ complaints.basic_service_price }}"
-                           placeholder="Enter basic price"
+                           placeholder="Enter basic service price"
+                           min="0"
+                           step="0.01"
                            required>
-
                 </div>
 
-                <!-- Button -->
-                <div class="d-grid">
-
-                    <button type="submit"
-                            class="btn btn-update">
-
-                        <i class="bi bi-check-circle me-1"></i>
-                        Update Complaint
-
-                    </button>
-
-                </div>
+                <!-- Submit Button -->
+                <button type="submit" class="btn-purple-edit">
+                    <i class="bi bi-check-circle"></i>
+                    Update Complaint
+                </button>
 
             </form>
 
-            <!-- Back -->
+            <!-- Back Link -->
             <div class="back-link">
-
                 <a href="{% url 'complaint_list_view' %}">
-
                     <i class="bi bi-arrow-left"></i>
-                    Back to complaint list
-
+                    Back to Complaint List
                 </a>
-
             </div>
 
         </div>
@@ -225,6 +501,5 @@
     </div>
 
 </div>
-
 
 {% endblock %}

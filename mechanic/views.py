@@ -192,6 +192,13 @@ def logout_view_mechanic(request):
         mech = Active_mechanic.objects.filter(mechanic_id=mechanic_id).first()
 
         if mech:
+            if not mech.is_available:
+                messages.error(
+                    request,
+                    "Work is in progress. You cannot logout until the current service is completed."
+                )
+                return redirect('pending_jobs_list') 
+            
             mech.is_online = False
             mech.is_available = False
             mech.save()
@@ -601,6 +608,15 @@ def toggle_mechanic_status(request):
     if isinstance(is_online, str):
         is_online = is_online.lower() == "true"
 
+
+    # Prevent going offline if mechanic is busy
+    if not is_online and not mech.is_available:
+        return JsonResponse({
+            'success': False,
+            'message': 'Work is in progress. You cannot go offline until the current service is completed.',
+            'status': 'online'
+        }, status=400)
+
     mech.is_online = is_online
     mech.is_available = is_online
     mech.save()
@@ -883,7 +899,7 @@ def job_completed_view(request, id):
         mechanic=mechanic,
         status='Completed'
     )
-    feedback = job.feedback      
+    feedback = job.feedback if hasattr(job, 'feedback') else None     
 
     return render(request, 'job_completed_view.html', {
         'mechanic': mechanic,

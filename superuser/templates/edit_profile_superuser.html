@@ -5,117 +5,340 @@
 
 {% block content %}
 
-<div class="container py-3">
+<style>
+    :root {
+        --purple-900: #1E1B2E;
+        --purple-800: #2D1B4E;
+        --purple-700: #4C1D95;
+        --purple-600: #6D28D9;
+        --purple-500: #7C3AED;
+        --purple-400: #A855F7;
+        --purple-300: #C084FC;
+        --purple-200: #D8B4FE;
+        --purple-100: #EDE9FE;
+        --purple-50: #F8F5FF;
+    }
+
+    .edit-card {
+        background: white;
+        border-radius: 28px;
+        overflow: hidden;
+        border: 1px solid rgba(167, 139, 250, 0.15);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .edit-card:hover {
+        box-shadow: 0 15px 40px rgba(124, 58, 237, 0.1);
+    }
+
+    /* Banner - Purple Gradient */
+    .edit-banner {
+        height: 120px;
+        background: linear-gradient(135deg, #2D1B4E 0%, #4C1D95 50%, #7C3AED 100%);
+        position: relative;
+    }
+
+    /* Profile Image */
+    .profile-image-wrapper {
+        position: absolute;
+        left: 50%;
+        bottom: -45px;
+        transform: translateX(-50%);
+    }
+
+    .profile-image {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid white;
+        background: white;
+        box-shadow: 0 5px 20px rgba(124, 58, 237, 0.25);
+        transition: transform 0.3s ease;
+    }
+
+    .profile-image:hover {
+        transform: scale(1.05);
+    }
+
+    .profile-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .profile-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(145deg, #7C3AED, #A855F7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 32px;
+        font-weight: 700;
+    }
+
+    /* Form Styles */
+    .edit-body {
+        padding: 60px 35px 35px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #1F1A3E;
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+
+    .form-label i {
+        color: #7C3AED;
+        margin-right: 6px;
+    }
+
+    .form-control {
+        height: 50px;
+        border-radius: 14px;
+        border: 1.5px solid #E5E7EB;
+        padding-left: 16px;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        background: #FAF8FF;
+    }
+
+    .form-control:focus {
+        border-color: #7C3AED;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+        background: white;
+    }
+
+    .form-control::placeholder {
+        color: #9CA3AF;
+    }
+
+    input[type="file"].form-control {
+        padding: 8px 12px;
+        height: auto;
+        background: white;
+    }
+
+    input[type="file"].form-control::-webkit-file-upload-button {
+        background: linear-gradient(95deg, #7C3AED, #A855F7);
+        color: white;
+        border: none;
+        padding: 6px 18px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-right: 12px;
+    }
+
+    input[type="file"].form-control::-webkit-file-upload-button:hover {
+        background: linear-gradient(95deg, #6D28D9, #9333EA);
+        transform: scale(1.02);
+    }
+
+    input[type="file"].form-control::-moz-file-upload-button {
+        background: linear-gradient(95deg, #7C3AED, #A855F7);
+        color: white;
+        border: none;
+        padding: 6px 18px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-right: 12px;
+    }
+
+    input[type="file"].form-control::-moz-file-upload-button:hover {
+        background: linear-gradient(95deg, #6D28D9, #9333EA);
+        transform: scale(1.02);
+    }
+
+    /* Buttons */
+    .btn-purple {
+        background: linear-gradient(95deg, #7C3AED, #A855F7);
+        color: white;
+        border: none;
+        padding: 10px 32px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-purple:hover {
+        background: linear-gradient(95deg, #6D28D9, #9333EA);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+    }
+
+    .btn-outline-purple {
+        background: transparent;
+        color: #7C3AED;
+        border: 2px solid #7C3AED;
+        padding: 8px 28px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-outline-purple:hover {
+        background: #7C3AED;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.2);
+        text-decoration: none;
+    }
+
+    /* Responsive */
+    @media(max-width: 768px) {
+        .edit-body {
+            padding: 50px 20px 25px;
+        }
+        .profile-image {
+            width: 75px;
+            height: 75px;
+        }
+        .edit-banner {
+            height: 100px;
+        }
+        .btn-purple,
+        .btn-outline-purple {
+            padding: 8px 20px;
+            font-size: 13px;
+        }
+    }
+
+    @media(max-width: 576px) {
+        .edit-body {
+            padding: 45px 16px 20px;
+        }
+        .profile-image {
+            width: 65px;
+            height: 65px;
+        }
+        .edit-banner {
+            height: 85px;
+        }
+        .form-control {
+            height: 44px;
+            font-size: 13px;
+        }
+        .d-flex.gap-2 {
+            flex-direction: column;
+            align-items: center;
+        }
+        .d-flex.gap-2 .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
+<div class="container py-4">
 
     <div class="row justify-content-center">
 
-        <div class="col-lg-7 col-md-9">
+        <div class="col-lg-7 col-md-9" data-aos="fade-up" data-aos-duration="600">
 
-            <div class="card border-0 shadow rounded-4 overflow-hidden">
+            <div class="edit-card">
 
                 <!-- Top Banner -->
-                <div class="bg-primary position-relative"
-                     style="height:100px;">
-
-                    <!-- Profile Image -->
-                    <div class="position-absolute start-50 translate-middle"
-                         style="bottom:-40px;">
-
-                        <div class="rounded-circle bg-white shadow border border-3 border-white overflow-hidden"
-                             style="width:85px;height:85px;">
-
+                <div class="edit-banner">
+                    <div class="profile-image-wrapper">
+                        <div class="profile-image">
                             {% if superuser.profile_pic %}
-
-                                <img src="{{ superuser.profile_pic.url }}"
-                                     class="w-100 h-100"
-                                     style="object-fit:cover;">
-
+                                <img src="{{ superuser.profile_pic.url }}" alt="Profile">
                             {% else %}
-
-                                <div class="bg-primary text-white d-flex align-items-center justify-content-center fw-bold h-100"
-                                     style="font-size:28px;">
-
-                                    {{ superuser.name|slice:":1" }}
-
+                                <div class="profile-placeholder">
+                                    {{ superuser.username|slice:":1"|upper }}
                                 </div>
-
                             {% endif %}
-
                         </div>
-
                     </div>
-
                 </div>
 
                 <!-- Form Body -->
-                <div class="card-body pt-5 mt-2 px-4">
+                <div class="edit-body">
 
-                    <form method="POST"
-                          enctype="multipart/form-data">
+                    <div class="text-center mb-4" data-aos="fade-up" data-aos-delay="100">
+                        <h4 class="fw-bold" style="color: #1F1A3E;">
+                            <i class="bi bi-pencil-square" style="color: #7C3AED;"></i>
+                            Edit Your Profile
+                        </h4>
+                        <p class="text-muted" style="font-size: 14px;">
+                            Update your personal information
+                        </p>
+                    </div>
 
+                    <form method="POST" enctype="multipart/form-data" data-aos="fade-up" data-aos-delay="150">
                         {% csrf_token %}
 
                         <!-- Email -->
                         <div class="mb-3">
-
-                            <label class="form-label fw-semibold">
-                                Email
+                            <label class="form-label">
+                                <i class="bi bi-envelope-fill"></i> Email Address
                             </label>
-
                             <input type="email"
                                    name="email"
-                                   class="form-control rounded-3"
+                                   class="form-control"
                                    value="{{ superuser.email }}"
+                                   placeholder="Enter your email"
                                    required>
-
                         </div>
 
                         <!-- Phone -->
                         <div class="mb-3">
-
-                            <label class="form-label fw-semibold">
-                                Phone Number
+                            <label class="form-label">
+                                <i class="bi bi-telephone-fill"></i> Phone Number
                             </label>
-
                             <input type="text"
                                    name="number"
-                                   class="form-control rounded-3"
+                                   class="form-control"
                                    value="{{ superuser.number }}"
+                                   placeholder="Enter your phone number"
                                    required>
-
                         </div>
 
                         <!-- Profile Picture -->
                         <div class="mb-4">
-
-                            <label class="form-label fw-semibold">
-                                Profile Picture
+                            <label class="form-label">
+                                <i class="bi bi-image-fill"></i> Profile Picture
                             </label>
-
                             <input type="file"
                                    name="profile_pic"
-                                   class="form-control rounded-3">
-
+                                   class="form-control"
+                                   accept="image/*">
+                            <small class="text-muted" style="font-size: 12px;">
+                                <i class="bi bi-info-circle"></i>
+                                Upload a new profile picture (JPG, PNG, GIF)
+                            </small>
                         </div>
 
                         <!-- Buttons -->
                         <div class="d-flex justify-content-center gap-2">
-
-                            <button type="submit"
-                                    class="btn btn-primary rounded-pill px-4">
-
+                            <button type="submit" class="btn-purple">
                                 <i class="bi bi-check-circle"></i>
-                                Update
-
+                                Update Profile
                             </button>
-
-                            <a href="{% url 'profile_page_superuser' %}"
-                               class="btn btn-outline-dark rounded-pill px-4">
-
+                            <a href="{% url 'profile_page_superuser' %}" class="btn-outline-purple">
+                                <i class="bi bi-x-circle"></i>
                                 Cancel
-
                             </a>
-
                         </div>
 
                     </form>

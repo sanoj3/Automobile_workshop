@@ -4,129 +4,578 @@
 
 {% block content %}
 
-<div class="container py-4">
+<style>
+    :root {
+        --purple-900: #1E1B2E;
+        --purple-800: #2D1B4E;
+        --purple-700: #4C1D95;
+        --purple-600: #6D28D9;
+        --purple-500: #7C3AED;
+        --purple-400: #A855F7;
+        --purple-300: #C084FC;
+        --purple-200: #D8B4FE;
+        --purple-100: #EDE9FE;
+        --purple-50: #F8F5FF;
+    }
 
-    <div class="row justify-content-center">
+    .assign-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        align-items: start;
+        padding: 10px 0;
+    }
 
-        <div class="col-lg-8">
+    /* Left Panel - Service Details */
+    .service-panel {
+        background: white;
+        border-radius: 24px;
+        border: 1px solid rgba(167, 139, 250, 0.12);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        overflow: hidden;
+        transition: box-shadow 0.3s ease;
+    }
 
-            <div class="card shadow border-0">
+    .service-panel:hover {
+        box-shadow: 0 12px 40px rgba(124, 58, 237, 0.06);
+    }
 
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">
-                        Assign Mechanic
-                    </h4>
+    .panel-header {
+        background: linear-gradient(135deg, #2D1B4E 0%, #4C1D95 50%, #7C3AED 100%);
+        padding: 20px 24px;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .panel-header i {
+        font-size: 24px;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .panel-header h5 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 18px;
+    }
+
+    .panel-body {
+        padding: 24px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #F3F0FA;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-row .label {
+        font-size: 13px;
+        color: #6B7280;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .info-row .label i {
+        color: #7C3AED;
+        font-size: 16px;
+    }
+
+    .info-row .value {
+        font-size: 14px;
+        color: #1F1A3E;
+        font-weight: 600;
+        text-align: right;
+        max-width: 60%;
+    }
+
+    .info-row .value .badge-status {
+        padding: 4px 14px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .badge-pending {
+        background: #FEF3C7;
+        color: #D97706;
+    }
+
+    .badge-assigned {
+        background: #D1FAE5;
+        color: #059669;
+    }
+
+    .description-box {
+        background: #FAF8FF;
+        border-radius: 12px;
+        padding: 14px 16px;
+        border: 1px solid rgba(167, 139, 250, 0.08);
+        font-size: 14px;
+        color: #374151;
+        line-height: 1.6;
+        margin-top: 8px;
+    }
+
+    .complaint-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    .complaint-tag {
+        background: #EDE9FE;
+        color: #4C1D95;
+        padding: 4px 14px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .complaint-tag i {
+        font-size: 12px;
+        color: #7C3AED;
+    }
+
+    /* Right Panel - Assign Form */
+    .assign-panel {
+        background: white;
+        border-radius: 24px;
+        border: 1px solid rgba(167, 139, 250, 0.12);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        overflow: hidden;
+        transition: box-shadow 0.3s ease;
+        position: sticky;
+        top: 100px;
+    }
+
+    .assign-panel:hover {
+        box-shadow: 0 12px 40px rgba(124, 58, 237, 0.06);
+    }
+
+    .assign-panel .panel-header {
+        background: linear-gradient(135deg, #4C1D95 0%, #7C3AED 100%);
+    }
+
+    .assign-body {
+        padding: 24px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        font-size: 14px;
+        color: #1F1A3E;
+        margin-bottom: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form-group label i {
+        color: #7C3AED;
+    }
+
+    .form-select {
+        height: 48px;
+        border-radius: 14px;
+        border: 1.5px solid #E5E7EB;
+        padding: 0 16px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        background: #FAF8FF;
+        width: 100%;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237C3AED' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 40px;
+        cursor: pointer;
+    }
+
+    .form-select:focus {
+        border-color: #7C3AED;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        background: white;
+        outline: none;
+    }
+
+    .form-select option {
+        padding: 10px;
+    }
+
+    .selected-mechanic-preview {
+        background: #FAF8FF;
+        border-radius: 12px;
+        padding: 14px 16px;
+        border: 1px dashed rgba(167, 139, 250, 0.3);
+        text-align: center;
+        color: #9CA3AF;
+        font-size: 13px;
+        margin-top: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .selected-mechanic-preview.active {
+        border-color: #7C3AED;
+        background: #F5F0FF;
+        color: #4C1D95;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 8px;
+    }
+
+    .btn-purple {
+        flex: 1;
+        background: linear-gradient(95deg, #7C3AED, #A855F7);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .btn-purple:hover {
+        background: linear-gradient(95deg, #6D28D9, #9333EA);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.35);
+    }
+
+    .btn-outline-purple {
+        background: transparent;
+        color: #7C3AED;
+        border: 2px solid #7C3AED;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn-outline-purple:hover {
+        background: #7C3AED;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.2);
+        text-decoration: none;
+    }
+
+    /* Messages */
+    .alert-custom {
+        border-radius: 14px;
+        border: none;
+        padding: 12px 18px;
+        font-size: 14px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-custom.error {
+        background: #FEF2F2;
+        color: #991B1B;
+        border-left: 4px solid #dc2626;
+    }
+
+    .alert-custom.success {
+        background: #ECFDF5;
+        color: #065F46;
+        border-left: 4px solid #10b981;
+    }
+
+    .alert-custom.warning {
+        background: #FFFBEB;
+        color: #92400E;
+        border-left: 4px solid #f59e0b;
+    }
+
+    .alert-custom i {
+        font-size: 18px;
+    }
+
+    /* Animation */
+    @keyframes fadeInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes fadeInRight {
+        from {
+            opacity: 0;
+            transform: translateX(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .service-panel {
+        animation: fadeInLeft 0.5s ease forwards;
+    }
+
+    .assign-panel {
+        animation: fadeInRight 0.5s ease forwards;
+    }
+
+    /* Responsive */
+    @media(max-width: 992px) {
+        .assign-wrapper {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+        .assign-panel {
+            position: static;
+        }
+    }
+
+    @media(max-width: 768px) {
+        .panel-body {
+            padding: 18px 16px;
+        }
+        .info-row {
+            flex-direction: column;
+            gap: 4px;
+            padding: 10px 0;
+        }
+        .info-row .value {
+            text-align: left;
+            max-width: 100%;
+        }
+        .btn-group {
+            flex-direction: column;
+        }
+        .btn-group .btn {
+            width: 100%;
+            justify-content: center;
+        }
+        .panel-header h5 {
+            font-size: 16px;
+        }
+        .assign-body {
+            padding: 18px 16px;
+        }
+    }
+
+    @media(max-width: 576px) {
+        .panel-header {
+            padding: 16px 18px;
+        }
+        .panel-header i {
+            font-size: 20px;
+        }
+        .panel-header h5 {
+            font-size: 15px;
+        }
+        .form-select {
+            height: 44px;
+            font-size: 13px;
+        }
+        .info-row .label {
+            font-size: 12px;
+        }
+        .info-row .value {
+            font-size: 13px;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-custom {% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}warning{% endif %}" style="max-width: 900px; margin: 0 auto 20px;">
+                <i class="bi bi-{% if message.tags == 'error' %}exclamation-circle-fill{% elif message.tags == 'success' %}check-circle-fill{% else %}info-circle-fill{% endif %}"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="assign-wrapper">
+
+        <!-- Left Panel - Service Details -->
+        <div class="service-panel">
+            <div class="panel-header">
+                <i class="bi bi-clipboard-data"></i>
+                <h5>Service Details</h5>
+            </div>
+            <div class="panel-body">
+
+                <!-- Customer -->
+                <div class="info-row">
+                    <span class="label"><i class="bi bi-person-circle"></i> Customer</span>
+                    <span class="value">{{ service.customer.name }}</span>
                 </div>
 
-                <div class="card-body">
+                <!-- Vehicle -->
+                <div class="info-row">
+                    <span class="label"><i class="bi bi-car-front"></i> Vehicle</span>
+                    <span class="value">{{ service.vehicle }}</span>
+                </div>
 
-                    <!-- Booking Details -->
+                <!-- City -->
+                <div class="info-row">
+                    <span class="label"><i class="bi bi-geo-alt"></i> City</span>
+                    <span class="value">{{ service.city }}</span>
+                </div>
 
-                    <div class="row mb-3">
+                <!-- Location -->
+                <div class="info-row">
+                    <span class="label"><i class="bi bi-pin-map"></i> Location</span>
+                    <span class="value">{{ service.location }}</span>
+                </div>
 
-                        <div class="col-md-6">
-                            <label class="fw-bold">Customer</label>
-                            <p>{{ service.customer.name }}</p>
-                        </div>
+                <!-- Status -->
+                <div class="info-row">
+                    <span class="label"><i class="bi bi-info-circle"></i> Status</span>
+                    <span class="value">
+                        <span class="badge-status badge-pending">
+                            <i class="bi bi-clock-history"></i>
+                            {{ service.status }}
+                        </span>
+                    </span>
+                </div>
 
-                        <div class="col-md-6">
-                            <label class="fw-bold">Vehicle</label>
-                            <p>{{ service.vehicle }}</p>
-                        </div>
-
+                <!-- Problem Description -->
+                <div class="info-row" style="flex-direction: column; align-items: stretch; gap: 6px;">
+                    <span class="label"><i class="bi bi-chat-text"></i> Problem Description</span>
+                    <div class="description-box">
+                        {{ service.problem_description }}
                     </div>
+                </div>
 
-                    <div class="row mb-3">
-
-                        <div class="col-md-6">
-                            <label class="fw-bold">City</label>
-                            <p>{{ service.city }}</p>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label class="fw-bold">Status</label>
-                            <p>
-                                <span class="badge bg-warning">
-                                    {{ service.status }}
-                                </span>
-                            </p>
-                        </div>
-
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="fw-bold">Location</label>
-                        <p>{{ service.location }}</p>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="fw-bold">Problem Description</label>
-                        <div class="border rounded p-3 bg-light">
-                            {{ service.problem_description }}
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="fw-bold">Complaints</label>
-
-                        <ul class="list-group">
-                            {% for complaint in service.complaints.all %}
-                            <li class="list-group-item">
+                <!-- Complaints -->
+                <div class="info-row" style="flex-direction: column; align-items: stretch; gap: 6px; border-bottom: none;">
+                    <span class="label"><i class="bi bi-exclamation-triangle"></i> Complaints</span>
+                    <div class="complaint-tags">
+                        {% for complaint in service.complaints.all %}
+                            <span class="complaint-tag">
+                                <i class="bi bi-check-circle"></i>
                                 {{ complaint.complaint_name }}
-                            </li>
-                            {% endfor %}
-                        </ul>
+                            </span>
+                        {% empty %}
+                            <span style="color: #9CA3AF; font-size: 13px;">
+                                <i class="bi bi-info-circle"></i> No complaints
+                            </span>
+                        {% endfor %}
                     </div>
-
-                    <hr>
-
-                    <!-- Assign Mechanic Form -->
-
-                    <form method="post">
-                        {% csrf_token %}
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">
-                                Select Mechanic
-                            </label>
-
-                            <select name="mechanic" class="form-select" required>
-                                <option value="">
-                                    Choose Mechanic
-                                </option>
-
-                                {% for mechanic in mechanics %}
-                                <option value="{{ mechanic.id }}">
-                                    {{ mechanic.mechanic.name }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="d-flex gap-2">
-
-                            <button type="submit"
-                                    class="btn btn-success">
-                                Assign Mechanic
-                            </button>
-
-                            <a href="{% url 'service_not_assign' %}"
-                               class="btn btn-secondary">
-                                Back
-                            </a>
-
-                        </div>
-
-                    </form>
-
                 </div>
 
             </div>
+        </div>
 
+        <!-- Right Panel - Assign Form -->
+        <div class="assign-panel">
+            <div class="panel-header">
+                <i class="bi bi-person-plus"></i>
+                <h5>Assign Mechanic</h5>
+            </div>
+            <div class="assign-body">
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="mechanicSelect">
+                            <i class="bi bi-person-workspace"></i>
+                            Select Mechanic
+                        </label>
+                        <select name="mechanic" id="mechanicSelect" class="form-select" required>
+                            <option value="">— Choose a mechanic —</option>
+                            {% for mechanic in mechanics %}
+                            <option value="{{ mechanic.id }}">
+                                {{ mechanic.mechanic.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Preview selected mechanic -->
+                    <div class="selected-mechanic-preview" id="mechanicPreview">
+                        <i class="bi bi-person me-1"></i>
+                        No mechanic selected
+                    </div>
+
+                    <div class="btn-group">
+                        <button type="submit" class="btn-purple">
+                            <i class="bi bi-check-circle"></i>
+                            Assign
+                        </button>
+                        <a href="{% url 'service_not_assign' %}" class="btn-outline-purple">
+                            <i class="bi bi-arrow-left"></i>
+                            Cancel
+                        </a>
+                    </div>
+
+                </form>
+
+            </div>
         </div>
 
     </div>
 
 </div>
+
+<script>
+    // Update preview when mechanic is selected
+    document.addEventListener('DOMContentLoaded', function() {
+        const select = document.getElementById('mechanicSelect');
+        const preview = document.getElementById('mechanicPreview');
+
+        if (select && preview) {
+            select.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                if (this.value) {
+                    preview.textContent = 'Selected: ' + selectedOption.textContent;
+                    preview.classList.add('active');
+                } else {
+                    preview.innerHTML = '<i class="bi bi-person me-1"></i> No mechanic selected';
+                    preview.classList.remove('active');
+                }
+            });
+        }
+    });
+</script>
 
 {% endblock %}

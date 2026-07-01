@@ -388,81 +388,113 @@
 
 <!-- Dashboard Cards Grid -->
 <div class="row g-4">
-    <!-- Book Service -->
-    <div class="col-lg-3 col-md-6">
-        <div class="card dashboard-card p-4 h-100">
-            <div class="card-icon bg-purple-gradient">
-                <i class="bi bi-calendar-check-fill"></i>
+    {% if not customer.is_active %}
+        <div class="col-12">
+            <div class="alert alert-danger d-flex align-items-center gap-3 p-4 rounded-3">
+                <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+                <div>
+                    <h5 class="fw-bold mb-1">Account Suspended</h5>
+                    <p class="mb-0">Your account has been suspended by the admin. Please contact support for more information.</p>
+                </div>
             </div>
-            <h5 class="dashboard-title">
-                Book Service
-            </h5>
-            <p class="dashboard-text">
-                Schedule a new vehicle service with our expert mechanics.
-            </p>
-            <a href="{% url 'service_booking' %}"
-               class="btn btn-purple-base dashboard-btn">
-                Book Now <i class="bi bi-arrow-right ms-2"></i>
-            </a>
         </div>
-    </div>
+    {% else %} 
 
-    <!-- Orders -->
-    <div class="col-lg-3 col-md-6">
-        <div class="card dashboard-card p-4 h-100">
-            <div class="card-icon bg-purple-dark">
-                <i class="bi bi-box-seam-fill"></i>
+        <!-- Book Service -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card dashboard-card p-4 h-100">
+                <div class="card-icon bg-purple-gradient">
+                    <i class="bi bi-calendar-check-fill"></i>
+                </div>
+                <h5 class="dashboard-title">
+                    Book Service
+                </h5>
+                <p class="dashboard-text">
+                    Schedule a new vehicle service with our expert mechanics.
+                </p>
+                <a href="{% url 'service_booking' %}"
+                class="btn btn-purple-base dashboard-btn">
+                    Book Now <i class="bi bi-arrow-right ms-2"></i>
+                </a>
             </div>
-            <h5 class="dashboard-title">
-                Orders
-            </h5>
-            <p class="dashboard-text">
-                Track all your service requests and repair history.
-            </p>
-            <a href="{% url 'order_details' %}"
-               class="btn btn-purple-base dashboard-btn">
-                View Orders <i class="bi bi-arrow-right ms-2"></i>
-            </a>
         </div>
-    </div>
 
-    <!-- Vehicles -->
-    <div class="col-lg-3 col-md-6">
-        <div class="card dashboard-card p-4 h-100">
-            <div class="card-icon bg-purple-light">
-                <i class="bi bi-car-front-fill"></i>
+        <!-- Orders -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card dashboard-card p-4 h-100">
+                <div class="card-icon bg-purple-dark">
+                    <i class="bi bi-box-seam-fill"></i>
+                </div>
+                <h5 class="dashboard-title">
+                    Orders
+                </h5>
+                <p class="dashboard-text">
+                    Track all your service requests and repair history.
+                </p>
+                <a href="{% url 'order_details' %}"
+                class="btn btn-purple-base dashboard-btn">
+                    View Orders <i class="bi bi-arrow-right ms-2"></i>
+                </a>
             </div>
-            <h5 class="dashboard-title">
-                Vehicles
-            </h5>
-            <p class="dashboard-text">
-                Add, edit, and manage your vehicle fleet efficiently.
-            </p>
-            <a href="{% url 'vehicle_list' %}"
-               class="btn btn-purple-base dashboard-btn">
-                Manage <i class="bi bi-arrow-right ms-2"></i>
-            </a>
         </div>
-    </div>
 
-    <!-- Profile -->
-    <div class="col-lg-3 col-md-6">
-        <div class="card dashboard-card p-4 h-100">
-            <div class="card-icon bg-purple-soft">
-                <i class="bi bi-person-circle"></i>
+        <!-- Vehicles -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card dashboard-card p-4 h-100">
+                <div class="card-icon bg-purple-light">
+                    <i class="bi bi-car-front-fill"></i>
+                </div>
+                <h5 class="dashboard-title">
+                    Vehicles
+                </h5>
+                <p class="dashboard-text">
+                    Add, edit, and manage your vehicle fleet efficiently.
+                </p>
+                <a href="{% url 'vehicle_list' %}"
+                class="btn btn-purple-base dashboard-btn">
+                    Manage <i class="bi bi-arrow-right ms-2"></i>
+                </a>
             </div>
-            <h5 class="dashboard-title">
-                Profile
-            </h5>
-            <p class="dashboard-text">
-                Update your personal information and preferences.
-            </p>
-            <a href="{% url 'profile_user' %}"
-               class="btn btn-purple-base dashboard-btn">
-                Open Profile <i class="bi bi-arrow-right ms-2"></i>
-            </a>
         </div>
-    </div>
+
+        <!-- Profile -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card dashboard-card p-4 h-100">
+                <div class="card-icon bg-purple-soft">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+                <h5 class="dashboard-title">
+                    Profile
+                </h5>
+                <p class="dashboard-text">
+                    Update your personal information and preferences.
+                </p>
+                <a href="{% url 'profile_user' %}"
+                class="btn btn-purple-base dashboard-btn">
+                    Open Profile <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Complaints -->
+        <div class="col-lg-3 col-md-6">
+            <div class="card dashboard-card p-4 h-100">
+                <div class="card-icon bg-purple-soft">
+                    <i class="bi bi-chat-left-text"></i>
+                </div>
+                <h5 class="dashboard-title">
+                    Complaints
+                </h5>
+                <p class="dashboard-text">
+                    Report issues and monitor the resolution of your complaints.
+                </p>
+                <a href="#"
+                class="btn btn-purple-base dashboard-btn">
+                    Raise a Complaint <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+    {% endif %}
 </div>
 
 <!-- Service Bookings Section -->
@@ -566,8 +598,8 @@
                                 </span>
                             {% else %}
                                 <a href="{% url 'payment_page' booking.bill.id %}"
-                                   class="btn btn-purple-base px-4"
-                                   onclick="event.stopPropagation();">
+                                class="btn btn-purple-base px-4"
+                                onclick="event.stopPropagation();">
                                     Pay Now <i class="bi bi-credit-card ms-2"></i>
                                 </a>
                             {% endif %}

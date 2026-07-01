@@ -7,7 +7,7 @@ import razorpay
 from django.conf import settings
 
 from customer.models import Customer, City, Vehicle
-from .models import Complaints, ServiceBooking, MechanicRequest, Bill
+from .models import Complaints, ServiceBooking, MechanicRequest, Bill, Feedback
 from mechanic.models import Active_mechanic
 
 from mechanic.views import check_mechanic_access
@@ -410,16 +410,13 @@ def payment_success(request):
 
         messages.success(request, "Payment Successful")
 
-        return redirect('home_page')
+        return redirect('home')  
 
-from .models import Feedback    
 
+#::::::::::::::::::::::Customer Review For Mechanic::::::::::::::::::::::
 @login_required
 def feedback(request, order_id):
-    customer = get_object_or_404(
-        Customer,
-        user=request.user
-    )
+    customer = get_object_or_404(Customer,user=request.user)
 
     order = get_object_or_404(
         ServiceBooking,
@@ -427,9 +424,7 @@ def feedback(request, order_id):
         customer=customer
     )
 
-    existing_feedback = Feedback.objects.filter(
-    service=order
-    ).first()
+    existing_feedback = Feedback.objects.filter(service=order).first()
 
     if existing_feedback:
         messages.warning(request, "Rating already submitted.")
@@ -453,3 +448,8 @@ def feedback(request, order_id):
     return render(request, "feedback.html", {
         "order": order
     })
+
+
+
+
+

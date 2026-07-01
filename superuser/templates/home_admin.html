@@ -5,239 +5,467 @@
 {% block content %}
 
 <style>
-    .dashboard-card{
+    /* Purple Theme Color Variables */
+    :root {
+        --purple-900: #1E1B2E;
+        --purple-800: #2D1B4E;
+        --purple-700: #4C1D95;
+        --purple-600: #6D28D9;
+        --purple-500: #7C3AED;
+        --purple-400: #A855F7;
+        --purple-300: #C084FC;
+        --purple-200: #D8B4FE;
+        --purple-100: #EDE9FE;
+        --purple-50: #F8F5FF;
+    }
+
+    .dashboard-card {
         border: none;
-        border-radius: 18px;
-        transition: 0.3s ease;
+        border-radius: 20px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         overflow: hidden;
         position: relative;
+        background: white;
+        padding: 24px;
+        border: 1px solid rgba(167, 139, 250, 0.12);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+        height: 100%;
     }
 
-    .dashboard-card:hover{
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    .dashboard-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 35px -12px rgba(124, 58, 237, 0.25);
+        border-color: rgba(124, 58, 237, 0.3);
     }
 
-    .dashboard-icon{
+    .dashboard-card::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--purple-500), var(--purple-400), var(--purple-300));
+        transform: scaleX(0);
+        transition: transform 0.5s ease;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .dashboard-card:hover::after {
+        transform: scaleX(1);
+    }
+
+    /* Purple Gradient Icons */
+    .dashboard-icon {
         width: 60px;
         height: 60px;
-        border-radius: 15px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 28px;
         color: white;
-        margin-bottom: 15px;
+        margin-bottom: 18px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .bg-blue{
-        background: linear-gradient(135deg,#4e73df,#224abe);
+    .dashboard-card:hover .dashboard-icon {
+        transform: scale(1.05) rotate(-3deg);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
     }
 
-    .bg-green{
-        background: linear-gradient(135deg,#1cc88a,#13855c);
+    /* Purple Gradient Combinations */
+    .bg-purple-primary {
+        background: linear-gradient(145deg, var(--purple-500), var(--purple-400));
     }
 
-    .bg-orange{
-        background: linear-gradient(135deg,#f6c23e,#dda20a);
+    .bg-purple-dark {
+        background: linear-gradient(145deg, var(--purple-700), var(--purple-600));
     }
 
-    .bg-red{
-        background: linear-gradient(135deg,#e74a3b,#be2617);
+    .bg-purple-deep {
+        background: linear-gradient(145deg, var(--purple-800), var(--purple-700));
     }
 
-    .bg-purple{
-        background: linear-gradient(135deg,#6f42c1,#4e2b8a);
+    .bg-purple-light {
+        background: linear-gradient(145deg, var(--purple-400), var(--purple-300));
     }
 
-    .dashboard-title{
+    .bg-purple-soft {
+        background: linear-gradient(145deg, var(--purple-300), var(--purple-200));
+    }
+
+    .bg-purple-mixed {
+        background: linear-gradient(145deg, var(--purple-600), var(--purple-500));
+    }
+
+    .bg-purple-gradient-1 {
+        background: linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #C084FC 100%);
+    }
+
+    .bg-purple-gradient-2 {
+        background: linear-gradient(135deg, #4C1D95 0%, #7C3AED 50%, #A855F7 100%);
+    }
+
+    .bg-purple-gradient-3 {
+        background: linear-gradient(135deg, #6D28D9 0%, #A855F7 50%, #D8B4FE 100%);
+    }
+
+    .bg-purple-gradient-4 {
+        background: linear-gradient(135deg, #2D1B4E 0%, #4C1D95 50%, #7C3AED 100%);
+    }
+
+    .bg-purple-pink {
+        background: linear-gradient(135deg, #7C3AED 0%, #EC4899 100%);
+    }
+
+    .bg-purple-blue {
+        background: linear-gradient(135deg, #7C3AED 0%, #3B82F6 100%);
+    }
+
+    .bg-purple-teal {
+        background: linear-gradient(135deg, #6D28D9 0%, #14B8A6 100%);
+    }
+
+    .bg-purple-orange {
+        background: linear-gradient(135deg, #7C3AED 0%, #F59E0B 100%);
+    }
+
+    .dashboard-title {
         font-size: 16px;
+        font-weight: 700;
+        color: var(--purple-900);
+        margin-bottom: 8px;
+    }
+
+    .dashboard-text {
+        color: #6B7280;
+        font-size: 13px;
+        margin-bottom: 18px;
+        line-height: 1.5;
+    }
+
+    /* Purple Buttons */
+    .dashboard-btn {
+        border-radius: 50px;
+        padding: 8px 22px;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .dashboard-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px -6px rgba(124, 58, 237, 0.35);
+    }
+
+    .btn-purple-primary {
+        background: linear-gradient(95deg, var(--purple-500), var(--purple-400));
+        color: white;
+    }
+
+    .btn-purple-primary:hover {
+        background: linear-gradient(95deg, var(--purple-600), var(--purple-500));
+        color: white;
+    }
+
+    .btn-purple-dark {
+        background: linear-gradient(95deg, var(--purple-700), var(--purple-600));
+        color: white;
+    }
+
+    .btn-purple-dark:hover {
+        background: linear-gradient(95deg, var(--purple-800), var(--purple-700));
+        color: white;
+    }
+
+    .btn-purple-outline {
+        background: transparent;
+        color: var(--purple-500);
+        border: 2px solid var(--purple-500);
+    }
+
+    .btn-purple-outline:hover {
+        background: var(--purple-500);
+        color: white;
+    }
+
+    .btn-purple-soft {
+        background: linear-gradient(95deg, var(--purple-300), var(--purple-200));
+        color: var(--purple-700);
+    }
+
+    .btn-purple-soft:hover {
+        background: linear-gradient(95deg, var(--purple-400), var(--purple-300));
+        color: white;
+    }
+
+    .btn-purple-gradient {
+        background: linear-gradient(95deg, #4C1D95, #7C3AED, #A855F7);
+        color: white;
+    }
+
+    .btn-purple-gradient:hover {
+        background: linear-gradient(95deg, #3B0764, #6D28D9, #9333EA);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Dashboard Header */
+    .dashboard-header {
+        margin-bottom: 35px;
+        position: relative;
+    }
+
+    .dashboard-header h3 {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--purple-900);
+        font-family: 'Space Grotesk', monospace;
+    }
+
+    .dashboard-header h3 i {
+        background: linear-gradient(135deg, var(--purple-500), var(--purple-400));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-right: 10px;
+    }
+
+    .dashboard-header p {
+        color: #6B7280;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .dashboard-header::after {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--purple-500), var(--purple-400), var(--purple-300));
+        border-radius: 4px;
+        margin-top: 12px;
+    }
+
+    /* Purple Badge */
+    .badge-purple {
+        background: linear-gradient(95deg, var(--purple-100), var(--purple-200));
+        color: var(--purple-700);
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 12px;
         font-weight: 600;
     }
 
-    .dashboard-text{
-        color: #6c757d;
-        font-size: 14px;
+    /* Responsive */
+    @media(max-width: 768px) {
+        .dashboard-card {
+            padding: 20px;
+        }
+        .dashboard-header h3 {
+            font-size: 24px;
+        }
+        .dashboard-icon {
+            width: 50px;
+            height: 50px;
+            font-size: 22px;
+        }
     }
 
-    .dashboard-btn{
-        border-radius: 10px;
-        padding: 6px 15px;
-        font-size: 14px;
+    @media(max-width: 576px) {
+        .dashboard-card {
+            padding: 16px;
+        }
+        .dashboard-title {
+            font-size: 14px;
+        }
+        .dashboard-text {
+            font-size: 12px;
+        }
+        .dashboard-btn {
+            font-size: 12px;
+            padding: 6px 16px;
+        }
+    }
+
+    /* AOS Override for smoother animations */
+    [data-aos] {
+        pointer-events: none;
+    }
+    [data-aos].aos-animate {
+        pointer-events: auto;
     }
 </style>
 
 <div class="container-fluid">
 
-    <div class="row mb-4">
-        <div class="col">
-            <h3 class="fw-bold">🚗 Super Admin Dashboard</h3>
-            <p class="text-muted">Manage services, mechanics and customers</p>
-        </div>
+    <!-- Dashboard Header -->
+    <div class="dashboard-header" data-aos="fade-down" data-aos-duration="600">
+        <h3><i class="bi bi-grid-fill"></i> Super Admin Dashboard</h3>
+        <p>Manage services, mechanics and customers from one central hub</p>
     </div>
 
+    <!-- Dashboard Cards Grid -->
     <div class="row g-4">
 
-        <!-- Pending Service -->
-        <div class="col-md-3">
-            <div class="card dashboard-card shadow-sm p-4">
-                <div class="dashboard-icon bg-blue">
+        <!-- Pending Service - Purple Primary -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="dashboard-card">
+                <div class="dashboard-icon bg-purple-primary">
                     <i class="bi bi-tools"></i>
                 </div>
-
                 <h5 class="dashboard-title">Pending Service</h5>
-                <p class="dashboard-text">New service requests waiting for approval.</p>
-
-                <a href="{% url 'service_not_assign' %}" class="btn btn-primary dashboard-btn">
-                    View Requests
+                <p class="dashboard-text">New service requests waiting for your approval.</p>
+                <a href="{% url 'service_not_assign' %}" class="dashboard-btn btn-purple-primary">
+                    <i class="bi bi-eye"></i> View Requests
                 </a>
             </div>
         </div>
 
-        <!-- Active Service -->
-        <div class="col-md-3">
-            <div class="card dashboard-card shadow-sm p-4">
-                <div class="dashboard-icon bg-green">
+        <!-- Active Service - Purple Dark -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="150">
+            <div class="dashboard-card">
+                <div class="dashboard-icon bg-purple-dark">
                     <i class="bi bi-gear-wide-connected"></i>
                 </div>
-
                 <h5 class="dashboard-title">Active Service</h5>
-                <p class="dashboard-text">Track ongoing vehicle services.</p>
-
-                <a href="{% url 'active_service_booking' %}" class="btn btn-success dashboard-btn">
-                    Track Service
+                <p class="dashboard-text">Track and monitor ongoing vehicle services.</p>
+                <a href="{% url 'active_service_booking' %}" class="dashboard-btn btn-purple-dark">
+                    <i class="bi bi-activity"></i> Track Service
                 </a>
             </div>
         </div>
 
-        <!-- Online Mechanic -->
-        <div class="col-md-3">
-            <div class="card dashboard-card shadow-sm p-4">
-                <div class="dashboard-icon bg-orange">
+        <!-- Online Mechanic - Purple Pink -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="dashboard-card">
+                <div class="dashboard-icon bg-purple-pink">
                     <i class="bi bi-person-workspace"></i>
                 </div>
-
                 <h5 class="dashboard-title">Online Mechanic</h5>
-                <p class="dashboard-text">View all available online mechanics.</p>
-
-                <a href="{% url 'available_online' %}" class="btn btn-warning dashboard-btn text-white">
-                    Manage
+                <p class="dashboard-text">View all mechanics currently online.</p>
+                <a href="{% url 'available_online' %}" class="dashboard-btn btn-purple-gradient">
+                    <i class="bi bi-wifi"></i> Manage Online
                 </a>
             </div>
         </div>
 
-        <!-- Available Mechanic -->
-        <div class="col-md-3">
-            <div class="card dashboard-card shadow-sm p-4">
-                <div class="dashboard-icon bg-red">
+        <!-- Available Mechanic - Purple Deep -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="250">
+            <div class="dashboard-card">
+                <div class="dashboard-icon bg-purple-deep">
                     <i class="bi bi-people-fill"></i>
                 </div>
-
                 <h5 class="dashboard-title">Available Mechanic</h5>
                 <p class="dashboard-text">View all available mechanics.</p>
-
-                <a href="{% url 'available_mechanic' %}" class="btn btn-danger dashboard-btn">
-                    View Details
+                <a href="{% url 'available_mechanic' %}" class="dashboard-btn btn-purple-dark">
+                    <i class="bi bi-person-check"></i> View Details
                 </a>
             </div>
         </div>
 
-        <!-- Mechanic Applications -->
-        <div class="col-md-3">
-            <div class="card dashboard-card shadow-sm p-4">
-                <div class="dashboard-icon bg-purple">
+        <!-- Mechanic Applications - Purple Mixed -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="dashboard-card">
+                <div class="dashboard-icon bg-purple-mixed">
                     <i class="bi bi-file-earmark-person"></i>
                 </div>
-
                 <h5 class="dashboard-title">Mechanic Applications</h5>
-                <p class="dashboard-text">Review mechanic approval requests.</p>
-
-                <a href="{% url 'all_mechanic_applications' %}" class="btn btn-dark dashboard-btn">
-                    Review
+                <p class="dashboard-text">Review and approve mechanic registration requests.</p>
+                <a href="{% url 'all_mechanic_applications' %}" class="dashboard-btn btn-purple-primary">
+                    <i class="bi bi-pencil-square"></i> Review
                 </a>
             </div>
         </div>
 
-        <!-- Rejected Mechanic -->
-        <div class="col-md-3">
-            <div class="card dashboard-card shadow-sm p-4">
-                <div class="dashboard-icon bg-red">
-                    <i class="bi bi-people-fill"></i>
+        <!-- Rejected Mechanics - Purple Blue -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="350">
+            <div class="dashboard-card">
+                <div class="dashboard-icon bg-purple-blue">
+                    <i class="bi bi-person-x-fill"></i>
                 </div>
-
                 <h5 class="dashboard-title">Rejected Mechanics</h5>
-                <p class="dashboard-text">View all application rejected mechanics.</p>
-
-                <a href="{% url 'rejected_mechanics' %}" class="btn btn-danger dashboard-btn">
-                    View Details
+                <p class="dashboard-text">View all rejected mechanic applications.</p>
+                <a href="{% url 'rejected_mechanics' %}" class="dashboard-btn btn-purple-primary">
+                    <i class="bi bi-list"></i> View Details
                 </a>
             </div>
         </div>
 
-        <!-- Customer Details -->
-        <div class="col-md-3">
-            <div class="card dashboard-card shadow-sm p-4">
-                <div class="dashboard-icon bg-green">
+        <!-- Customer Details - Purple Soft -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="dashboard-card">
+                <div class="dashboard-icon bg-purple-soft">
                     <i class="bi bi-person-lines-fill"></i>
                 </div>
-
                 <h5 class="dashboard-title">Customer Details</h5>
-                <p class="dashboard-text">Manage registered customers.</p>
-
-                <a href="{% url 'all_customer_detail' %}" class="btn btn-success dashboard-btn">
-                    Customers
+                <p class="dashboard-text">Manage and view registered customers.</p>
+                <a href="{% url 'all_customer_detail' %}" class="dashboard-btn btn-purple-dark">
+                    <i class="bi bi-people"></i> View Customers
                 </a>
             </div>
         </div>
 
-        <!-- Mechanic Details -->
-        <div class="col-md-3">
-            <div class="card dashboard-card shadow-sm p-4">
-                <div class="dashboard-icon bg-blue">
+        <!-- Mechanic Details - Purple Gradient 1 -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="450">
+            <div class="dashboard-card">
+                <div class="dashboard-icon bg-purple-gradient-1">
                     <i class="bi bi-person-badge-fill"></i>
                 </div>
-
                 <h5 class="dashboard-title">Mechanic Details</h5>
-                <p class="dashboard-text">View and manage mechanics.</p>
-
-                <a href="{% url 'all_mechanic_details' %}" class="btn btn-primary dashboard-btn">
-                    Mechanics
+                <p class="dashboard-text">View and manage all mechanics.</p>
+                <a href="{% url 'all_mechanic_details' %}" class="dashboard-btn btn-purple-gradient">
+                    <i class="bi bi-wrench"></i> View Mechanics
                 </a>
             </div>
         </div>
 
-        <!-- Profile -->
-        <div class="col-md-3">
-            <div class="card dashboard-card shadow-sm p-4">
-                <div class="dashboard-icon bg-orange">
+        <!-- Profile - Purple Teal -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="500">
+            <div class="dashboard-card">
+                <div class="dashboard-icon bg-purple-teal">
                     <i class="bi bi-person-circle"></i>
                 </div>
-
                 <h5 class="dashboard-title">Profile</h5>
-                <p class="dashboard-text">Manage your admin account.</p>
-
-                <a href="{% url 'profile_page_superuser' %}" class="btn btn-warning dashboard-btn text-white">
-                    Open Profile
+                <p class="dashboard-text">Manage your admin account settings.</p>
+                <a href="{% url 'profile_page_superuser' %}" class="dashboard-btn btn-purple-dark">
+                    <i class="bi bi-gear"></i> Open Profile
                 </a>
             </div>
         </div>
 
-        <!-- Add Services -->
-        <div class="col-md-3">
-            <div class="card dashboard-card shadow-sm p-4">
-                <div class="dashboard-icon bg-blue">
-                    <i class="bi bi-tools"></i>
+        <!-- Services - Purple Light -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="550">
+            <div class="dashboard-card">
+                <div class="dashboard-icon bg-purple-light">
+                    <i class="bi bi-list-check"></i>
                 </div>
-
                 <h5 class="dashboard-title">Services</h5>
-                <p class="dashboard-text">New service add or view.</p>
-
-                <a href="{% url 'complaint_list_view' %}" class="btn btn-primary dashboard-btn">
-                    View Services
+                <p class="dashboard-text">View and manage all services.</p>
+                <a href="{% url 'complaint_list_view' %}" class="dashboard-btn btn-purple-primary">
+                    <i class="bi bi-grid-3x3-gap"></i> View Services
                 </a>
             </div>
         </div>
 
+        <!-- Complaints - Purple Orange -->
+        <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="600">
+            <div class="dashboard-card">
+                <div class="dashboard-icon bg-purple-orange">
+                    <i class="bi bi-chat-dots-fill"></i>
+                </div>
+                <h5 class="dashboard-title">Complaints</h5>
+                <p class="dashboard-text">Report issues and monitor complaint resolution.</p>
+                <a href="#" class="dashboard-btn btn-purple-gradient">
+                    <i class="bi bi-exclamation-circle"></i> View Complaints
+                </a>
+            </div>
+        </div>
 
     </div>
 </div>

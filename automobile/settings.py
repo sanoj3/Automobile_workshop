@@ -31,6 +31,9 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # "daphne",
+    # "channels",
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -82,7 +85,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'automobile.wsgi.application'
+
 
 
 # Database
@@ -120,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -169,3 +172,8 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 
 RAZORPAY_KEY_ID = "rzp_test_SuFMstr7DsrOLO"
 RAZORPAY_KEY_SECRET = "58gixL01ZLwwQaj9R5URNUaJ"
+
+
+WSGI_APPLICATION = "automobile.wsgi.application"
+ASGI_APPLICATION = 'automobile.asgi.application'
+

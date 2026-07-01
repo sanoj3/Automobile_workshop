@@ -13,12 +13,7 @@ urlpatterns = [
     path('cancel-booking/<int:id>/', views.cancel_booking_user, name='cancel_booking_user'),
     path('payment/<int:id>/', views.payment_page, name='payment_page'),
     path('payment-success/', views.payment_success, name='payment_success'),
-    path(
-    'feedback/<int:order_id>/',
-    views.feedback,
-    name='feedback'
-)
-       
+    path('feedback/<int:order_id>/', views.feedback, name='feedback'),
 ]
 
 

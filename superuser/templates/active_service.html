@@ -4,95 +4,635 @@
 
 {% block content %}
 
-<div class="container py-4">
+<style>
+    :root {
+        --purple-900: #1E1B2E;
+        --purple-800: #2D1B4E;
+        --purple-700: #4C1D95;
+        --purple-600: #6D28D9;
+        --purple-500: #7C3AED;
+        --purple-400: #A855F7;
+        --purple-300: #C084FC;
+        --purple-200: #D8B4FE;
+        --purple-100: #EDE9FE;
+        --purple-50: #F8F5FF;
+    }
+
+    .page-header h2 {
+        font-size: 26px;
+        font-weight: 800;
+        color: #1F1A3E;
+        font-family: 'Space Grotesk', monospace;
+    }
+
+    .page-header h2 i {
+        background: linear-gradient(135deg, #7C3AED, #A855F7);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-right: 10px;
+    }
+
+    .page-header p {
+        color: #6B7280;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    .total-badge {
+        background: linear-gradient(95deg, #7C3AED, #A855F7);
+        color: white;
+        padding: 8px 22px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: transform 0.3s ease;
+    }
+
+    .total-badge:hover {
+        transform: scale(1.03);
+    }
+
+    .total-badge strong {
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    /* Section Divider with Underline */
+    .section-divider {
+        position: relative;
+        margin: 10px 0 30px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .section-divider::before {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #7C3AED, #A855F7, transparent);
+    }
+
+    .section-divider .divider-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 20px;
+        white-space: nowrap;
+        font-size: 14px;
+        font-weight: 600;
+        color: #4C1D95;
+        background: transparent;
+        position: relative;
+    }
+
+    .section-divider .divider-content i {
+        font-size: 18px;
+        color: #7C3AED;
+    }
+
+    .section-divider .divider-content .badge-count {
+        background: linear-gradient(95deg, #7C3AED, #A855F7);
+        color: white;
+        padding: 2px 12px;
+        border-radius: 50px;
+        font-size: 12px;
+        font-weight: 700;
+        min-width: 24px;
+        text-align: center;
+    }
+
+    /* Booking Cards */
+    .booking-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 24px;
+    }
+
+    .booking-card {
+        background: white;
+        border-radius: 24px;
+        border: 1px solid rgba(167, 139, 250, 0.12);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .booking-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #7C3AED, #A855F7);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 1;
+    }
+
+    .booking-card:hover::before {
+        opacity: 1;
+    }
+
+    .booking-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 16px 48px rgba(124, 58, 237, 0.12);
+        border-color: rgba(124, 58, 237, 0.25);
+    }
+
+    .booking-card-body {
+        padding: 22px 24px;
+    }
+
+    .booking-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 14px;
+    }
+
+    .booking-card-header .booking-id {
+        font-size: 12px;
+        color: #9CA3AF;
+        font-weight: 500;
+        background: #F8F5FF;
+        padding: 2px 12px;
+        border-radius: 50px;
+    }
+
+    .booking-card-header .status-badge {
+        padding: 5px 16px;
+        border-radius: 50px;
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .status-assigned {
+        background: #FEF3C7;
+        color: #D97706;
+        animation: pulseAssigned 2s ease-in-out infinite;
+    }
+
+    .status-accepted {
+        background: #DBEAFE;
+        color: #2563EB;
+    }
+
+    .status-progress {
+        background: #D1FAE5;
+        color: #059669;
+        animation: pulseProgress 2s ease-in-out infinite;
+    }
+
+    .status-completed {
+        background: #EDE9FE;
+        color: #4C1D95;
+    }
+
+    .status-cancelled {
+        background: #FEE2E2;
+        color: #DC2626;
+    }
+
+    @keyframes pulseAssigned {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(0.97); }
+    }
+
+    @keyframes pulseProgress {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(0.97); }
+    }
+
+    .booking-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #1F1A3E;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .booking-title .customer-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #7C3AED, #A855F7);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .booking-subtitle {
+        font-size: 13px;
+        color: #6B7280;
+        margin-bottom: 16px;
+        padding-left: 40px;
+    }
+
+    .booking-subtitle i {
+        color: #7C3AED;
+        margin-right: 6px;
+    }
+
+    .booking-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 20px;
+        padding-top: 16px;
+        border-top: 1px solid #F3F0FA;
+    }
+
+    .booking-detail-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .booking-detail-item .label {
+        font-size: 10px;
+        color: #9CA3AF;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 600;
+        margin-bottom: 2px;
+    }
+
+    .booking-detail-item .value {
+        font-size: 13px;
+        color: #1F1A3E;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .booking-detail-item .value i {
+        color: #7C3AED;
+        font-size: 13px;
+    }
+
+    .booking-card-footer {
+        padding: 14px 24px;
+        background: linear-gradient(145deg, #FAF8FF, #F5F0FF);
+        border-top: 1px solid #F3F0FA;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        color: #6B7280;
+    }
+
+    .booking-card-footer .mechanic-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .booking-card-footer .mechanic-info i {
+        color: #7C3AED;
+    }
+
+    .booking-card-footer .view-link {
+        color: #7C3AED;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .booking-card-footer .view-link:hover {
+        color: #6D28D9;
+        transform: translateX(4px);
+    }
+
+    .empty-state {
+        padding: 80px 20px;
+        text-align: center;
+        background: white;
+        border-radius: 24px;
+        border: 1px solid rgba(167, 139, 250, 0.12);
+    }
+
+    .empty-state .icon-wrapper {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(145deg, #EDE9FE, #F8F5FF);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        border: 2px solid rgba(167, 139, 250, 0.2);
+        transition: transform 0.3s ease;
+    }
+
+    .empty-state .icon-wrapper:hover {
+        transform: scale(1.05);
+    }
+
+    .empty-state .icon-wrapper i {
+        font-size: 52px;
+        color: #7C3AED;
+    }
+
+    .empty-state h4 {
+        font-weight: 700;
+        font-size: 22px;
+        color: #1F1A3E;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: #6B7280;
+        font-size: 15px;
+        margin-bottom: 0;
+    }
+
+    /* Animation */
+    .booking-card {
+        opacity: 0;
+        animation: fadeInUp 0.5s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .booking-card:nth-child(1) { animation-delay: 0.02s; }
+    .booking-card:nth-child(2) { animation-delay: 0.06s; }
+    .booking-card:nth-child(3) { animation-delay: 0.10s; }
+    .booking-card:nth-child(4) { animation-delay: 0.14s; }
+    .booking-card:nth-child(5) { animation-delay: 0.18s; }
+    .booking-card:nth-child(6) { animation-delay: 0.22s; }
+
+    @media(max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 12px;
+        }
+        .page-header h2 {
+            font-size: 22px;
+        }
+        .total-badge {
+            font-size: 12px;
+            padding: 6px 16px;
+        }
+        .total-badge strong {
+            font-size: 15px;
+        }
+        .booking-grid {
+            grid-template-columns: 1fr;
+        }
+        .booking-details {
+            grid-template-columns: 1fr 1fr;
+        }
+        .booking-card-body {
+            padding: 18px 20px;
+        }
+        .booking-card-footer {
+            padding: 12px 20px;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-start;
+        }
+        .section-divider {
+            margin: 5px 0 20px;
+        }
+        .section-divider .divider-content {
+            font-size: 13px;
+            padding: 0 12px;
+        }
+    }
+
+    @media(max-width: 576px) {
+        .page-header h2 {
+            font-size: 20px;
+        }
+        .booking-card-body {
+            padding: 16px 16px;
+        }
+        .booking-card-footer {
+            padding: 12px 16px;
+        }
+        .booking-details {
+            grid-template-columns: 1fr;
+        }
+        .booking-title {
+            font-size: 15px;
+        }
+        .booking-subtitle {
+            font-size: 12px;
+            padding-left: 0;
+        }
+        .section-divider {
+            margin: 0 0 16px;
+        }
+        .section-divider .divider-content {
+            font-size: 12px;
+            padding: 0 8px;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4">
 
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-primary">
-            <i class="bi bi-tools"></i>
-            Active Service Bookings
-        </h2>
-
-        <span class="badge bg-primary fs-6">
-            Total: {{ active_count }}
-        </span>
-    </div>
-
-    <!-- Active Services Table -->
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
-
-            {% if service %}
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle">
-
-                    <thead class="table-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Booking ID</th>
-                            <th>Customer</th>
-                            <th>Vehicle</th>
-                            <th>Mechanic</th>
-                            <th>Booking Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for booking in service %}
-                        <tr style="cursor:pointer;"
-                            onclick="window.location.href='/superuser/active-service/{{ booking.id }}/'">
-
-                            <td>{{ forloop.counter }}</td>
-                            <td>#{{ booking.id }}</td>
-                            <td>{{ booking.customer }}</td>
-                            <td>{{ booking.vehicle }}</td>
-                            <td>
-                                {% if booking.mechanic %}
-                                    {{ booking.mechanic }}
-                                {% else %}
-                                    <span class="text-muted">Not Assigned</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ booking.created_at }}</td>
-                            <td>
-                                {% if booking.status == 'Assigned' %}
-                                    <span class="badge bg-warning text-dark">
-                                        Assigned
-                                    </span>
-
-                                {% elif booking.status == 'Accepted' %}
-                                    <span class="badge bg-info">
-                                        Accepted
-                                    </span>
-
-                                {% elif booking.status == 'In_progress' %}
-                                    <span class="badge bg-primary">
-                                        In Progress
-                                    </span>
-
-                                {% else %}
-                                    <span class="badge bg-secondary">
-                                        {{ booking.status }}
-                                    </span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-
-                </table>
-            </div>
-
-            {% else %}
-            <div class="alert alert-info text-center">
-                No active service bookings found.
-            </div>
-            {% endif %}
-
+    <div class="d-flex justify-content-between align-items-center mb-4 page-header">
+        <div>
+            <h2>
+                <i class="bi bi-tools"></i>
+                Active Service Bookings
+            </h2>
+            <p>View and manage all active service bookings</p>
+        </div>
+        <div class="total-badge">
+            <i class="bi bi-list-check"></i>
+            Total : <strong>{{ active_count }}</strong>
         </div>
     </div>
 
+    <!-- Section Divider with Underline -->
+    <div class="section-divider">
+        <div class="divider-content">
+            <i class="bi bi-list-ul"></i>
+            Active Bookings
+            <span class="badge-count">{{ active_count }}</span>
+        </div>
+    </div>
+
+    <!-- Booking Cards -->
+    {% if service %}
+
+    <div class="booking-grid">
+
+        {% for booking in service %}
+        <div class="booking-card" onclick="window.location.href='/superuser/active-service/{{ booking.id }}/'">
+            <div class="booking-card-body">
+                <div class="booking-card-header">
+                    <span class="booking-id">
+                        <i class="bi bi-hash"></i> ID: {{ booking.id }}
+                    </span>
+                    {% if booking.status == 'Assigned' %}
+                        <span class="status-badge status-assigned">
+                            <i class="bi bi-clock-history"></i> Assigned
+                        </span>
+                    {% elif booking.status == 'Accepted' %}
+                        <span class="status-badge status-accepted">
+                            <i class="bi bi-check-circle"></i> Accepted
+                        </span>
+                    {% elif booking.status == 'In_progress' %}
+                        <span class="status-badge status-progress">
+                            <i class="bi bi-arrow-repeat"></i> In Progress
+                        </span>
+                    {% elif booking.status == 'Completed' %}
+                        <span class="status-badge status-completed">
+                            <i class="bi bi-check-circle-fill"></i> Completed
+                        </span>
+                    {% else %}
+                        <span class="status-badge status-cancelled">
+                            <i class="bi bi-x-circle"></i> {{ booking.status }}
+                        </span>
+                    {% endif %}
+                </div>
+
+                <div class="booking-title">
+                    <span class="customer-avatar">
+                        {{ booking.customer|slice:":1"|upper }}
+                    </span>
+                    {{ booking.customer }}
+                </div>
+                <div class="booking-subtitle">
+                    <i class="bi bi-car-front"></i>
+                    {{ booking.vehicle }}
+                </div>
+
+                <div class="booking-details">
+                    <div class="booking-detail-item">
+                        <span class="label">Mechanic</span>
+                        <span class="value">
+                            <i class="bi bi-person-workspace"></i>
+                            {% if booking.mechanic %}
+                                {{ booking.mechanic }}
+                            {% else %}
+                                <span style="color: #9CA3AF;">Not Assigned</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="label">Booking Date</span>
+                        <span class="value">
+                            <i class="bi bi-calendar3"></i>
+                            {{ booking.created_at|date:"d M Y" }}
+                        </span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="label">Time</span>
+                        <span class="value">
+                            <i class="bi bi-clock"></i>
+                            {{ booking.created_at|date:"h:i A" }}
+                        </span>
+                    </div>
+                    <div class="booking-detail-item">
+                        <span class="label">Status</span>
+                        <span class="value" style="color: #7C3AED;">
+                            <i class="bi bi-hourglass-split"></i>
+                            Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="booking-card-footer">
+                <span class="mechanic-info">
+                    <i class="bi bi-person-workspace"></i>
+                    {% if booking.mechanic %}
+                        {{ booking.mechanic }}
+                    {% else %}
+                        <span style="color: #9CA3AF;">Not Assigned</span>
+                    {% endif %}
+                </span>
+                <span>
+                    <i class="bi bi-calendar-event"></i>
+                    {{ booking.created_at|date:"d M Y" }}
+                    <a href="/superuser/active-service/{{ booking.id }}/" class="view-link">
+                        View <i class="bi bi-arrow-right"></i>
+                    </a>
+                </span>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <!-- Empty State -->
+    <div class="empty-state">
+        <div class="icon-wrapper">
+            <i class="bi bi-tools"></i>
+        </div>
+        <h4>No Active Services</h4>
+        <p>There are currently no active service bookings.</p>
+    </div>
+
+    {% endif %}
+
 </div>
+
+<script>
+    // Intersection Observer for lazy loading animation
+    document.addEventListener('DOMContentLoaded', function() {
+        const cards = document.querySelectorAll('.booking-card');
+
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
+            });
+        } else {
+            cards.forEach(card => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            });
+        }
+    });
+</script>
 
 {% endblock %}

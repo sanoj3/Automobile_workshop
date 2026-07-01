@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Admin Dashboard{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>{% block title %}FixiGo | Admin Dashboard{% endblock %}</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,202 +11,374 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <style>
-
-        *{
-            font-family: 'Poppins', sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        body{
-            background: #f4f7fc;
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background: linear-gradient(135deg, #F8F5FF 0%, #F0EBFA 100%);
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            color: #1F1A3E;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Sidebar */
+        /* Purple Theme Variables */
+        :root {
+            --purple-deep: #4C1D95;
+            --purple-primary: #7C3AED;
+            --purple-light: #A78BFA;
+            --purple-soft: #DDD6FE;
+            --purple-glow: rgba(124, 58, 237, 0.2);
+            --dark-bg: #1E1B2E;
+        }
 
-        .sidebar{
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #E9E4F5;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #7C3AED;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A855F7;
+        }
+
+        /* Sidebar - Premium Purple Theme */
+        .sidebar {
             position: fixed;
-            width: 260px;
+            width: 280px;
             height: 100vh;
-            background: linear-gradient(180deg,#111827,#1f2937);
-            padding-top: 20px;
-            transition: 0.3s;
+            background: linear-gradient(180deg, #1E1B2E 0%, #2D1B4E 100%);
+            padding-top: 25px;
             overflow-y: auto;
-            z-index: 999;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-right: 1px solid rgba(167, 139, 250, 0.15);
         }
 
-        .sidebar-logo{
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar-logo {
             text-align: center;
             color: white;
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 30px;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 35px;
+            font-family: 'Space Grotesk', monospace;
+            background: linear-gradient(135deg, #FFFFFF, #D8B4FE);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent !important;
         }
 
-        .sidebar a{
+        .sidebar-logo i {
+            background: none;
+            -webkit-background-clip: unset;
+            color: #A78BFA;
+            margin-right: 8px;
+        }
+
+        .sidebar a {
             display: flex;
             align-items: center;
-            gap: 12px;
-            color: #cbd5e1;
-            padding: 14px 22px;
+            gap: 14px;
+            color: #C4B5FD;
+            padding: 12px 22px;
             text-decoration: none;
-            margin: 6px 12px;
-            border-radius: 12px;
-            transition: 0.3s;
-            font-size: 15px;
+            margin: 4px 14px;
+            border-radius: 14px;
+            transition: all 0.3s ease;
+            font-size: 14px;
             font-weight: 500;
         }
 
-        .sidebar a:hover{
-            background: rgba(255,255,255,0.08);
+        .sidebar a i {
+            font-size: 20px;
+            width: 24px;
+        }
+
+        .sidebar a:hover {
+            background: rgba(124, 58, 237, 0.2);
             color: white;
             transform: translateX(5px);
         }
 
-        .sidebar a.active{
-            background: linear-gradient(90deg,#2563eb,#3b82f6);
+        .sidebar a.active {
+            background: linear-gradient(95deg, #7C3AED, #A855F7);
             color: white;
-            box-shadow: 0 5px 15px rgba(59,130,246,0.3);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35);
         }
 
-        .logout-btn{
-            background: rgba(239,68,68,0.15);
-            color: #f87171 !important;
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.12);
+            color: #FCA5A5 !important;
+            margin-top: 15px;
         }
 
-        .logout-btn:hover{
-            background: #ef4444 !important;
+        .logout-btn:hover {
+            background: #EF4444 !important;
             color: white !important;
         }
 
-        /* Main */
-
-        .main{
-            margin-left: 260px;
-            padding: 25px;
+        /* Main Content Wrapper */
+        .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            margin-left: 280px;
+            min-height: 100vh;
         }
 
-        /* Topbar */
-
-        .topbar{
-            background: white;
-            border-radius: 18px;
-            padding: 18px 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        /* Main Content */
+        .main {
+            padding: 25px 30px;
+            flex: 1;
         }
 
-        .topbar h5{
-            font-weight: 700;
+        /* Topbar - Premium Glass */
+        .topbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 18px 28px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(167, 139, 250, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .topbar h5 {
             margin: 0;
+            font-weight: 800;
+            font-size: 24px;
+            background: linear-gradient(135deg, #4C1D95, #A855F7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
-        .welcome-box{
+        .welcome-box {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
-        .welcome-avatar{
-            width: 50px;
-            height: 50px;
+        .welcome-avatar {
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             overflow: hidden;
-            background: linear-gradient(135deg,#2563eb,#3b82f6);
-            color: white;
+            background: linear-gradient(145deg, #7C3AED, #A855F7);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            font-size: 18px;
-            border: 2px solid #e5e7eb;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+            border: 2px solid rgba(167, 139, 250, 0.5);
+            transition: transform 0.3s ease;
         }
 
-        .profile-img{
+        .welcome-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: block;
+        }
+
+        .welcome-box .fw-semibold {
+            font-weight: 700;
+            color: #1F1A3E;
         }
 
         /* Alert */
-
-        .alert{
-            border-radius: 12px;
+        .alert {
+            border-radius: 16px;
             border: none;
         }
 
-        /* Responsive */
+        /* Toast Messages */
+        .toast-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: white;
+            border-radius: 16px;
+            padding: 14px 20px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid;
+        }
 
-        @media(max-width: 991px){
+        .toast-message.error {
+            border-left-color: #dc2626;
+            background: #FEF2F2;
+            color: #991B1B;
+        }
 
-            .sidebar{
-                width: 80px;
+        .toast-message.success {
+            border-left-color: #10b981;
+            background: #ECFDF5;
+            color: #065F46;
+        }
+
+        .toast-message.warning {
+            border-left-color: #f59e0b;
+            background: #FFFBEB;
+            color: #92400E;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
             }
-
-            .sidebar-logo{
-                font-size: 16px;
-            }
-
-            .sidebar a span{
-                display: none;
-            }
-
-            .main{
-                margin-left: 80px;
+            to {
+                transform: translateX(0);
+                opacity: 1;
             }
         }
 
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        /* Footer - Clean Simple */
+        .footer {
+            padding: 16px 0;
+            text-align: center;
+            flex-shrink: 0;
+            border-top: 1px solid rgba(167, 139, 250, 0.15);
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 13px;
+            color: #6B7280;
+            letter-spacing: 0.3px;
+        }
+
+        .footer strong {
+            color: #7C3AED;
+            font-weight: 700;
+        }
+
+        /* Responsive */
+        @media(max-width: 992px) {
+            .sidebar {
+                width: 85px;
+            }
+            .sidebar-logo {
+                font-size: 18px;
+            }
+            .sidebar a span {
+                display: none;
+            }
+            .sidebar a {
+                justify-content: center;
+                padding: 14px;
+                margin: 5px 10px;
+            }
+            .sidebar a i {
+                margin: 0;
+            }
+            .main-wrapper {
+                margin-left: 85px;
+            }
+            .main {
+                padding: 20px;
+            }
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 12px;
+            }
+        }
+
+        @media(max-width: 576px) {
+            .main {
+                padding: 15px;
+            }
+            .topbar {
+                padding: 15px 20px;
+            }
+            .topbar h5 {
+                font-size: 20px;
+            }
+            .footer p {
+                font-size: 11px;
+            }
+        }
     </style>
 
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body>
 
-    <!-- ✅ Messages -->
-{% if messages %}
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
-    {% for message in messages %}
-    <div class="toast show align-items-center text-white 
-        {% if message.tags == 'error' %}bg-danger
-        {% elif message.tags == 'warning' %}bg-warning
-        {% else %}bg-success{% endif %}
-        border-0 mb-2 shadow" role="alert">
-
-        <div class="d-flex">
-            <div class="toast-body">
-                {{ message }}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto"></button>
+    <!-- Toast Messages -->
+    {% if messages %}
+        {% for message in messages %}
+        <div class="toast-message {{ message.tags }}" id="toast-{{ forloop.counter }}">
+            <i class="bi bi-{% if message.tags == 'error' %}exclamation-circle-fill{% elif message.tags == 'success' %}check-circle-fill{% else %}info-circle-fill{% endif %}"></i>
+            <span>{{ message }}</span>
+            <button type="button" class="btn-close ms-auto" style="font-size: 10px;" onclick="this.closest('.toast-message').remove()"></button>
         </div>
-
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
-
-<!-- Auto remove messages -->
-<script>
-setTimeout(() => {
-    let toasts = document.querySelectorAll('.toast');
-    toasts.forEach(t => t.remove());
-}, 3000);
-</script>
-
-
+        <script>
+            setTimeout(() => {
+                const toast = document.getElementById('toast-{{ forloop.counter }}');
+                if (toast) {
+                    toast.style.animation = 'slideOutRight 0.3s ease forwards';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 4000);
+        </script>
+        {% endfor %}
+    {% endif %}
 
     <!-- Sidebar -->
-
     <div class="sidebar">
-
         <div class="sidebar-logo">
-            🚗 FixiGo
+            <i class="bi bi-tools"></i> FixiGo
         </div>
 
-        <a href="{% url 'home_page_superuser' %}" class="active">
+        <a href="{% url 'home_page_superuser' %}" class="{% block dashboard_active %}active{% endblock %}">
             <i class="bi bi-grid-fill"></i>
             <span>Dashboard</span>
         </a>
@@ -241,7 +413,7 @@ setTimeout(() => {
             <span>Customer Details</span>
         </a>
 
-        <a href="{% url 'all_mechanic_details' %} ">
+        <a href="{% url 'all_mechanic_details' %}">
             <i class="bi bi-person-badge-fill"></i>
             <span>Mechanic Details</span>
         </a>
@@ -255,64 +427,65 @@ setTimeout(() => {
             <i class="bi bi-box-arrow-right"></i>
             <span>Logout</span>
         </a>
-
     </div>
 
-    <!-- Main Content -->
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
 
-    <div class="main">
+        <!-- Main Content -->
+        <div class="main">
 
-        <!-- Topbar -->
-
-        <div class="topbar d-flex justify-content-between align-items-center">
-
-            <div>
-                <h5>{% block header %}Dashboard{% endblock %}</h5>
-                <small class="text-muted">
-                    Automobile Workshop Management System
-                </small>
-            </div>
-
-            <div class="welcome-box">
-
-                <div class="welcome-avatar">
-
-                    {% if superuser.profile_pic %}
-                        <img src="{{ superuser.profile_pic.url }}"
-                            alt="Profile Picture"
-                            class="profile-img">
-                    {% else %}
-                        {{ superuser.name|slice:":1"|upper }}
-                    {% endif %}
-
-                </div>
-
+            <!-- Topbar -->
+            <div class="topbar d-flex justify-content-between align-items-center" data-aos="fade-down" data-aos-duration="600">
                 <div>
-
-                    <div class="fw-semibold">
-                        {{ superuser.username }}
-                    </div>
-
-                    <small class="text-muted">
-                        Super Admin
-                    </small>
-
+                    <h5>{% block header %}Admin Dashboard{% endblock %}</h5>
+                    <small class="text-muted">Automobile Workshop Management System</small>
                 </div>
-
+                <div class="welcome-box">
+                    <div class="welcome-avatar">
+                        {% if superuser.profile_pic %}
+                            <img src="{{ superuser.profile_pic.url }}" alt="Profile Picture" class="profile-img">
+                        {% else %}
+                            {{ superuser.username|slice:":1"|upper }}
+                        {% endif %}
+                    </div>
+                    <div>
+                        <div class="fw-semibold">{{ superuser.username }}</div>
+                        <small class="text-muted">Super Admin</small>
+                    </div>
+                </div>
             </div>
+
+            <!-- Page Content -->
+            {% block content %}
+            {% endblock %}
 
         </div>
 
-        <!-- Page Content -->
-
-        {% block content %}
-        {% endblock %}
+        <!-- Footer - Clean Simple -->
+        <footer class="footer">
+            <div class="container">
+                <p>© <span id="currentYear"></span> <strong>FixiGo</strong> — Automobile Workshop Management System. All Rights Reserved.</p>
+            </div>
+        </footer>
 
     </div>
 
-    <!-- Bootstrap JS -->
-
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 50,
+            disable: window.innerWidth < 768
+        });
 
+        // Dynamic Year
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

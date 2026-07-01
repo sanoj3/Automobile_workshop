@@ -6,107 +6,138 @@
 {% block content %}
 
 <style>
+    :root {
+        --purple-900: #1E1B2E;
+        --purple-800: #2D1B4E;
+        --purple-700: #4C1D95;
+        --purple-600: #6D28D9;
+        --purple-500: #7C3AED;
+        --purple-400: #A855F7;
+        --purple-300: #C084FC;
+        --purple-200: #D8B4FE;
+        --purple-100: #EDE9FE;
+        --purple-50: #F8F5FF;
+    }
 
-    .profile-container{
-        max-width: 700px;
+    .profile-container {
+        max-width: 750px;
         margin: auto;
     }
 
-    .profile-card{
+    .profile-card {
         background: white;
         border-radius: 24px;
         overflow: hidden;
-        border: none;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        border: 1px solid rgba(167, 139, 250, 0.15);
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+        transition: box-shadow 0.3s ease;
     }
 
-    /* Banner */
+    .profile-card:hover {
+        box-shadow: 0 15px 40px rgba(124, 58, 237, 0.1);
+    }
 
-    .profile-banner{
-        height: 160px;
-        background: linear-gradient(135deg,#2563eb,#1d4ed8);
+    /* Banner - Purple Gradient */
+    .profile-banner {
+        height: 150px;
+        background: linear-gradient(135deg, #2D1B4E 0%, #4C1D95 50%, #7C3AED 100%);
         position: relative;
     }
 
     /* Profile Image */
-
-    .profile-image-wrapper{
+    .profile-image-wrapper {
         position: absolute;
         left: 50%;
         bottom: -45px;
         transform: translateX(-50%);
     }
 
-    .profile-image{
+    .profile-image {
         width: 95px;
         height: 95px;
         border-radius: 50%;
         overflow: hidden;
         border: 4px solid white;
         background: white;
-        box-shadow: 0 5px 18px rgba(0,0,0,0.15);
+        box-shadow: 0 5px 20px rgba(124, 58, 237, 0.25);
+        transition: transform 0.3s ease;
     }
 
-    .profile-image img{
+    .profile-image:hover {
+        transform: scale(1.05);
+    }
+
+    .profile-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .profile-placeholder{
+    .profile-placeholder {
         width: 100%;
         height: 100%;
-        background: #2563eb;
+        background: linear-gradient(145deg, #7C3AED, #A855F7);
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-size: 32px;
+        font-size: 34px;
         font-weight: 700;
     }
 
     /* Body */
-
-    .profile-body{
-        padding: 60px 25px 25px;
+    .profile-body {
+        padding: 60px 30px 30px;
     }
 
-    .profile-name{
+    .profile-name {
         font-size: 24px;
         font-weight: 700;
+        color: #1F1A3E;
         margin-bottom: 5px;
     }
 
-    .profile-email{
-        color: #6b7280;
-        font-size: 13px;
+    .profile-email {
+        color: #6B7280;
+        font-size: 14px;
     }
 
-    .profile-role{
+    .profile-email i {
+        color: #7C3AED;
+    }
+
+    .profile-role {
         display: inline-block;
         margin-top: 10px;
-        padding: 6px 14px;
-        border-radius: 30px;
-        background: rgba(37,99,235,0.1);
-        color: #2563eb;
+        padding: 5px 16px;
+        border-radius: 50px;
+        background: #EDE9FE;
+        color: #4C1D95;
         font-size: 12px;
         font-weight: 600;
     }
 
-    /* Info Card */
-
-    .info-card{
-        background: #f8fafc;
-        border-radius: 18px;
-        padding: 16px;
+    /* Info Cards */
+    .info-card {
+        background: #F8F5FF;
+        border-radius: 16px;
+        padding: 16px 20px;
         height: 100%;
-        border: 1px solid #eef2f7;
+        border: 1px solid rgba(167, 139, 250, 0.1);
+        transition: all 0.3s ease;
     }
 
-    .info-icon{
-        width: 45px;
-        height: 45px;
-        border-radius: 14px;
+    .info-card:hover {
+        background: #F5F0FF;
+        border-color: rgba(124, 58, 237, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(124, 58, 237, 0.06);
+    }
+
+    .info-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -115,213 +146,215 @@
         flex-shrink: 0;
     }
 
-    .bg-blue{
-        background: #2563eb;
+    .bg-purple-500 {
+        background: #7C3AED;
     }
 
-    .bg-green{
-        background: #16a34a;
+    .bg-purple-700 {
+        background: #4C1D95;
     }
 
-    .bg-dark{
-        background: #111827;
+    .bg-purple-600 {
+        background: #6D28D9;
     }
 
-    .info-title{
+    .bg-purple-400 {
+        background: #A855F7;
+    }
+
+    .info-title {
         font-size: 12px;
-        color: #6b7280;
+        color: #6B7280;
         margin-bottom: 3px;
     }
 
-    .info-value{
+    .info-value {
         margin: 0;
         font-size: 14px;
         font-weight: 600;
+        color: #1F1A3E;
     }
 
     /* Buttons */
-
-    .profile-btn{
-        padding: 9px 18px;
-        border-radius: 12px;
+    .profile-btn {
+        padding: 10px 22px;
+        border-radius: 50px;
         font-size: 14px;
-        font-weight: 500;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
     }
 
+    .profile-btn:hover {
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-purple {
+        background: linear-gradient(95deg, #7C3AED, #A855F7);
+        color: white;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
+    }
+
+    .btn-purple:hover {
+        background: linear-gradient(95deg, #6D28D9, #9333EA);
+        color: white;
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.35);
+    }
+
+    .btn-outline-purple {
+        background: transparent;
+        color: #7C3AED;
+        border: 2px solid #7C3AED;
+    }
+
+    .btn-outline-purple:hover {
+        background: #7C3AED;
+        color: white;
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
+    }
+
+    /* Responsive */
+    @media(max-width: 768px) {
+        .profile-image {
+            width: 80px;
+            height: 80px;
+        }
+        .profile-body {
+            padding: 55px 20px 20px;
+        }
+        .profile-name {
+            font-size: 22px;
+        }
+        .profile-banner {
+            height: 130px;
+        }
+    }
+
+    @media(max-width: 576px) {
+        .profile-body {
+            padding: 50px 16px 16px;
+        }
+        .profile-name {
+            font-size: 20px;
+        }
+        .info-card {
+            padding: 14px 16px;
+        }
+        .profile-btn {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+    }
 </style>
 
 <div class="container py-4">
 
-    <div class="profile-container">
+    <div class="profile-container" data-aos="fade-up" data-aos-duration="600">
 
         <div class="profile-card">
 
             <!-- Banner -->
-
             <div class="profile-banner">
-
                 <div class="profile-image-wrapper">
-
                     <div class="profile-image">
-
                         {% if superuser.profile_pic %}
-
-                            <img src="{{ superuser.profile_pic.url }}"
-                                 alt="Profile">
-
+                            <img src="{{ superuser.profile_pic.url }}" alt="Profile">
                         {% else %}
-
                             <div class="profile-placeholder">
-                                {{ superuser.name|slice:":1"|upper }}
+                                {{ superuser.username|slice:":1"|upper }}
                             </div>
-
                         {% endif %}
-
                     </div>
-
                 </div>
-
             </div>
 
             <!-- Body -->
-
             <div class="profile-body">
 
-                <!-- User -->
-
+                <!-- User Info -->
                 <div class="text-center mb-4">
-
-                    <h3 class="profile-name">
-                        {{ superuser.username }}
-                    </h3>
-
+                    <h3 class="profile-name">{{ superuser.username }}</h3>
                     <div class="profile-email">
-                        <i class="bi bi-envelope-fill"></i>
+                        <i class="bi bi-envelope-fill me-1"></i>
                         {{ superuser.email }}
                     </div>
-
                     <div class="profile-role">
-                        Super Admin Account
+                        <i class="bi bi-shield-lock-fill me-1"></i>
+                        Super Admin
                     </div>
-
                 </div>
 
-                <!-- Info -->
-
+                <!-- Info Cards -->
                 <div class="row g-3">
 
                     <!-- Phone -->
-
                     <div class="col-md-6">
-
                         <div class="info-card">
-
                             <div class="d-flex align-items-center">
-
-                                <div class="info-icon bg-blue">
+                                <div class="info-icon bg-purple-500">
                                     <i class="bi bi-telephone-fill"></i>
                                 </div>
-
                                 <div class="ms-3">
-
-                                    <div class="info-title">
-                                        Phone
-                                    </div>
-
+                                    <div class="info-title">Phone</div>
                                     <p class="info-value">
-                                        {{ superuser.number }}
+                                        {{ superuser.number|default:"Not Added" }}
                                     </p>
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
 
                     <!-- City -->
-
                     <div class="col-md-6">
-
                         <div class="info-card">
-
                             <div class="d-flex align-items-center">
-
-                                <div class="info-icon bg-green">
+                                <div class="info-icon bg-purple-700">
                                     <i class="bi bi-geo-alt-fill"></i>
                                 </div>
-
                                 <div class="ms-3">
-
-                                    <div class="info-title">
-                                        City
-                                    </div>
-
+                                    <div class="info-title">City</div>
                                     <p class="info-value">
                                         {{ superuser.city.name|default:"Not Added" }}
                                     </p>
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
 
                     <!-- Address -->
-
                     <div class="col-12">
-
                         <div class="info-card">
-
                             <div class="d-flex align-items-start">
-
-                                <div class="info-icon bg-dark">
+                                <div class="info-icon bg-purple-600">
                                     <i class="bi bi-house-door-fill"></i>
                                 </div>
-
                                 <div class="ms-3">
-
-                                    <div class="info-title">
-                                        Address
-                                    </div>
-
+                                    <div class="info-title">Address</div>
                                     <p class="info-value">
                                         {{ superuser.address|default:"Not Added" }}
                                     </p>
-
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
 
                 </div>
 
                 <!-- Buttons -->
-
                 <div class="text-center mt-4">
-
-                    <a href="{% url 'edit_profile_superuser' superuser.id %}"
-                       class="btn btn-primary profile-btn me-2">
-
+                    <a href="{% url 'edit_profile_superuser' superuser.id %}" class="profile-btn btn-purple me-2">
                         <i class="bi bi-pencil-square"></i>
-                        Edit
-
+                        Edit Profile
                     </a>
-
-                    <a href="{% url 'profile_superuser_change_password' %}"
-                       class="btn btn-outline-dark profile-btn">
-
+                    <a href="{% url 'profile_superuser_change_password' %}" class="profile-btn btn-outline-purple">
                         <i class="bi bi-shield-lock"></i>
-                        Password
-
+                        Change Password
                     </a>
-
                 </div>
 
             </div>

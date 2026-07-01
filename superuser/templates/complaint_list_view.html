@@ -6,48 +6,509 @@
 
 {% block content %}
 
-<div class="container py-4">
+<style>
+    :root {
+        --purple-900: #1E1B2E;
+        --purple-800: #2D1B4E;
+        --purple-700: #4C1D95;
+        --purple-600: #6D28D9;
+        --purple-500: #7C3AED;
+        --purple-400: #A855F7;
+        --purple-300: #C084FC;
+        --purple-200: #D8B4FE;
+        --purple-100: #EDE9FE;
+        --purple-50: #F8F5FF;
+    }
 
-    <!-- Top Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    .page-header h2 {
+        font-size: 26px;
+        font-weight: 800;
+        color: #1F1A3E;
+        font-family: 'Space Grotesk', monospace;
+    }
 
+    .page-header h2 i {
+        background: linear-gradient(135deg, #7C3AED, #A855F7);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-right: 10px;
+    }
+
+    .page-header p {
+        color: #6B7280;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    .btn-purple {
+        background: linear-gradient(95deg, #7C3AED, #A855F7);
+        color: white;
+        border: none;
+        padding: 10px 28px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
+        text-decoration: none;
+    }
+
+    .btn-purple:hover {
+        background: linear-gradient(95deg, #6D28D9, #9333EA);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(124, 58, 237, 0.35);
+        text-decoration: none;
+    }
+
+    .total-badge {
+        background: linear-gradient(95deg, #7C3AED, #A855F7);
+        color: white;
+        padding: 8px 22px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .total-badge strong {
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 24px;
+        border: 1px solid rgba(167, 139, 250, 0.12);
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
+    }
+
+    .table-container:hover {
+        box-shadow: 0 12px 40px rgba(124, 58, 237, 0.06);
+    }
+
+    .table thead th {
+        background: linear-gradient(95deg, #EDE9FE, #F8F5FF);
+        color: #4C1D95;
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 16px 18px;
+        border-bottom: 2px solid rgba(167, 139, 250, 0.15);
+    }
+
+    .table thead th:first-child {
+        padding-left: 24px;
+    }
+
+    .table thead th:last-child {
+        padding-right: 24px;
+    }
+
+    .table tbody td {
+        padding: 16px 18px;
+        vertical-align: middle;
+        font-size: 14px;
+        border-bottom: 1px solid #F3F0FA;
+        transition: background 0.2s ease;
+    }
+
+    .table tbody td:first-child {
+        padding-left: 24px;
+    }
+
+    .table tbody td:last-child {
+        padding-right: 24px;
+    }
+
+    .table tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    .table tbody tr:hover {
+        background: #FAF7FF;
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .complaint-id {
+        font-size: 12px;
+        color: #6B7280;
+    }
+
+    .complaint-name {
+        font-weight: 700;
+        color: #1F1A3E;
+        font-size: 15px;
+    }
+
+    .price-tag {
+        font-weight: 700;
+        color: #4C1D95;
+        font-size: 16px;
+    }
+
+    .action-btn {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .action-btn.edit {
+        background: #EDE9FE;
+        color: #7C3AED;
+        margin-right: 6px;
+    }
+
+    .action-btn.edit:hover {
+        background: #7C3AED;
+        color: white;
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+    }
+
+    .action-btn.delete {
+        background: #FEE2E2;
+        color: #DC2626;
+    }
+
+    .action-btn.delete:hover {
+        background: #DC2626;
+        color: white;
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+    }
+
+    .action-btn i {
+        font-size: 16px;
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .empty-state .icon-wrapper {
+        width: 110px;
+        height: 110px;
+        background: linear-gradient(145deg, #EDE9FE, #F8F5FF);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        border: 2px solid rgba(167, 139, 250, 0.2);
+        transition: transform 0.3s ease;
+    }
+
+    .empty-state .icon-wrapper:hover {
+        transform: scale(1.05);
+    }
+
+    .empty-state .icon-wrapper i {
+        font-size: 48px;
+        color: #7C3AED;
+    }
+
+    .empty-state h4 {
+        font-weight: 700;
+        color: #1F1A3E;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: #6B7280;
+        margin-bottom: 20px;
+    }
+
+    /* Delete Modal - Purple Theme */
+    .modal-content {
+        border-radius: 24px;
+        border: 1px solid rgba(167, 139, 250, 0.2);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #2D1B4E, #4C1D95);
+        color: white;
+        border-bottom: none;
+        padding: 20px 25px;
+    }
+
+    .modal-header .btn-close {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        padding: 8px;
+        opacity: 1;
+    }
+
+    .modal-header .btn-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    .modal-body {
+        padding: 30px 25px 20px;
+        text-align: center;
+    }
+
+    .modal-body .warning-icon {
+        width: 80px;
+        height: 80px;
+        background: #FEE2E2;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+    }
+
+    .modal-body .warning-icon i {
+        font-size: 40px;
+        color: #DC2626;
+    }
+
+    .modal-body h5 {
+        font-weight: 700;
+        color: #1F1A3E;
+        margin-bottom: 8px;
+    }
+
+    .modal-body p {
+        color: #6B7280;
+        font-size: 14px;
+        margin-bottom: 0;
+    }
+
+    .modal-body .complaint-name-display {
+        color: #4C1D95;
+        font-weight: 700;
+    }
+
+    .modal-footer {
+        border-top: none;
+        padding: 10px 25px 25px;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .btn-cancel {
+        background: #F3F4F6;
+        color: #374151;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+        background: #E5E7EB;
+        transform: translateY(-2px);
+    }
+
+    .btn-confirm-delete {
+        background: linear-gradient(95deg, #DC2626, #EF4444);
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn-confirm-delete:hover {
+        background: linear-gradient(95deg, #B91C1C, #DC2626);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+    }
+
+    /* Animation */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .table tbody tr {
+        animation: fadeInUp 0.5s ease forwards;
+        opacity: 0;
+    }
+
+    .table tbody tr:nth-child(1) { animation-delay: 0.05s; }
+    .table tbody tr:nth-child(2) { animation-delay: 0.10s; }
+    .table tbody tr:nth-child(3) { animation-delay: 0.15s; }
+    .table tbody tr:nth-child(4) { animation-delay: 0.20s; }
+    .table tbody tr:nth-child(5) { animation-delay: 0.25s; }
+    .table tbody tr:nth-child(6) { animation-delay: 0.30s; }
+    .table tbody tr:nth-child(7) { animation-delay: 0.35s; }
+    .table tbody tr:nth-child(8) { animation-delay: 0.40s; }
+    .table tbody tr:nth-child(9) { animation-delay: 0.45s; }
+    .table tbody tr:nth-child(10) { animation-delay: 0.50s; }
+
+    /* Responsive */
+    @media(max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 12px;
+        }
+        .page-header h2 {
+            font-size: 22px;
+        }
+        .total-badge {
+            font-size: 12px;
+            padding: 6px 16px;
+        }
+        .total-badge strong {
+            font-size: 15px;
+        }
+        .btn-purple {
+            padding: 8px 20px;
+            font-size: 13px;
+        }
+        .table thead th {
+            font-size: 11px;
+            padding: 12px 12px;
+        }
+        .table tbody td {
+            padding: 12px 12px;
+            font-size: 13px;
+        }
+        .action-btn {
+            width: 34px;
+            height: 34px;
+        }
+        .action-btn i {
+            font-size: 14px;
+        }
+        .table thead th:first-child,
+        .table tbody td:first-child {
+            padding-left: 16px;
+        }
+        .table thead th:last-child,
+        .table tbody td:last-child {
+            padding-right: 16px;
+        }
+        .modal-body {
+            padding: 25px 20px 15px;
+        }
+        .modal-footer {
+            flex-direction: column;
+            padding: 10px 20px 20px;
+        }
+        .modal-footer .btn {
+            width: 100%;
+        }
+    }
+
+    @media(max-width: 576px) {
+        .page-header h2 {
+            font-size: 20px;
+        }
+        .table thead th {
+            font-size: 10px;
+            padding: 10px 8px;
+        }
+        .table tbody td {
+            padding: 10px 8px;
+            font-size: 12px;
+        }
+        .complaint-name {
+            font-size: 13px;
+        }
+        .price-tag {
+            font-size: 14px;
+        }
+        .action-btn {
+            width: 30px;
+            height: 30px;
+        }
+        .action-btn i {
+            font-size: 12px;
+        }
+        .empty-state .icon-wrapper {
+            width: 80px;
+            height: 80px;
+        }
+        .empty-state .icon-wrapper i {
+            font-size: 36px;
+        }
+        .table thead th:first-child,
+        .table tbody td:first-child {
+            padding-left: 12px;
+        }
+        .table thead th:last-child,
+        .table tbody td:last-child {
+            padding-right: 12px;
+        }
+    }
+</style>
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 page-header" data-aos="fade-down" data-aos-duration="600">
         <div>
-            <h2 class="fw-bold mb-1">
-                <i class="bi bi-tools text-danger me-2"></i>
+            <h2>
+                <i class="bi bi-chat-dots-fill"></i>
                 Complaint List
             </h2>
-
-            <p class="text-muted mb-0">
-                Manage all complaint list easily
-            </p>
+            <p>Manage all complaints easily</p>
         </div>
-
-        <a href="{% url 'add_complaints' %}"
-           class="btn btn-danger btn-lg rounded-3 shadow-sm">
-
-            <i class="bi bi-plus-circle me-1"></i>
-            Add Complaints
-
-        </a>
-
+        <div class="d-flex gap-3">
+            <div class="total-badge">
+                <i class="bi bi-list-check"></i>
+                Total : <strong>{{ complaints|length }}</strong>
+            </div>
+            <a href="{% url 'add_complaints' %}" class="btn-purple">
+                <i class="bi bi-plus-circle"></i> Add Complaint
+            </a>
+        </div>
     </div>
 
-    <!-- Main Card -->
-    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+    <!-- Table -->
+    <div class="table-container" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
 
         {% if complaints %}
 
-        <!-- Table -->
         <div class="table-responsive">
 
-            <table class="table align-middle table-hover mb-0">
+            <table class="table align-middle mb-0">
 
-                <thead class="table-light">
+                <thead>
                     <tr>
-                        <th class="ps-4">#</th>
-                        <th>complaint Name</th>
+                        <th style="width: 60px;">#</th>
+                        <th>Complaint Name</th>
                         <th>Basic Price</th>
-                        <th class="text-end pe-4">Actions</th>
+                        <th style="width: 140px;" class="text-center">Actions</th>
                     </tr>
                 </thead>
 
@@ -57,57 +518,33 @@
                     <tr>
 
                         <!-- Serial -->
-                        <td class="ps-4 fw-semibold">
-                            {{ forloop.counter }}
+                        <td>
+                            <span class="fw-bold" style="color: #4C1D95;">#{{ forloop.counter }}</span>
                         </td>
 
                         <!-- Complaint Name -->
                         <td>
                             <div>
-                                <h6 class="mb-0 fw-bold">
-                                    {{ c.complaint_name }}
-                                </h6>
-
-                                <small class="text-muted">
-                                    id : {{c.id}}
-                                </small>
+                                <div class="complaint-name">{{ c.complaint_name }}</div>
+                                <div class="complaint-id">ID: {{ c.id }}</div>
                             </div>
-
                         </td>
 
-                        <!-- Complaint Price -->
+                        <!-- Price -->
                         <td>
-                            <span class="fw-bold text-dark">
-                                ₹ {{ c.basic_service_price }}
-                            </span>
+                            <span class="price-tag">₹ {{ c.basic_service_price }}</span>
                         </td>
 
                         <!-- Actions -->
-                        <td class="text-end pe-4">
-
-                            <a href="{% url 'modify_complaints' c.id %}"
-                               class="btn btn-sm btn-outline-warning rounded-pill px-3">
-
-                                <i class="bi bi-pencil-square"></i>
-
-                            </a>
-
-                            <form action="{% url 'delete_complaints' c.id %}"
-                                  method="POST"
-                                  class="d-inline">
-
-                                {% csrf_token %}
-
-                                <button type="submit"
-                                        class="btn btn-sm btn-outline-danger rounded-pill px-3"
-                                        onclick="return confirm('Delete this complaint?');">
-
+                        <td>
+                            <div class="d-flex justify-content-center gap-1">
+                                <a href="{% url 'modify_complaints' c.id %}" class="action-btn edit" title="Edit Complaint">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <button type="button" class="action-btn delete" onclick="openDeleteModal('{{ c.id }}', '{{ c.complaint_name|escapejs }}')" title="Delete Complaint">
                                     <i class="bi bi-trash"></i>
-
                                 </button>
-
-                            </form>
-
+                            </div>
                         </td>
 
                     </tr>
@@ -122,39 +559,15 @@
         {% else %}
 
         <!-- Empty State -->
-        <div class="text-center py-5">
-
-            <div class="mb-4">
-
-                <div class="bg-danger bg-opacity-10 
-                            rounded-circle d-inline-flex 
-                            align-items-center 
-                            justify-content-center shadow-sm"
-                     style="width:110px;height:110px;">
-
-                    <i class="bi bi-tools text-danger"
-                       style="font-size:55px;"></i>
-
-                </div>
-
+        <div class="empty-state">
+            <div class="icon-wrapper">
+                <i class="bi bi-chat-dots-fill"></i>
             </div>
-
-            <h4 class="fw-bold mb-2">
-                No Complaints Found
-            </h4>
-
-            <p class="text-muted mb-4">
-                Add complaints and make services.
-            </p>
-
-            <a href="#"
-               class="btn btn-danger btn-lg rounded-3 px-4">
-
-                <i class="bi bi-plus-circle me-1"></i>
-                Add Complaints
-
+            <h4>No Complaints Found</h4>
+            <p>There are currently no complaints. Add your first complaint now.</p>
+            <a href="{% url 'add_complaints' %}" class="btn-purple">
+                <i class="bi bi-plus-circle"></i> Add Complaint
             </a>
-
         </div>
 
         {% endif %}
@@ -162,5 +575,57 @@
     </div>
 
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Confirm Delete
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="warning-icon">
+                    <i class="bi bi-trash-fill"></i>
+                </div>
+                <h5>Are you sure?</h5>
+                <p>
+                    You are about to delete <strong class="complaint-name-display" id="deleteComplaintName">"Complaint"</strong>.<br>
+                    This action cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i> Cancel
+                </button>
+                <form method="POST" id="deleteForm" action="">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-confirm-delete">
+                        <i class="bi bi-trash me-1"></i> Delete Complaint
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Open delete modal with complaint details
+    function openDeleteModal(complaintId, complaintName) {
+        // Set the complaint name in the modal
+        document.getElementById('deleteComplaintName').textContent = '"' + complaintName + '"';
+        
+        // Set the form action URL using Django URL template tag
+        var deleteForm = document.getElementById('deleteForm');
+        deleteForm.action = "{% url 'delete_complaints' 0 %}".replace('0', complaintId);
+        
+        // Show the modal using Bootstrap's modal API
+        var modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        modal.show();
+    }
+</script>
 
 {% endblock %}

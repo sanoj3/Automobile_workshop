@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.db import transaction
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
 from django.db.models import Avg, Count
 
 import re
@@ -64,8 +63,8 @@ def number_validation(number):
 #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::  
 
 
+#::::::::::::::::::::::Main Index Page::::::::::::::::::::::
 def index(request):
-
     customer_count = Customer.objects.count()
     mechanic_count = Mechanic.objects.count()
     completed_service_count = ServiceBooking.objects.filter(
@@ -77,6 +76,7 @@ def index(request):
         'mechanic_count' : mechanic_count,
         'completed_service_count' : completed_service_count
     })
+
 
 #::::::::::::::::::::::User Registration::::::::::::::::::::::
 def registration(request):
@@ -404,6 +404,8 @@ def home_page(request):
         status__in=['Cancelled', 'Completed']
     ).order_by('-id')
 
+    latest_booking = bookings.first()
+
     mechanic_ratings = {
         item['mechanic']: item
         for item in Feedback.objects.values('mechanic').annotate(
@@ -428,7 +430,8 @@ def home_page(request):
     return render(request, 'home.html', {
         'customer':customer,
         'vehicles':vehicle,
-        'bookings': bookings
+        'bookings': bookings,
+        'latest_booking' : latest_booking
     })
 
 
@@ -612,3 +615,12 @@ def order_view(request, id):
         'review_count': review_count,
     })  
         
+
+#::::::::::::::::::::::User About::::::::::::::::::::::
+def about(request):
+    return render(request,'about.html')
+
+
+#::::::::::::::::::::::Contact Us::::::::::::::::::::::
+def contactus(request):
+    return render(request, 'contactus.html')

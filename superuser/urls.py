@@ -10,6 +10,7 @@ urlpatterns = [
     path('reject-mechanic/<int:id>/', views.reject_mechanic, name='reject_mechanic'),
     path('customers-list/', views.all_customer_detail, name='all_customer_detail'),
     path('customer/<int:id>/', views.customer_detail, name='customer_detail'),
+    path('block-customer/<int:id>/', views.block_customer, name='block_customer'),
     path('customer/<int:customer_id>/service-order/<int:service_id>/', views.customer_details_service_order, name='customer_details_service_order'),
     path('mechanics-list/', views.all_mechanic_details, name='all_mechanic_details'),
     path('mechanic/<int:id>/', views.mechanic_deatail, name='mechanic_deatail'),
@@ -22,7 +23,7 @@ urlpatterns = [
     path('change-password/', views.profile_superuser_change_password, name='profile_superuser_change_password'),
     path('avalable-mechanic/', views.available_mechanic, name='available_mechanic'),
     path('online-mechanic/', views.available_online, name='available_online'),
-    path('complaints/', views.complaint_list_view, name='complaint_list_view'),
+    path('complaint-list/', views.complaint_list_view, name='complaint_list_view'),
     path('add-complaint/', views.add_complaints, name='add_complaints'),
     path('delete-complaint/<int:id>', views.delete_complaints, name='delete_complaints'),
     path('modify-complaint/<int:id>/', views.modify_complaints, name='modify_complaints'),
@@ -30,6 +31,5 @@ urlpatterns = [
     path('service-not-assign/', views.service_not_assign, name='service_not_assign'),
     path('service-not-assign/<int:id>/', views.service_not_assign_view, name='service_not_assign_view'),
     path('active-service/', views.active_service_booking, name='active_service_booking'),
-    path('active-service/<int:id>/', views.active_service_booking_view, name='active_service_booking_view'),
-    
+    path('active-service/<int:id>/', views.active_service_booking_view, name='active_service_booking_view'),  
 ]
