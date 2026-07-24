@@ -27,7 +27,9 @@ urlpatterns = [
     path('mechanic/', include('mechanic.urls')),
     path('superuser/', include('superuser.urls')),
     path('service/', include('services.urls')),
+    path('chat/', include('chat.urls')),
     path('accounts/', include('allauth.urls')),
+    path('main_account/', include('main_account.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

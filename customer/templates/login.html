@@ -272,6 +272,25 @@
             color: #7C3AED;
         }
 
+        .forgot-password-link {
+            text-align: right;
+            margin-top: 6px;
+            margin-bottom: 12px;
+        }
+
+        .forgot-password-link a {
+            color: #7C3AED;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .forgot-password-link a:hover {
+            color: #A855F7;
+            text-decoration: underline;
+        }
+
         .btn-login {
             width: 100%;
             height: 54px;
@@ -553,7 +572,7 @@
                 </div>
 
                 <!-- Password -->
-                <div class="mb-4">
+                <div class="mb-3">
                     <label class="form-label">
                         <i class="bi bi-lock-fill"></i> Password
                     </label>
@@ -566,6 +585,13 @@
                     <div class="invalid-feedback" id="passwordError">
                         <i class="bi bi-exclamation-circle"></i> Please enter your password
                     </div>
+                </div>
+
+                <!-- Forgot Password Link -->
+                <div class="forgot-password-link">
+                    <a href="{% url 'forgot_password' %}" title="Reset your password">
+                        <i class="bi bi-key me-1"></i> Forgot Password?
+                    </a>
                 </div>
 
                 <!-- Login Button -->
@@ -596,12 +622,12 @@
 
     <!-- Footer -->
     <div class="copyright-footer">
-        <div class="footer-links">
+        <!-- <div class="footer-links">
             <a href="#">Privacy Policy</a>
             <a href="#">Terms of Service</a>
             <a href="#">Contact Us</a>
             <a href="#">Help Center</a>
-        </div>
+        </div> -->
         <div class="footer-divider"></div>
         <p>© 2026 <strong>FixiGo</strong> — Automobile Workshop Management System. All Rights Reserved.</p>
     </div>

@@ -696,10 +696,14 @@ def service_not_assign_view(request, id):
         service.status = "Accepted"          
         service.save()
 
-        MechanicRequest.objects.filter(
+
+        MechanicRequest.objects.update_or_create(
             booking=service,
-            mechanic=mechanic
-        ).update(status='Accepted')
+            mechanic=mechanic,
+            defaults={
+                "status": "Accepted"
+            }
+        )
 
         # Update mechanic availability
         Active_mechanic.objects.filter(mechanic=mechanic).update(

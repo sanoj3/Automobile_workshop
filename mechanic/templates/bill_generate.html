@@ -215,10 +215,33 @@
         align-items: center;
         gap: 8px;
         text-decoration: none;
+        cursor: pointer;
     }
 
     .btn-print:hover {
         background: #0f172a;
+        transform: translateY(-2px);
+        color: white;
+    }
+
+    .btn-complete-bill {
+        background: #16a34a;
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .btn-complete-bill:hover {
+        background: #15803d;
         transform: translateY(-2px);
         color: white;
     }
@@ -243,6 +266,195 @@
         border-color: #c39bd3;
         transform: translateY(-2px);
         color: #4a1d6d;
+    }
+
+    /* Modal Styles */
+    .modal-custom {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .modal-content-custom {
+        background: white;
+        max-width: 450px;
+        margin: 80px auto;
+        border-radius: 24px;
+        padding: 35px;
+        position: relative;
+        animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-header-custom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .modal-title-custom {
+        font-size: 24px;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .modal-title-custom i {
+        color: #16a34a;
+    }
+
+    .modal-close {
+        background: #f1f5f9;
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        font-size: 20px;
+        color: #64748b;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-close:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+        transform: rotate(90deg);
+    }
+
+    .modal-body-custom {
+        margin-bottom: 25px;
+    }
+
+    .payment-details {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .payment-details .amount-label {
+        font-size: 14px;
+        color: #64748b;
+        margin-bottom: 8px;
+    }
+
+    .payment-details .total-amount {
+        font-size: 32px;
+        font-weight: 800;
+        color: #16a34a;
+    }
+
+    .payment-details .payment-method {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        color: #475569;
+        font-weight: 500;
+    }
+
+    .payment-details .payment-method i {
+        color: #16a34a;
+        font-size: 20px;
+    }
+
+    .confirmation-text {
+        text-align: center;
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.6;
+        padding: 10px 0;
+    }
+
+    .confirmation-text strong {
+        color: #1e293b;
+    }
+
+    .modal-footer-custom {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .btn-cancel-modal {
+        padding: 10px 24px;
+        background: #f1f5f9;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 14px;
+        flex: 1;
+    }
+
+    .btn-cancel-modal:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    .btn-confirm-complete {
+        padding: 10px 28px;
+        background: #16a34a;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .btn-confirm-complete:hover {
+        background: #15803d;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+    }
+
+    .btn-confirm-complete:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
     }
 
     /* Responsive */
@@ -271,9 +483,27 @@
             flex-direction: column;
         }
 
-        .btn-print, .btn-back-bill {
+        .btn-print, .btn-back-bill, .btn-complete-bill {
             justify-content: center;
             width: 100%;
+        }
+
+        .modal-content-custom {
+            margin: 20px;
+            padding: 25px;
+        }
+
+        .modal-footer-custom {
+            flex-direction: column;
+        }
+
+        .btn-cancel-modal,
+        .btn-confirm-complete {
+            width: 100%;
+        }
+
+        .payment-details .total-amount {
+            font-size: 28px;
         }
     }
 </style>
@@ -430,8 +660,11 @@
                 <button onclick="window.print()" class="btn-print">
                     <i class="bi bi-printer"></i> Print Bill
                 </button>
+                <button onclick="openCompleteModal()" class="btn-complete-bill">
+                    <i class="bi bi-check2-circle"></i> Complete Job & Collect Payment
+                </button>
                 <a href="{% url 'complete_job' booking.id %}" class="btn-back-bill">
-                    <i class="bi bi-arrow-left"></i> Complete Job
+                    <i class="bi bi-arrow-left"></i> Back
                 </a>
             </div>
 
@@ -439,5 +672,92 @@
 
     </div>
 </div>
+
+<!-- Complete Job Modal -->
+<div id="completeModal" class="modal-custom">
+    <div class="modal-content-custom">
+        <!-- Header -->
+        <div class="modal-header-custom">
+            <h3 class="modal-title-custom">
+                <i class="bi bi-check2-circle"></i>
+                Confirm Completion
+            </h3>
+            <button onclick="closeCompleteModal()" class="modal-close">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body-custom">
+            <!-- Payment Details -->
+            <div class="payment-details">
+                <div class="amount-label">Total Amount</div>
+                <div class="total-amount">₹ {{ bill.grand_total|floatformat:2 }}</div>
+                <div class="payment-method">
+                    <i class="bi bi-cash"></i>
+                    <span>Cash Payment</span>
+                </div>
+            </div>
+
+            <div class="confirmation-text">
+                <p style="margin: 0;">
+                    Are you sure you want to complete this job and mark it as <strong>Paid</strong>?
+                </p>
+                <p style="margin: 8px 0 0 0; font-size: 13px; color: #94a3b8;">
+                    This action cannot be undone.
+                </p>
+            </div>
+
+            <form id="completeJobForm" method="POST" action="{% url 'complete_job' booking.id %}">
+                {% csrf_token %}
+                <input type="hidden" name="payment_status" value="Paid">
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer-custom">
+            <button onclick="closeCompleteModal()" class="btn-cancel-modal">
+                Cancel
+            </button>
+            <button onclick="submitCompleteJob()" class="btn-confirm-complete">
+                <i class="bi bi-check2-circle"></i>
+                Yes, Complete Job
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Open Modal
+    function openCompleteModal() {
+        document.getElementById('completeModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Close Modal
+    function closeCompleteModal() {
+        document.getElementById('completeModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close modal on outside click
+    window.onclick = function(event) {
+        const modal = document.getElementById('completeModal');
+        if (event.target === modal) {
+            closeCompleteModal();
+        }
+    }
+
+    // Submit Complete Job
+    function submitCompleteJob() {
+        // Show loading state
+        const submitBtn = document.querySelector('.btn-confirm-complete');
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Processing...';
+        submitBtn.disabled = true;
+        
+        // Submit the form
+        document.getElementById('completeJobForm').submit();
+    }
+</script>
 
 {% endblock %}

@@ -83,7 +83,7 @@ def service_booking(request):
             )
 
         messages.success(request, "Service booked successfully")
-        return redirect('booking_success')
+        return redirect('booking_success',id)
 
     return render(request, 'service_booking.html', {
         'vehicles': vehicles,
@@ -231,9 +231,14 @@ def reject_booking(request, request_id):
 
 #::::::::::::::::::::::Booking Success::::::::::::::::::::::
 @login_required
-def booking_success(request):
+def booking_success(request,id):
     customer = request.user.customer
-    booking = ServiceBooking.objects.filter(customer=customer).first()
+    # booking = ServiceBooking.objects.filter(customer=customer).first()
+    booking = get_object_or_404(
+        ServiceBooking,
+        id=id,
+        customer=request.user.customer
+    )
     return render(
         request,
         'booking_success.html',{

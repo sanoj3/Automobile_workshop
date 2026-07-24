@@ -31,8 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    # "daphne",
-    # "channels",
+    "daphne",
+    "channels",
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'mechanic',
     'services',
     'superuser',
+    'chat',
+    'main_account',
 ]
 
 SITE_ID = 1
@@ -80,6 +82,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'customer.context_processors.fixigo_data'
             ],
         },
     },
@@ -177,3 +180,22 @@ RAZORPAY_KEY_SECRET = "58gixL01ZLwwQaj9R5URNUaJ"
 WSGI_APPLICATION = "automobile.wsgi.application"
 ASGI_APPLICATION = 'automobile.asgi.application'
 
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
+
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = 'josephsanoj438@gmail.com'
+EMAIL_HOST_PASSWORD = 'nhnopoaiiireiiap'
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

@@ -820,8 +820,12 @@ def complete_job(request, id):
     
     booking = get_object_or_404(ServiceBooking, id=id, mechanic=mechanic)
 
+    bill = get_object_or_404(Bill, booking=booking)
+
     booking.status = "Completed"
     booking.save()
+    bill.payment_status = "Paid"
+    bill.save()
 
     mechanic_request = MechanicRequest.objects.filter(
         booking=booking,

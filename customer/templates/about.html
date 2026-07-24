@@ -681,25 +681,25 @@
         <div class="row g-4 text-center">
             <div class="col-lg-3 col-6">
                 <div class="stat-item">
-                    <h2 id="customersCount">0</h2>
+                    <h2 id="customersCount">{{customer_count}}+</h2>
                     <p>Happy Customers</p>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
                 <div class="stat-item">
-                    <h2 id="servicesCount">0</h2>
+                    <h2 id="servicesCount">{{complete_total_service}}+</h2>
                     <p>Services Completed</p>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
                 <div class="stat-item">
-                    <h2 id="mechanicsCount">0</h2>
+                    <h2 id="mechanicsCount">{{mechanic_count}}+</h2>
                     <p>Expert Mechanics</p>
                 </div>
             </div>
             <div class="col-lg-3 col-6">
                 <div class="stat-item">
-                    <h2 id="citiesCount">0</h2>
+                    <h2 id="citiesCount">{{city_total}}+</h2>
                     <p>Cities Covered</p>
                 </div>
             </div>
@@ -707,7 +707,7 @@
     </div>
 </section>
 
-<!-- Technology Stack -->
+<!-- Technology Stack
 <section class="tech-section">
     <div class="container">
         <div class="section-title-about">
@@ -731,7 +731,7 @@
             <div class="col-lg-2 col-md-3 col-4">
                 <div class="tech-item">
                     <i class="bi bi-database"></i>
-                    <span>PostgreSQL</span>
+                    <span>SqLite</span>
                 </div>
             </div>
             <div class="col-lg-2 col-md-3 col-4">
@@ -739,7 +739,7 @@
                     <i class="bi bi-cloud"></i>
                     <span>Cloud Hosting</span>
                 </div>
-            </div>
+            </div> 
             <div class="col-lg-2 col-md-3 col-4">
                 <div class="tech-item">
                     <i class="bi bi-lock"></i>
@@ -754,7 +754,7 @@
             </div>
         </div>
     </div>
-</section>
+</section> -->
 
 <!-- Team Section -->
 <section class="team-section">
@@ -876,7 +876,7 @@
         <p style="color: #E9D5FF; font-size: 16px; margin: 16px 0 30px;">
             Our team is here to help you with any questions or concerns.
         </p>
-        <a href="#" class="btn" style="background: white; color: #4C1D95; border-radius: 50px; padding: 14px 40px; font-weight: 700;">
+        <a href="{% url 'contactus' %}" class="btn" style="background: white; color: #4C1D95; border-radius: 50px; padding: 14px 40px; font-weight: 700;">
             <i class="bi bi-envelope"></i> Contact Us
         </a>
     </div>
@@ -924,14 +924,19 @@
         }
 
         // Animate statistics when visible
+        const customerCount = Number("{{ customer_count|default:0|escapejs }}");
+        const serviceCount = Number("{{ complete_total_service|default:0|escapejs }}");
+        const mechanicCount = Number("{{ mechanic_count|default:0|escapejs }}");
+        const cityCount = Number("{{ city_total|default:0|escapejs }}");
+
         const statsSection = document.querySelector('.stats-section');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    animateCounter(document.getElementById('customersCount'), 5000, '+');
-                    animateCounter(document.getElementById('servicesCount'), 15000, '+');
-                    animateCounter(document.getElementById('mechanicsCount'), 500, '+');
-                    animateCounter(document.getElementById('citiesCount'), 25, '+');
+                    animateCounter(document.getElementById('customersCount'), customer_count, '+');
+                    animateCounter(document.getElementById('servicesCount'), serviceCount, '+');
+                    animateCounter(document.getElementById('mechanicsCount'), mechanic_count, '+');
+                    animateCounter(document.getElementById('citiesCount'), city_total, '+');
                     observer.disconnect();
                 }
             });

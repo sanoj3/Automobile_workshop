@@ -6,75 +6,263 @@
 {% block content %}
 
 <style>
+    /* Animation Keyframes */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeInLeft {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes fadeInRight {
+        from { opacity: 0; transform: translateX(30px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    @keyframes shimmer {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+
+    /* Welcome Banner - Purple Theme */
+    .welcome-banner {
+        background: linear-gradient(135deg, #6c3483 0%, #8e44ad 50%, #a569bd 100%);
+        border-radius: 28px;
+        padding: 35px 40px;
+        color: white;
+        margin-bottom: 35px;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+        box-shadow: 0 15px 35px rgba(106, 13, 173, 0.2);
+    }
+    
+    .welcome-banner::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -30%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 50%;
+        animation: pulse 8s ease-in-out infinite;
+    }
+    
+    .welcome-banner::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
+        width: 250px;
+        height: 250px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+        animation: pulse 6s ease-in-out infinite reverse;
+    }
+    
+    .welcome-banner h3 {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 10px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .welcome-banner p {
+        opacity: 0.95;
+        margin-bottom: 0;
+        position: relative;
+        z-index: 1;
+        font-size: 1rem;
+    }
+    
+    .welcome-banner .welcome-icon {
+        position: absolute;
+        right: 40px;
+        bottom: 20px;
+        font-size: 80px;
+        opacity: 0.15;
+        z-index: 0;
+    }
+
     /* Dashboard Cards */
     .dashboard-card {
         background: white;
-        border-radius: 16px;
+        border-radius: 20px;
         padding: 1.5rem;
-        transition: all 0.2s ease;
-        border: 1px solid #e9d9ff;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid rgba(142, 68, 173, 0.1);
         height: 100%;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.6s ease-out;
+        animation-fill-mode: both;
+    }
+
+    .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #8e44ad, #a569bd, #c39bd3);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .dashboard-card:hover::before {
+        transform: scaleX(1);
     }
 
     .dashboard-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 20px rgba(106, 13, 173, 0.1);
-        border-color: #c39bd3;
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(106, 13, 173, 0.15);
+        border-color: rgba(142, 68, 173, 0.3);
     }
 
+    .dashboard-card:nth-child(1) { animation-delay: 0.1s; }
+    .dashboard-card:nth-child(2) { animation-delay: 0.2s; }
+    .dashboard-card:nth-child(3) { animation-delay: 0.3s; }
+    .dashboard-card:nth-child(4) { animation-delay: 0.4s; }
+    .dashboard-card:nth-child(5) { animation-delay: 0.5s; }
+    .dashboard-card:nth-child(6) { animation-delay: 0.6s; }
+
     .dashboard-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 12px;
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
+        font-size: 26px;
         color: white;
         margin-bottom: 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dashboard-icon::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        transform: scale(0);
+        transition: transform 0.5s ease;
+    }
+
+    .dashboard-card:hover .dashboard-icon::after {
+        transform: scale(2);
+    }
+
+    .dashboard-card:hover .dashboard-icon {
+        transform: scale(1.05) rotate(-5deg);
     }
 
     .bg-purple {
         background: linear-gradient(135deg, #8e44ad, #a569bd);
+        box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
     }
 
     .bg-purple-warning {
         background: linear-gradient(135deg, #f59e0b, #d97706);
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
     }
 
     .bg-purple-danger {
         background: linear-gradient(135deg, #ef4444, #dc2626);
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
     }
 
     .bg-purple-success {
         background: linear-gradient(135deg, #22c55e, #16a34a);
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
     }
 
     .bg-purple-dark {
         background: linear-gradient(135deg, #3b82f6, #2563eb);
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
     }
 
     .bg-purple-info {
         background: linear-gradient(135deg, #06b6d4, #0891b2);
+        box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
     }
 
     /* Status Card */
     .status-card {
         background: white;
-        border-radius: 16px;
+        border-radius: 20px;
         padding: 1.5rem;
-        border: 1px solid #e9d9ff;
+        border: 2px solid rgba(142, 68, 173, 0.1);
         height: 100%;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        animation: fadeInLeft 0.6s ease-out;
+    }
+
+    .status-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(106, 13, 173, 0.15);
+        border-color: rgba(142, 68, 173, 0.3);
+    }
+
+    .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .status-indicator.online {
+        background: #22c55e;
+        box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+    }
+
+    .status-indicator.offline {
+        background: #ef4444;
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
     }
 
     .status-badge {
-        padding: 6px 14px;
+        padding: 8px 18px;
         border-radius: 50px;
-        font-size: 13px;
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: 700;
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
+        transition: all 0.3s ease;
     }
 
     .status-badge.bg-success {
@@ -89,51 +277,127 @@
 
     /* Toggle Switch */
     .form-switch .form-check-input {
-        width: 50px;
-        height: 25px;
+        width: 56px;
+        height: 28px;
         cursor: pointer;
         background-color: #e9d9ff;
         border-color: #c39bd3;
+        transition: all 0.3s ease;
+        border-radius: 50px;
+    }
+
+    .form-switch .form-check-input:focus {
+        box-shadow: 0 0 0 4px rgba(142, 68, 173, 0.2);
+        border-color: #8e44ad;
     }
 
     .form-switch .form-check-input:checked {
         background-color: #8e44ad;
         border-color: #8e44ad;
+        box-shadow: 0 0 20px rgba(142, 68, 173, 0.3);
+    }
+
+    .form-switch .form-check-input:checked:focus {
+        box-shadow: 0 0 0 4px rgba(142, 68, 173, 0.3);
+    }
+
+    /* Alert Banner */
+    .alert-suspended {
+        background: linear-gradient(135deg, #fef2f2, #fee2e2);
+        border: 2px solid #fecaca;
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        animation: slideDown 0.5s ease-out;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .alert-suspended::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #ef4444, #dc2626, #b91c1c);
+    }
+
+    .alert-suspended .alert-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(239, 68, 68, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .alert-suspended .alert-icon i {
+        font-size: 32px;
+        color: #dc2626;
     }
 
     /* Modal */
     .modal-content {
-        border-radius: 16px;
+        border-radius: 24px;
         border: none;
-        box-shadow: 0 20px 40px rgba(106, 13, 173, 0.2);
+        box-shadow: 0 30px 60px rgba(106, 13, 173, 0.25);
+        overflow: hidden;
+        animation: scaleIn 0.3s ease;
     }
 
     .modal-header {
         background: linear-gradient(135deg, #8e44ad, #a569bd);
         color: white;
-        border-radius: 16px 16px 0 0;
-        padding: 1rem 1.5rem;
+        border: none;
+        padding: 1.25rem 1.75rem;
     }
 
     .modal-header h5 {
         font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .modal-header .btn-close {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        padding: 6px;
+        opacity: 1;
+        transition: all 0.3s ease;
+    }
+
+    .modal-header .btn-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(90deg);
     }
 
     .modal-body {
-        padding: 1.5rem;
+        padding: 1.75rem;
     }
 
     .modal-footer {
-        border-top: 1px solid #e9d9ff;
-        padding: 1rem 1.5rem;
+        border-top: 1px solid #f0e8ff;
+        padding: 1rem 1.75rem 1.75rem;
+        gap: 10px;
     }
 
     .request-detail {
-        padding: 10px 0;
+        padding: 12px 0;
         border-bottom: 1px solid #f0e8ff;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .request-detail:hover {
+        background: #faf5ff;
+        padding-left: 8px;
+        border-radius: 8px;
+        margin: 0 -8px;
+        padding-right: 8px;
     }
 
     .request-detail:last-child {
@@ -141,13 +405,20 @@
     }
 
     .request-icon {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
         background: #f3e9ff;
-        border-radius: 8px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+    }
+
+    .request-detail:hover .request-icon {
+        background: #e9d9ff;
+        transform: scale(1.05);
     }
 
     .request-icon i {
@@ -162,6 +433,9 @@
     .request-label {
         font-size: 11px;
         color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
     }
 
     .request-value {
@@ -173,24 +447,146 @@
     .expiry-badge {
         background: #fee2e2;
         color: #dc2626;
-        padding: 4px 10px;
+        padding: 4px 14px;
         border-radius: 50px;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: 700;
         display: inline-flex;
         align-items: center;
-        gap: 5px;
+        gap: 6px;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* Buttons */
+    .btn-purple {
+        background: linear-gradient(135deg, #8e44ad, #a569bd);
+        border: none;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(142, 68, 173, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-purple:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(142, 68, 173, 0.4);
+        color: white;
+        background: linear-gradient(135deg, #6c3483, #8e44ad);
+    }
+
+    .btn-purple:active {
+        transform: translateY(0);
+    }
+
+    .btn-purple-outline {
+        background: transparent;
+        border: 2px solid #8e44ad;
+        color: #8e44ad;
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-purple-outline:hover {
+        background: linear-gradient(135deg, #8e44ad, #a569bd);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(142, 68, 173, 0.3);
+    }
+
+    .btn-purple-sm {
+        padding: 6px 16px;
+        font-size: 13px;
+    }
+
+    /* Card Badge Counter */
+    .card-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: #ef4444;
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .dashboard-card {
+            padding: 1.25rem;
+        }
+        .modal-dialog {
+            margin: 10px;
+        }
+        .alert-suspended {
+            padding: 1rem;
+        }
+        .alert-suspended .d-flex {
+            flex-direction: column;
+            text-align: center;
+        }
+        .status-card .d-flex {
+            flex-direction: column;
+            gap: 15px;
+        }
+        .modal-footer {
+            flex-direction: column;
+        }
+        .modal-footer .btn {
+            width: 100%;
+            justify-content: center;
+        }
     }
 </style>
+
+<!-- Welcome Banner with Animation -->
+<div class="welcome-banner" data-aos="fade-up">
+    <i class="bi bi-emoji-wave welcome-icon"></i>
+    <h3>
+        Welcome Back, {{ mechanic.name }}! 👋
+    </h3>
+    <p>
+        Manage your assigned service requests, update repair progress, and provide the best service experience to customers.
+    </p>
+    <div class="mt-3">
+        <small class="opacity-75">
+            <i class="bi bi-shield-check"></i> Ready for Today's Service Tasks
+        </small>
+    </div>
+</div>
 
 <div class="row g-4">
     {% if mechanic.account_suspend %}
         <div class="col-12">
-            <div class="alert alert-danger d-flex align-items-center gap-3 p-4 rounded-3">
-                <i class="bi bi-exclamation-triangle-fill fs-1"></i>
-                <div>
-                    <h5 class="fw-bold mb-1">Account Suspended</h5>
-                    <p class="mb-0">Your account has been suspended by the admin. Please contact support for more information.</p>
+            <div class="alert-suspended">
+                <div class="d-flex align-items-center gap-4">
+                    <div class="alert-icon">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-1 text-danger">Account Suspended</h5>
+                        <p class="mb-0 text-secondary">Your account has been suspended by the admin. Please contact support for more information.</p>
+                    </div>
+                    <a href="#" class="btn btn-outline-danger rounded-pill px-4">
+                        <i class="bi bi-headset me-2"></i>Contact Support
+                    </a>
                 </div>
             </div>
         </div>
@@ -199,25 +595,25 @@
     <!-- Mechanic Status Card -->
     <div class="col-lg-4 col-md-6">
         <div class="status-card">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex justify-content-between align-items-start mb-3">
                 <div>
-                    <h6 class="fw-bold mb-1">Mechanic Status</h6>
+                    <h6 class="fw-bold mb-1" style="color: #4a1d6d;">
+                        <i class="bi bi-toggle-on me-2"></i>Status
+                    </h6>
                     <small class="text-muted">Change your availability</small>
                 </div>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="onlineToggle" data-initial="{{ mech.is_online|yesno:'true,false' }}" {% if mech.is_online %}checked{% endif %}>
                 </div>
             </div>
-            <div class="mt-3">
+            <div class="d-flex align-items-center gap-3 mt-2">
                 <span class="status-badge {% if mechanic.is_online %}bg-success{% else %}bg-danger{% endif %}" id="statusBadge">
-                    <i class="bi bi-circle-fill" style="font-size: 8px;"></i>
+                    <span class="status-indicator {% if mechanic.is_online %}online{% else %}offline{% endif %}"></span>
                     {% if mechanic.is_online %} Online {% else %} Offline {% endif %}
                 </span>
-            </div>
-            <div class="mt-3 pt-2">
                 <small class="text-muted">
                     <i class="bi bi-info-circle"></i> 
-                    When online, you'll receive new service requests
+                    Receive requests when online
                 </small>
             </div>
         </div>
@@ -229,9 +625,9 @@
             <div class="dashboard-icon bg-purple-warning">
                 <i class="bi bi-clock-history"></i>
             </div>
-            <h5 class="fw-bold mb-2">Pending Jobs</h5>
+            <h5 class="fw-bold mb-2" style="color: #4a1d6d;">Pending Jobs</h5>
             <p class="text-muted mb-3 small">Track and manage pending repair requests from customers.</p>
-            <a href="{% url 'pending_jobs_list' %}" class="btn btn-purple btn-sm">
+            <a href="{% url 'pending_jobs_list' %}" class="btn-purple btn-purple-sm">
                 View Jobs <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
@@ -243,9 +639,9 @@
             <div class="dashboard-icon bg-purple-danger">
                 <i class="bi bi-wrench-adjustable-circle-fill"></i>
             </div>
-            <h5 class="fw-bold mb-2">Vehicle Parts</h5>
+            <h5 class="fw-bold mb-2" style="color: #4a1d6d;">Vehicle Parts</h5>
             <p class="text-muted mb-3 small">Add, edit and manage vehicle parts inventory.</p>
-            <a href="{% url 'vehicle_parts_list' %}" class="btn btn-purple btn-sm">
+            <a href="{% url 'vehicle_parts_list' %}" class="btn-purple btn-purple-sm">
                 Open Parts <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
@@ -257,9 +653,9 @@
             <div class="dashboard-icon bg-purple-success">
                 <i class="bi bi-check-circle-fill"></i>
             </div>
-            <h5 class="fw-bold mb-2">Completed Jobs</h5>
+            <h5 class="fw-bold mb-2" style="color: #4a1d6d;">Completed Jobs</h5>
             <p class="text-muted mb-3 small">View history of completed service jobs.</p>
-            <a href="{% url 'completed_jobs_list' %}" class="btn btn-purple btn-sm">
+            <a href="{% url 'completed_jobs_list' %}" class="btn-purple btn-purple-sm">
                 View History <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
@@ -271,9 +667,9 @@
             <div class="dashboard-icon bg-purple-dark">
                 <i class="bi bi-cash-stack"></i>
             </div>
-            <h5 class="fw-bold mb-2">Earnings</h5>
+            <h5 class="fw-bold mb-2" style="color: #4a1d6d;">Earnings</h5>
             <p class="text-muted mb-3 small">Track your total service earnings and payments.</p>
-            <a href="{% url 'earnings' %}" class="btn btn-purple btn-sm">
+            <a href="{% url 'earnings' %}" class="btn-purple btn-purple-sm">
                 View Earnings <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
@@ -285,27 +681,29 @@
             <div class="dashboard-icon bg-purple-info">
                 <i class="bi bi-person-circle"></i>
             </div>
-            <h5 class="fw-bold mb-2">My Profile</h5>
+            <h5 class="fw-bold mb-2" style="color: #4a1d6d;">My Profile</h5>
             <p class="text-muted mb-3 small">Manage your profile details and settings.</p>
-            <a href="{% url 'profile_page_mechanic' %}" class="btn btn-purple btn-sm">
+            <a href="{% url 'profile_page_mechanic' %}" class="btn-purple btn-purple-sm">
                 Open Profile <i class="bi bi-arrow-right ms-1"></i>
             </a>
         </div>
     </div>
-
 
     {% endif %}
 </div>
 
 <!-- JOB REQUEST MODAL -->
 {% if requests %}
-<div class="modal fade show" id="jobModal" tabindex="-1" style="display:block; background:rgba(0,0,0,0.5);">
+<div class="modal fade show" id="jobModal" tabindex="-1" style="display:block; background:rgba(0,0,0,0.5); backdrop-filter: blur(4px);">
     <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">
                     <i class="bi bi-bell-fill me-2"></i> New Work Request
                 </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: white;" onclick="closeModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
             <div class="modal-body">
                 {% for req in requests %}
@@ -353,10 +751,10 @@
             </div>
             <div class="modal-footer">
                 {% for req in requests %}
-                <a href="{% url 'accept_booking' req.id %}" class="btn btn-purple">
+                <a href="{% url 'accept_booking' req.id %}" class="btn-purple" style="padding: 10px 28px;">
                     <i class="bi bi-check-circle me-1"></i> Accept
                 </a>
-                <a href="{% url 'reject_booking' req.id %}" class="btn btn-outline-danger">
+                <a href="{% url 'reject_booking' req.id %}" class="btn btn-outline-danger rounded-pill px-4" style="padding: 10px 28px; font-weight: 600; border-width: 2px;">
                     <i class="bi bi-x-circle me-1"></i> Reject
                 </a>
                 {% endfor %}
@@ -367,6 +765,14 @@
 {% endif %}
 
 <script>
+// Close modal function
+function closeModal() {
+    let modal = document.getElementById("jobModal");
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
 // Auto close modal after 30 seconds
 setTimeout(() => {
     let modal = document.getElementById("jobModal");
@@ -397,13 +803,11 @@ const badge = document.getElementById("statusBadge");
 
 function updateBadge(isOnline) {
     if (isOnline) {
-        badge.classList.remove("bg-danger");
-        badge.classList.add("bg-success");
-        badge.innerHTML = '<i class="bi bi-circle-fill" style="font-size: 8px;"></i> Online';
+        badge.className = "status-badge bg-success";
+        badge.innerHTML = '<span class="status-indicator online"></span> Online';
     } else {
-        badge.classList.remove("bg-success");
-        badge.classList.add("bg-danger");
-        badge.innerHTML = '<i class="bi bi-circle-fill" style="font-size: 8px;"></i> Offline';
+        badge.className = "status-badge bg-danger";
+        badge.innerHTML = '<span class="status-indicator offline"></span> Offline';
     }
 }
 
@@ -413,6 +817,9 @@ window.addEventListener("load", function () {
 
 if (toggle) {
     toggle.addEventListener("change", function () {
+        // Show loading state
+        toggle.disabled = true;
+        
         fetch("{% url 'toggle_mechanic_status' %}", {
             method: "POST",
             headers: {
@@ -422,28 +829,138 @@ if (toggle) {
             body: JSON.stringify({ is_online: toggle.checked })
         })
         .then(async response => {
-    const data = await response.json();
+            const data = await response.json();
 
-    if (!response.ok) {
-        // Switch back to ON because mechanic is busy
-        toggle.checked = true;
-        updateBadge(true);
+            if (!response.ok) {
+                // Switch back to ON because mechanic is busy
+                toggle.checked = true;
+                updateBadge(true);
+                alert(data.message || 'Unable to change status. You may have pending jobs.');
+                return;
+            }
 
-        alert(data.message);
-        return;
-    }
-
-    updateBadge(toggle.checked);
-})
-.catch(error => {
-    console.log("Error:", error);
-
-    // Restore previous state if request fails
-    toggle.checked = !toggle.checked;
-    updateBadge(toggle.checked);
-});
+            updateBadge(toggle.checked);
+            
+            // Show success feedback
+            if (toggle.checked) {
+                showToast('🟢 You are now online and will receive requests', 'success');
+            } else {
+                showToast('🔴 You are now offline', 'info');
+            }
+        })
+        .catch(error => {
+            console.log("Error:", error);
+            // Restore previous state if request fails
+            toggle.checked = !toggle.checked;
+            updateBadge(toggle.checked);
+            showToast('❌ Failed to update status. Please try again.', 'error');
+        })
+        .finally(() => {
+            toggle.disabled = false;
+        });
     });
 }
+
+// Toast notification function
+function showToast(message, type = 'info') {
+    // Remove existing toast container
+    const existingContainer = document.getElementById('toastContainer');
+    if (existingContainer) {
+        existingContainer.remove();
+    }
+    
+    const container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 999999;
+    `;
+    document.body.appendChild(container);
+    
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        background: white;
+        padding: 16px 24px;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInRight 0.4s ease;
+        min-width: 300px;
+        border-left: 4px solid ${type === 'success' ? '#22c55e' : type === 'error' ? '#ef4444' : '#8e44ad'};
+    `;
+    
+    const icons = {
+        success: 'bi bi-check-circle-fill',
+        error: 'bi bi-x-circle-fill',
+        info: 'bi bi-info-circle-fill'
+    };
+    
+    const colors = {
+        success: '#22c55e',
+        error: '#ef4444',
+        info: '#8e44ad'
+    };
+    
+    toast.innerHTML = `
+        <i class="${icons[type] || icons.info}" style="font-size: 24px; color: ${colors[type] || colors.info};"></i>
+        <span style="flex: 1; font-weight: 500; color: #1e293b;">${message}</span>
+        <button onclick="this.parentElement.remove()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #94a3b8; padding: 0 0 0 10px;">✕</button>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100px)';
+            toast.style.transition = 'all 0.3s ease';
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 300);
+        }
+    }, 5000);
+}
+
+// Close modal with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+});
+
+// Click outside modal to close
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('jobModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    }
+});
 </script>
+
+<style>
+    /* Additional styles for animation keyframes */
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+</style>
 
 {% endblock %}

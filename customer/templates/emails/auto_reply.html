@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You for Contacting FixiGo</title>
+    <style>
+        /* Inline styles for better email client compatibility */
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.7;
+            color: #2c0b3a;
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #faf7ff;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .email-container {
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(74, 29, 109, 0.15);
+            border: 1px solid rgba(142, 68, 173, 0.1);
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #4a1d6d 0%, #8e44ad 50%, #a569bd 100%);
+            color: #ffffff;
+            padding: 35px 30px 30px;
+            text-align: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .logo-icon {
+            width: 54px;
+            height: 54px;
+            background: rgba(255, 217, 102, 0.2);
+            border-radius: 16px;
+            display: inline-block;
+            line-height: 54px;
+            font-size: 28px;
+            border: 2px solid rgba(255, 217, 102, 0.3);
+            text-align: center;
+        }
+        
+        .logo-text {
+            font-family: 'Arial Black', Arial, sans-serif;
+            font-weight: 800;
+            font-size: 32px;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-text span {
+            color: #ffd966;
+        }
+        
+        .header h1 {
+            margin: 12px 0 8px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        
+        .header .subtitle {
+            margin-top: 8px;
+            font-size: 15px;
+            opacity: 0.95;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.95);
+        }
+        
+        .badge-container {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(255, 217, 102, 0.2);
+            color: #ffd966;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 217, 102, 0.3);
+        }
+        
+        /* Content Area */
+        .content {
+            padding: 35px 30px 30px;
+            background: #faf7ff;
+        }
+        
+        .greeting {
+            font-size: 20px;
+            color: #4a1d6d;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        
+        .greeting strong {
+            color: #8e44ad;
+        }
+        
+        .intro-text {
+            color: #4a3a5a;
+            font-size: 15px;
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+        
+        /* Message Box */
+        .message-box {
+            background: #ffffff;
+            padding: 20px 24px;
+            border-radius: 16px;
+            border-left: 5px solid #8e44ad;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(142, 68, 173, 0.08);
+        }
+        
+        .message-box .subject-label {
+            font-weight: 700;
+            color: #4a1d6d;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .message-box .subject-value {
+            color: #2c0b3a;
+            font-weight: 600;
+            font-size: 16px;
+            margin-top: 4px;
+        }
+        
+        .message-box .message-preview {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0e8f5;
+            color: #6c5a7a;
+            font-style: italic;
+            font-size: 14px;
+        }
+        
+        /* Steps Container */
+        .steps-container {
+            background: #f3e9ff;
+            padding: 20px 24px;
+            border-radius: 16px;
+            margin: 20px 0;
+            border: 1px solid rgba(142, 68, 173, 0.15);
+        }
+        
+        .steps-title {
+            font-weight: 700;
+            color: #4a1d6d;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .steps-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .steps-list li {
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            background: #ffffff;
+            border-radius: 12px;
+            border-left: 4px solid #27ae60;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            font-size: 14px;
+        }
+        
+        .steps-list li:last-child {
+            margin-bottom: 0;
+        }
+        
+        .step-icon {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            background: #27ae60;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .step-content strong {
+            color: #4a1d6d;
+            display: block;
+            font-size: 14px;
+        }
+        
+        .step-content span {
+            color: #6c5a7a;
+            font-size: 13px;
+        }
+        
+        .time-badge {
+            background: #ffd966;
+            color: #4a1d6d;
+            padding: 2px 10px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 13px;
+            display: inline-block;
+        }
+        
+        /* Contact Info */
+        .contact-info {
+            background: #ffffff;
+            padding: 18px 22px;
+            border-radius: 16px;
+            margin: 20px 0;
+            border: 1px solid #e9d9ff;
+        }
+        
+        .contact-info .contact-title {
+            font-weight: 700;
+            color: #4a1d6d;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+        
+        .contact-detail {
+            padding: 6px 0;
+            color: #4a3a5a;
+            font-size: 14px;
+        }
+        
+        .contact-detail strong {
+            color: #2c0b3a;
+        }
+        
+        .contact-icon {
+            display: inline-block;
+            width: 24px;
+            color: #8e44ad;
+        }
+        
+        /* Signature */
+        .signature {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #e9d9ff;
+        }
+        
+        .signature .team-name {
+            font-weight: 700;
+            color: #4a1d6d;
+            font-size: 17px;
+            font-family: 'Arial Black', Arial, sans-serif;
+        }
+        
+        .signature .team-name i {
+            color: #ffd966;
+            margin-right: 6px;
+        }
+        
+        .signature .team-sub {
+            color: #8e44ad;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+        
+        .signature-text {
+            margin-bottom: 4px;
+            color: #6c5a7a;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #f5effa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #8a7a9a;
+            font-size: 13px;
+            border-top: 1px solid rgba(142, 68, 173, 0.08);
+        }
+        
+        .footer p {
+            margin: 6px 0;
+        }
+        
+        .footer .copyright {
+            color: #9a8aaa;
+            font-size: 12px;
+        }
+        
+        .footer .disclaimer {
+            color: #b0a0c0;
+            font-size: 11px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(142, 68, 173, 0.08);
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .header { padding: 25px 20px; }
+            .header h1 { font-size: 22px; }
+            .logo-text { font-size: 26px; }
+            .content { padding: 20px 18px; }
+            .message-box { padding: 16px 18px; }
+            .steps-container { padding: 16px 18px; }
+            .contact-info { padding: 14px 16px; }
+            .footer { padding: 16px 20px; }
+            .badge-container { text-align: center; }
+        }
+        
+        @media (max-width: 400px) {
+            .logo-container { flex-direction: column; }
+            .header h1 { font-size: 19px; }
+            .steps-list li { padding: 10px 12px; }
+        }
+        
+        /* Email client fixes */
+        .ExternalClass, .ReadMsgBody {
+            width: 100%;
+            background-color: #faf7ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        
+        <!-- HEADER with FixiGo Branding -->
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo-icon">🔧</div>
+                <div class="logo-text">Fixi<span>Go</span></div>
+            </div>
+            
+            <h1>Thank You for Contacting Us! 🚗</h1>
+            <div class="subtitle">We've received your message and our team will get back to you as soon as possible.</div>
+            
+            <div class="badge-container">
+                <span class="badge">⏰ Response within 24 hours</span>
+            </div>
+        </div>
+        
+        <!-- CONTENT -->
+        <div class="content">
+            <div class="greeting">
+                Hi <strong>{{ name }}</strong> 👋
+            </div>
+            
+            <p class="intro-text">
+                Thank you for reaching out to <strong>FixiGo</strong>. We appreciate your interest and have successfully received your inquiry. Our dedicated support team is here to help you with your automotive needs.
+            </p>
+            
+            <!-- Message Summary -->
+            <div class="message-box">
+                <div class="subject-label">📌 Subject</div>
+                <div class="subject-value">{{ subject }}</div>
+                {% if message %}
+                <div class="message-preview">
+                    "{{ message|truncatewords:15 }}"
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Next Steps -->
+            <div class="steps-container">
+                <div class="steps-title">✅ What Happens Next?</div>
+                <ul class="steps-list">
+                    <li>
+                        <span class="step-icon">1</span>
+                        <div class="step-content">
+                            <strong>Review</strong>
+                            <span>Our support team will carefully review your message and understand your requirements.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="step-icon">2</span>
+                        <div class="step-content">
+                            <strong>Assessment</strong>
+                            <span>We'll determine the best solution or assistance for your specific inquiry.</span>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="step-icon">3</span>
+                        <div class="step-content">
+                            <strong>Response</strong>
+                            <span>You'll receive a personalized reply from our team within <span class="time-badge">24 hours</span></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <div class="contact-title">📞 Need Immediate Assistance?</div>
+                
+                <div class="contact-detail">
+                    <span class="contact-icon">📱</span>
+                    <span>Call us directly at: <strong>{{ fixigo.number_customer }}</strong></span>
+                </div>
+                
+                <div class="contact-detail">
+                    <span class="contact-icon">📍</span>
+                    <span>Visit our workshop at: <strong>{{ fixigo.address }}</strong></span>
+                </div>
+                
+                <div class="contact-detail">
+                    <span class="contact-icon">🕐</span>
+                    <span>Working Hours: <strong>Mon-Sat 8:00 AM - 8:00 PM</strong></span>
+                </div>
+            </div>
+            
+            <!-- Signature -->
+            <div class="signature">
+                <p class="signature-text">
+                    Thank you for choosing FixiGo. We're committed to providing you with the best automotive care.
+                </p>
+                <div class="team-name">
+                    🔧 FixiGo Team
+                </div>
+                <div class="team-sub">Your Trusted Automobile Service Partner</div>
+            </div>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>This is an automated response. Please do not reply to this email.</p>
+            <p class="copyright">© {% now "Y" %} FixiGo. All rights reserved.</p>
+            
+            <div class="disclaimer">
+                ⚡ 100% Genuine Parts | 🛡️ Professional Service | 🚗 Customer Satisfaction Guaranteed
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

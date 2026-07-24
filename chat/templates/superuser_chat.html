@@ -1,0 +1,674 @@
+{% extends 'base_admin.html' %}
+{% load static %}
+
+{% block title %}Superuser Chat · {{ room.customer.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ----- modern purple UI (matches base_admin) ----- */
+  .chat-wrapper {
+    max-width: 1000px;
+    margin: 24px auto;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 32px;
+    box-shadow: 0 20px 60px rgba(79, 70, 229, 0.18), 0 8px 24px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    height: 84vh;
+    min-height: 540px;
+    overflow: hidden;
+    border: 1px solid rgba(79, 70, 229, 0.10);
+    transition: all 0.2s;
+  }
+
+  .chat-header {
+    background: linear-gradient(145deg, #4f46e5, #6366f1);
+    color: white;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .header-left .avatar {
+    width: 48px;
+    height: 48px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .header-left .info h3 {
+    font-weight: 600;
+    font-size: 1.25rem;
+    letter-spacing: -0.2px;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .header-left .info .booking-meta {
+    font-size: 0.8rem;
+    opacity: 0.85;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .header-left .info .booking-meta i {
+    font-size: 12px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .status-badge {
+    background: rgba(255,255,255,0.13);
+    padding: 6px 18px;
+    border-radius: 40px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .status-badge .dot {
+    width: 9px;
+    height: 9px;
+    background: #a7f3d0;
+    border-radius: 20px;
+    display: inline-block;
+    animation: pulse-dot 1.8s infinite;
+  }
+
+  .status-badge .dot.inactive {
+    background: #fbbf24;
+    animation: none;
+  }
+
+  @keyframes pulse-dot {
+    0% { opacity: 0.4; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0.4; transform: scale(0.9); }
+  }
+
+  .back-link {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 40px;
+    background: rgba(255,255,255,0.08);
+    transition: all 0.2s;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .back-link:hover {
+    background: rgba(255,255,255,0.18);
+    color: white;
+    transform: translateX(-2px);
+  }
+
+  /* ----- messages container ----- */
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 28px 8px 28px;
+    background: #f8f7ff;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    scroll-behavior: smooth;
+  }
+
+  .msg {
+    max-width: 74%;
+    padding: 14px 20px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    animation: msgFadeIn 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    word-break: break-word;
+    position: relative;
+  }
+
+  @keyframes msgFadeIn {
+    0% { opacity: 0; transform: translateY(12px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .msg-left {
+    background: #ffffff;
+    border: 1px solid #e4e0f0;
+    align-self: flex-start;
+    border-bottom-left-radius: 6px;
+    color: #1e1b2e;
+  }
+
+  .msg-right {
+    background: #4f46e5;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 6px;
+    box-shadow: 0 4px 16px rgba(79, 70, 229, 0.20);
+  }
+
+  .msg .msg-sender {
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.3px;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .msg-right .msg-sender {
+    opacity: 0.85;
+    color: #ddd6ff;
+  }
+
+  .msg .msg-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 4px 0 6px 0;
+  }
+
+  .msg .msg-time {
+    font-size: 0.65rem;
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .msg-right .msg-time {
+    opacity: 0.75;
+    color: #c7bfff;
+  }
+
+  /* completed alert */
+  .alert-completed {
+    background: #e8e3ff;
+    color: #3b2a6b;
+    padding: 18px 24px;
+    border-radius: 24px;
+    text-align: center;
+    font-weight: 500;
+    margin: 16px 28px 20px;
+    border: 1px solid #d5caff;
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .alert-completed i {
+    color: #4f46e5;
+    font-size: 1.2rem;
+  }
+
+  /* ----- footer ----- */
+  .chat-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 28px 22px 28px;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(4px);
+    border-top: 1px solid rgba(79, 70, 229, 0.07);
+    flex-shrink: 0;
+  }
+
+  .input-group {
+    flex: 1;
+    display: flex;
+    background: white;
+    border-radius: 60px;
+    padding: 2px 2px 2px 22px;
+    box-shadow: 0 2px 12px rgba(79, 70, 229, 0.05);
+    border: 1px solid #e4e0f0;
+    transition: all 0.2s;
+    min-width: 180px;
+  }
+
+  .input-group:focus-within {
+    border-color: #4f46e5;
+    box-shadow: 0 2px 18px rgba(79, 70, 229, 0.12);
+  }
+
+  .input-group input {
+    flex: 1;
+    border: none;
+    padding: 14px 6px 14px 0;
+    font-size: 0.95rem;
+    background: transparent;
+    outline: none;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #1e1b2e;
+  }
+
+  .input-group input::placeholder {
+    color: #9a8ab8;
+    font-weight: 400;
+  }
+
+  .input-group input:disabled {
+    background: #f3f0ff;
+    color: #6b5b8a;
+  }
+
+  .input-group button {
+    background: #4f46e5;
+    border: none;
+    color: white;
+    padding: 10px 26px;
+    border-radius: 60px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    letter-spacing: 0.2px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .input-group button:hover:not(:disabled) {
+    background: #4338ca;
+    transform: scale(0.97);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+  }
+
+  .input-group button:active:not(:disabled) {
+    transform: scale(0.94);
+  }
+
+  .input-group button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .btn-complete {
+    background: rgba(79, 70, 229, 0.06);
+    border: 1px solid #d5caff;
+    color: #4a2e7a;
+    padding: 10px 22px;
+    border-radius: 60px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    white-space: nowrap;
+    background: white;
+  }
+
+  .btn-complete i {
+    color: #4f46e5;
+  }
+
+  .btn-complete:hover:not(:disabled) {
+    background: #4f46e5;
+    color: white;
+    border-color: #4f46e5;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.18);
+  }
+
+  .btn-complete:hover:not(:disabled) i {
+    color: white;
+  }
+
+  .btn-complete:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  .btn-complete:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* scroll */
+  .chat-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+  .chat-messages::-webkit-scrollbar-track {
+    background: #ede9fe;
+    border-radius: 20px;
+  }
+  .chat-messages::-webkit-scrollbar-thumb {
+    background: #b8a6e8;
+    border-radius: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .chat-wrapper { height: 92vh; border-radius: 24px; margin: 12px; }
+    .chat-header { padding: 14px 16px; flex-wrap: wrap; gap: 8px; }
+    .header-left .info h3 { font-size: 1rem; }
+    .status-badge { font-size: 0.65rem; padding: 4px 12px; }
+    .msg { max-width: 88%; padding: 12px 14px; }
+    .input-group { padding-left: 14px; }
+    .input-group button { padding: 8px 16px; font-size: 0.8rem; }
+    .btn-complete { padding: 8px 14px; font-size: 0.75rem; }
+    .chat-footer { padding: 12px 16px 16px; gap: 8px; }
+    .chat-messages { padding: 16px 14px 8px; }
+  }
+
+  /* empty state */
+  .empty-state {
+    text-align: center;
+    color: #8b7bbd;
+    padding: 50px 0;
+    font-weight: 500;
+  }
+  .empty-state i {
+    font-size: 2.8rem;
+    display: block;
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-wrapper">
+  <!-- header -->
+  <div class="chat-header">
+    <div class="header-left">
+      <div class="avatar">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <div class="info">
+        <h3>{{ room.customer.name }}</h3>
+        <div class="booking-meta">
+          <i class="fas fa-ticket-alt"></i> Booking #{{ room.booking.id }}
+          <span style="opacity:0.4;">·</span>
+          <i class="fas fa-car"></i> {{ room.booking.vehicle.vehicle_number }}
+        </div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-badge">
+        <span class="dot {% if room.status == 'Completed' %}inactive{% endif %}"></span>
+        <span id="statusLabel">{{ room.status|default:"Pending" }}</span>
+      </div>
+      <a class="back-link" href="{% url 'chat_dashboard' %}">
+        <i class="fas fa-arrow-left"></i> Dashboard
+      </a>
+    </div>
+  </div>
+
+  <!-- messages -->
+  <div id="chatBox" class="chat-messages">
+    {% for msg in message_contents %}
+      <div class="msg {% if msg.sender == 'superuser' %}msg-right{% else %}msg-left{% endif %}">
+        <div class="msg-sender">
+          <i class="fas {% if msg.sender == 'superuser' %}fa-user-shield{% else %}fa-user-circle{% endif %}"></i>
+          {% if msg.sender == 'superuser' %}
+            You
+          {% else %}
+            {{ room.customer.name }}
+          {% endif %}
+        </div>
+        <div class="msg-text">{{ msg.message }}</div>
+        <div class="msg-time">
+          <i class="far fa-clock"></i> {{ msg.created_at|date:"d M Y H:i" }}
+        </div>
+      </div>
+    {% empty %}
+      <div class="empty-state">
+        <i class="fas fa-comment-dots"></i>
+        No messages yet. Start the conversation.
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- completed alert (dynamic) -->
+  {% if room.status == "Completed" %}
+    <div class="alert-completed" id="completedAlert">
+      <i class="fas fa-check-circle"></i> This chat has been completed.
+    </div>
+  {% else %}
+    <div class="alert-completed" id="completedAlert" style="display: none;">
+      <i class="fas fa-check-circle"></i> This chat has been completed.
+    </div>
+  {% endif %}
+
+  <!-- footer: only show if not completed -->
+  <div class="chat-footer" id="chatFooter" 
+       {% if room.status == "Completed" %}style="display:none;"{% endif %}>
+    <div class="input-group">
+      <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off">
+      <button id="sendBtn"><i class="fas fa-paper-plane"></i> Send</button>
+    </div>
+    <div class="action-buttons">
+      <form method="POST" action="{% url 'superuser_complete_chat' room.id %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn-complete" id="completeBtn">
+          <i class="fas fa-check-double"></i> Complete
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    'use strict';
+
+    // ---- DOM refs ----
+    const chatBox = document.getElementById('chatBox');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const completeBtn = document.getElementById('completeBtn');
+    const completedAlert = document.getElementById('completedAlert');
+    const chatFooter = document.getElementById('chatFooter');
+    const statusLabel = document.getElementById('statusLabel');
+
+    // ---- WebSocket connection (dynamic room) ----
+    const roomId = '{{ room.id }}';
+    const customerName = '{{ room.customer.name|escapejs }}';
+    const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    let socket = null;
+    let reconnectAttempts = 0;
+    const maxReconnect = 5;
+
+    function initWebSocket() {
+      try {
+        socket = new WebSocket(wsScheme + window.location.host + '/ws/chat/' + roomId + '/');
+        socket.onopen = function() {
+          console.log('WebSocket connected.');
+          reconnectAttempts = 0;
+        };
+        socket.onmessage = function(e) {
+          const data = JSON.parse(e.data);
+          // avoid duplicates if already rendered
+          addMessage(data.message, data.sender, data.created_at);
+        };
+        socket.onclose = function(e) {
+          console.warn('WebSocket closed, reconnecting...');
+          if (reconnectAttempts < maxReconnect) {
+            reconnectAttempts++;
+            setTimeout(initWebSocket, 3000);
+          } else {
+            console.error('Max reconnect attempts reached.');
+          }
+        };
+        socket.onerror = function(err) {
+          console.error('WebSocket error:', err);
+        };
+      } catch (err) {
+        console.warn('WebSocket init failed:', err);
+      }
+    }
+
+    // ---- add message to UI (dynamic) ----
+    function addMessage(text, sender, timeStr) {
+      // avoid duplicates if the message already exists (basic check)
+      const lastMsg = chatBox.lastElementChild;
+      if (lastMsg && lastMsg.querySelector('.msg-text')) {
+        const lastText = lastMsg.querySelector('.msg-text').innerText;
+        if (lastText === text) return;
+      }
+
+      const msgDiv = document.createElement('div');
+      const isSuperuser = (sender === 'superuser');
+      msgDiv.className = `msg ${isSuperuser ? 'msg-right' : 'msg-left'}`;
+
+      const senderName = isSuperuser ? 'You' : customerName;
+      const icon = isSuperuser ? 'fa-user-shield' : 'fa-user-circle';
+
+      // format time if not provided
+      if (!timeStr) {
+        const now = new Date();
+        timeStr = now.toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      }
+
+      msgDiv.innerHTML = `
+        <div class="msg-sender"><i class="fas ${icon}"></i> ${senderName}</div>
+        <div class="msg-text">${text}</div>
+        <div class="msg-time"><i class="far fa-clock"></i> ${timeStr}</div>
+      `;
+      // remove empty state if exists
+      const emptyState = chatBox.querySelector('.empty-state');
+      if (emptyState) emptyState.remove();
+      chatBox.appendChild(msgDiv);
+      scrollToBottom();
+    }
+
+    // ---- send message via WebSocket ----
+    function sendMessage() {
+      const text = messageInput.value.trim();
+      if (!text) return;
+
+      // optimistic UI
+      addMessage(text, 'superuser');
+
+      // send via ws
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ message: text }));
+      } else {
+        console.warn('WebSocket not ready, attempting reconnect...');
+        initWebSocket();
+        setTimeout(() => {
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({ message: text }));
+          } else {
+            alert('Connection lost. Please refresh the page.');
+          }
+        }, 800);
+      }
+      messageInput.value = '';
+      messageInput.focus();
+    }
+
+    // ---- scroll helper ----
+    function scrollToBottom() {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // ---- init ----
+    function init() {
+      // WebSocket
+      initWebSocket();
+
+      // scroll to bottom on load
+      scrollToBottom();
+
+      // event listeners
+      sendBtn.addEventListener('click', sendMessage);
+
+      messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      // if complete button exists – optimistic UI update
+      if (completeBtn) {
+        completeBtn.addEventListener('click', function(e) {
+          // show completed alert instantly (optimistic)
+          if (completedAlert) {
+            completedAlert.style.display = 'flex';
+          }
+          if (chatFooter) {
+            chatFooter.style.display = 'none';
+          }
+          if (statusLabel) {
+            statusLabel.innerHTML = 'Completed <i class="fas fa-check-circle" style="margin-left:6px;"></i>';
+          }
+          // disable input
+          messageInput.disabled = true;
+          sendBtn.disabled = true;
+          // the form will submit, we don't prevent default.
+        });
+      }
+
+      // if completed from backend, hide footer
+      const isCompleted = "{{ room.status|escapejs }}" === "Completed";
+
+    if (isCompleted) {
+        if (completedAlert) completedAlert.style.display = "flex";
+        if (chatFooter) chatFooter.style.display = "none";
+        if (statusLabel) {
+            statusLabel.innerHTML =
+                'Completed <i class="fas fa-check-circle" style="margin-left:6px;"></i>';
+        }
+
+        messageInput.disabled = true;
+        sendBtn.disabled = true;
+
+        if (completeBtn) {
+            completeBtn.disabled = true;
+        }
+    }
+    }
+
+    // run
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
+{% endblock %}

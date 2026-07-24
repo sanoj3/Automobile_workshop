@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FixiGo - Password Reset OTP</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.7;
+            color: #2c0b3a;
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #faf7ff;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .email-container {
+            background: #ffffff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(74, 29, 109, 0.15);
+            border: 1px solid rgba(142, 68, 173, 0.1);
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #4a1d6d 0%, #8e44ad 50%, #a569bd 100%);
+            color: #ffffff;
+            padding: 30px 30px 25px;
+            text-align: center;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 217, 102, 0.2);
+            border-radius: 14px;
+            display: inline-block;
+            line-height: 50px;
+            font-size: 26px;
+            border: 2px solid rgba(255, 217, 102, 0.3);
+            text-align: center;
+        }
+        
+        .logo-text {
+            font-family: 'Arial Black', Arial, sans-serif;
+            font-weight: 800;
+            font-size: 30px;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo-text span {
+            color: #ffd966;
+        }
+        
+        .header h1 {
+            margin: 8px 0 5px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            color: rgba(255, 255, 255, 0.95);
+        }
+        
+        .security-badge {
+            display: inline-block;
+            background: rgba(255, 217, 102, 0.2);
+            color: #ffd966;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 217, 102, 0.2);
+        }
+        
+        /* Content */
+        .content {
+            padding: 35px 30px 30px;
+            background: #faf7ff;
+        }
+        
+        .greeting {
+            font-size: 18px;
+            color: #4a1d6d;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        
+        .greeting strong {
+            color: #8e44ad;
+        }
+        
+        .intro-text {
+            color: #4a3a5a;
+            font-size: 15px;
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+        
+        /* OTP Box - Main Focus */
+        .otp-container {
+            background: linear-gradient(135deg, #f8f3ff, #f3e9ff);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            margin: 25px 0;
+            border: 2px solid #8e44ad;
+            border-style: dashed;
+            position: relative;
+        }
+        
+        .otp-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a1d6d;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .otp-code {
+            font-family: 'Courier New', monospace;
+            font-size: 48px;
+            font-weight: 800;
+            color: #4a1d6d;
+            letter-spacing: 12px;
+            background: #ffffff;
+            padding: 15px 25px;
+            border-radius: 16px;
+            display: inline-block;
+            border: 2px solid #8e44ad;
+            box-shadow: 0 4px 20px rgba(142, 68, 173, 0.15);
+            margin: 10px 0;
+        }
+        
+        .otp-timer {
+            display: inline-block;
+            background: #ffd966;
+            color: #4a1d6d;
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+        
+        /* Security Tips */
+        .security-tips {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin: 25px 0;
+            border-left: 4px solid #27ae60;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+        
+        .security-tips .tips-title {
+            font-weight: 700;
+            color: #4a1d6d;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+        
+        .security-tips ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .security-tips ul li {
+            padding: 6px 0;
+            color: #4a3a5a;
+            font-size: 14px;
+        }
+        
+        .security-tips ul li::before {
+            content: '✓ ';
+            color: #27ae60;
+            font-weight: 700;
+        }
+        
+        /* Info Box */
+        .info-box {
+            background: #fff8e1;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .info-box p {
+            margin: 4px 0;
+            color: #6c5a7a;
+            font-size: 14px;
+        }
+        
+        .info-box strong {
+            color: #4a1d6d;
+        }
+        
+        /* Divider */
+        .divider {
+            border: none;
+            border-top: 2px solid #e9d9ff;
+            margin: 25px 0;
+        }
+        
+        /* Signature */
+        .signature {
+            margin-top: 25px;
+        }
+        
+        .signature .team-name {
+            font-weight: 700;
+            color: #4a1d6d;
+            font-size: 17px;
+            font-family: 'Arial Black', Arial, sans-serif;
+        }
+        
+        .signature .team-name i {
+            color: #ffd966;
+            margin-right: 6px;
+        }
+        
+        .signature .team-sub {
+            color: #8e44ad;
+            font-size: 13px;
+            margin-top: 2px;
+        }
+        
+        .signature-text {
+            margin-bottom: 4px;
+            color: #6c5a7a;
+        }
+        
+        /* Footer */
+        .footer {
+            background: #f5effa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #8a7a9a;
+            font-size: 13px;
+            border-top: 1px solid rgba(142, 68, 173, 0.08);
+        }
+        
+        .footer p {
+            margin: 6px 0;
+        }
+        
+        .footer .copyright {
+            color: #9a8aaa;
+            font-size: 12px;
+        }
+        
+        .footer .disclaimer {
+            color: #b0a0c0;
+            font-size: 11px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(142, 68, 173, 0.08);
+        }
+        
+        .footer .footer-links {
+            margin: 10px 0;
+        }
+        
+        .footer .footer-links a {
+            color: #8e44ad;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 13px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .header { padding: 25px 20px; }
+            .header h1 { font-size: 20px; }
+            .logo-text { font-size: 26px; }
+            .content { padding: 25px 18px; }
+            .otp-code { 
+                font-size: 36px;
+                letter-spacing: 8px;
+                padding: 12px 18px;
+            }
+            .otp-container { padding: 20px; }
+            .security-tips { padding: 16px 18px; }
+            .footer { padding: 16px 20px; }
+        }
+        
+        @media (max-width: 400px) {
+            .logo-container { flex-direction: column; }
+            .otp-code { 
+                font-size: 28px;
+                letter-spacing: 6px;
+                padding: 10px 14px;
+            }
+        }
+        
+        /* Email client fixes */
+        .ExternalClass, .ReadMsgBody {
+            width: 100%;
+            background-color: #faf7ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo-icon">🔧</div>
+                <div class="logo-text">Fixi<span>Go</span></div>
+            </div>
+            
+            <h1>🔐 Password Reset Request</h1>
+            <div class="subtitle">Secure your account with one-time verification code</div>
+            <span class="security-badge">🛡️ Secure & Encrypted</span>
+        </div>
+        
+        <!-- CONTENT -->
+        <div class="content">
+            <div class="greeting">
+                Dear <strong>{{ first_name|default:"Customer" }}</strong> 👋
+            </div>
+            
+            <p class="intro-text">
+                We received a request to reset the password for your <strong>FixiGo</strong> account. 
+                Use the One-Time Password (OTP) below to verify your identity and create a new password.
+            </p>
+            
+            <!-- OTP Display -->
+            <div class="otp-container">
+                <div class="otp-label">🔑 Your Verification Code</div>
+                <div class="otp-code">{{ otp }}</div>
+                <div class="otp-timer">⏰ Valid for 10 minutes</div>
+            </div>
+            
+            <!-- Security Tips -->
+            <div class="security-tips">
+                <div class="tips-title">🛡️ Security Tips</div>
+                <ul>
+                    <li><strong>Never share</strong> this OTP with anyone, including FixiGo staff</li>
+                    <li>This OTP is <strong>valid for 10 minutes</strong> only</li>
+                    <li>If you didn't request this, <strong>ignore this email</strong> - your account is safe</li>
+                    <li>FixiGo will <strong>never ask</strong> for your OTP via phone or chat</li>
+                </ul>
+            </div>
+            
+            <!-- Info Box -->
+            <div class="info-box">
+                <p>
+                    <strong>⚠️ Didn't request a password reset?</strong><br>
+                    If you did not initiate this request, please ignore this email. 
+                    Your account remains secure and no action is required.
+                </p>
+            </div>
+            
+            <hr class="divider">
+            
+            <!-- Need Help -->
+            <div style="background: #ffffff; border-radius: 16px; padding: 16px 20px; margin: 20px 0; border: 1px solid #e9d9ff;">
+                <p style="margin: 0; color: #4a3a5a; font-size: 14px;">
+                    <strong>❓ Need Help?</strong><br>
+                    If you're having trouble resetting your password, contact our support team at 
+                    <strong style="color: #8e44ad;">{{ fixigo.email_customer|default:"support@fixigo.com" }}</strong>
+                </p>
+            </div>
+            
+            <!-- Signature -->
+            <div class="signature">
+                <p class="signature-text">
+                    Thank you for choosing FixiGo. We're here to help you get back on the road safely.
+                </p>
+                <div class="team-name">
+                    🔧 FixiGo Team
+                </div>
+                <div class="team-sub">Your Trusted Automobile Service Partner</div>
+            </div>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="footer">
+            <div class="footer-links">
+                <a href="#">Website</a>
+                <span style="color: #c39bd3; margin: 0 5px;">|</span>
+                <a href="#">Support</a>
+                <span style="color: #c39bd3; margin: 0 5px;">|</span>
+                <a href="#">Privacy Policy</a>
+            </div>
+            
+            <p>This is an automated security notification. Please do not reply to this email.</p>
+            <p class="copyright">© {% now "Y" %} FixiGo. All rights reserved.</p>
+            
+            <div class="disclaimer">
+                ⚡ 100% Secure | 🛡️ Data Protected | 🔐 Encrypted Communication
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

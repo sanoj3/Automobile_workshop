@@ -5,6 +5,12 @@ from django.db import transaction
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count
+from django.views.decorators.http import require_POST
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.conf import settings
+
 
 import re
 from datetime import datetime
@@ -12,6 +18,7 @@ from datetime import datetime
 from .models import Customer, Vehicle, City
 from mechanic.models import Mechanic
 from services.models import ServiceBooking, Bill, BookingSparePart, Feedback
+from main_account.models import Fixigo
 
 
 
@@ -614,13 +621,115 @@ def order_view(request, id):
         'mechanic_rating': mechanic_rating,
         'review_count': review_count,
     })  
-        
+
+
+#::::::::::::::::::::::Chat Complaint Raise Button::::::::::::::::::::::
+@login_required
+@require_POST
+def raise_chat_complaint(request, id):
+    if not request.user.is_authenticated:
+        return redirect("login")
+    
+    customer = request.user.customer
+
+    booking = get_object_or_404(ServiceBooking, id=id, customer=customer)
+    from chat.models import ChatRoom
+    booking = get_object_or_404(
+        ServiceBooking,
+        id=id,
+        customer=customer
+    )
+
+    room, created = ChatRoom.objects.get_or_create(
+        booking=booking,
+        defaults={
+            "customer": booking.customer
+        }
+    )
+
+    if created:
+        messages.success(request, "Complaint created successfully.")
+    else:
+        messages.warning(request, "A complaint chat has already been created for this booking.")
+
+    return redirect('customer_chat', room_id=room.id)
+    
+
 
 #::::::::::::::::::::::User About::::::::::::::::::::::
 def about(request):
-    return render(request,'about.html')
+
+    customer_count = Customer.objects.count()
+    mechanic_count = Mechanic.objects.count()
+    complete_total_service = ServiceBooking.objects.filter(status='Completed').count()
+    city_total = City.objects.count()
+
+    return render(request,'about.html',{
+        'customer_count' : customer_count,
+        'mechanic_count' : mechanic_count,
+        'complete_total_service' : complete_total_service,
+        'city_total' : city_total
+    })
+
 
 
 #::::::::::::::::::::::Contact Us::::::::::::::::::::::
 def contactus(request):
-    return render(request, 'contactus.html')
+    if request.method == "POST":
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        subject = request.POST.get("subject")
+        message = request.POST.get("message")
+
+        fixigo = Fixigo.objects.first()
+
+        try:
+            # Context for both emails
+            context = {
+                'fixigo' : fixigo,
+                'name': name,
+                'email': email,
+                'subject': subject,
+                'message': message,
+                'timestamp': datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
+                'received_at': datetime.datetime.now().strftime("%B %d, %Y at %I:%M %p"),
+            }
+
+            # --- Email to Admin (HTML) ---
+            admin_html_content = render_to_string('emails/admin_notification.html', context)
+            admin_text_content = strip_tags(admin_html_content)  # Fallback plain text
+
+            admin_email = EmailMultiAlternatives(
+                subject=f"New Contact Form - {subject}",
+                body=admin_text_content,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[settings.EMAIL_HOST_USER],
+            )
+            admin_email.attach_alternative(admin_html_content, "text/html")
+            admin_email.send()
+
+            # --- Auto Reply to User (HTML) ---
+            user_html_content = render_to_string('emails/auto_reply.html', context)
+            user_text_content = strip_tags(user_html_content)  # Fallback plain text
+
+            user_email = EmailMultiAlternatives(
+                subject="Thank you for contacting us",
+                body=user_text_content,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[email],
+            )
+            user_email.attach_alternative(user_html_content, "text/html")
+            user_email.send()
+
+            messages.success(request, "Your message has been sent successfully. We'll get back to you within 24 hours.")
+
+        except Exception as e:
+            messages.error(request, f"Failed to send email. Please try again later. Error: {e}")
+            # Log the error for debugging
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Email sending failed: {e}")
+
+        return redirect("contactus")
+
+    return render(request, "contactus.html")

@@ -1,0 +1,598 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Support Chat · {{ room.booking.id }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ----- modern purple UI (matches base_admin) ----- */
+  .chat-wrapper {
+    max-width: 960px;
+    margin: 30px auto;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-radius: 32px;
+    box-shadow: 0 20px 60px rgba(109, 40, 217, 0.18), 0 8px 24px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    height: 82vh;
+    min-height: 520px;
+    overflow: hidden;
+    border: 1px solid rgba(109, 40, 217, 0.10);
+    transition: all 0.2s;
+  }
+
+  .chat-header {
+    background: linear-gradient(145deg, #5B21B6, #6D28D9);
+    color: white;
+    padding: 18px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .header-left .avatar {
+    width: 46px;
+    height: 46px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .header-left .info h3 {
+    font-weight: 600;
+    font-size: 1.2rem;
+    letter-spacing: -0.2px;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .header-left .info .booking-id {
+    font-size: 0.8rem;
+    opacity: 0.85;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .header-left .info .booking-id i {
+    font-size: 12px;
+  }
+
+  .status-badge {
+    background: rgba(255,255,255,0.13);
+    padding: 6px 16px;
+    border-radius: 40px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .status-badge .dot {
+    width: 9px;
+    height: 9px;
+    background: #A7F3D0;
+    border-radius: 20px;
+    display: inline-block;
+    animation: pulse-dot 1.8s infinite;
+  }
+
+  .status-badge .dot.inactive {
+    background: #fbbf24;
+    animation: none;
+  }
+
+  @keyframes pulse-dot {
+    0% { opacity: 0.4; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0.4; transform: scale(0.9); }
+  }
+
+  /* ----- messages container ----- */
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 24px 8px 24px;
+    background: #f8f6ff;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    scroll-behavior: smooth;
+  }
+
+  .msg {
+    max-width: 74%;
+    padding: 14px 18px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+    animation: msgFadeIn 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    word-break: break-word;
+    position: relative;
+  }
+
+  @keyframes msgFadeIn {
+    0% { opacity: 0; transform: translateY(12px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .msg-left {
+    background: #ffffff;
+    border: 1px solid #ede9fe;
+    align-self: flex-start;
+    border-bottom-left-radius: 6px;
+    color: #1e1b2e;
+  }
+
+  .msg-right {
+    background: #6D28D9;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 6px;
+    box-shadow: 0 4px 14px rgba(109, 40, 217, 0.18);
+  }
+
+  .msg .msg-sender {
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.3px;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+
+  .msg-right .msg-sender {
+    opacity: 0.85;
+    color: #e9dfff;
+  }
+
+  .msg .msg-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 4px 0 6px 0;
+  }
+
+  .msg .msg-time {
+    font-size: 0.65rem;
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
+
+  .msg-right .msg-time {
+    opacity: 0.75;
+    color: #ddd0ff;
+  }
+
+  /* completed alert */
+  .alert-completed {
+    background: #e9e2ff;
+    color: #3b2a6b;
+    padding: 18px 24px;
+    border-radius: 24px;
+    text-align: center;
+    font-weight: 500;
+    margin: 20px 24px;
+    border: 1px solid #d5caff;
+    backdrop-filter: blur(2px);
+  }
+
+  .alert-completed i {
+    margin-right: 10px;
+    color: #6D28D9;
+  }
+
+  /* ----- footer ----- */
+  .chat-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 24px 22px 24px;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(4px);
+    border-top: 1px solid rgba(109, 40, 217, 0.07);
+    flex-shrink: 0;
+  }
+
+  .input-group {
+    flex: 1;
+    display: flex;
+    background: white;
+    border-radius: 60px;
+    padding: 2px 2px 2px 22px;
+    box-shadow: 0 2px 12px rgba(109, 40, 217, 0.05);
+    border: 1px solid #e6deff;
+    transition: all 0.2s;
+    min-width: 180px;
+  }
+
+  .input-group:focus-within {
+    border-color: #6D28D9;
+    box-shadow: 0 2px 18px rgba(109, 40, 217, 0.12);
+  }
+
+  .input-group input {
+    flex: 1;
+    border: none;
+    padding: 14px 6px 14px 0;
+    font-size: 0.95rem;
+    background: transparent;
+    outline: none;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #1e1b2e;
+  }
+
+  .input-group input::placeholder {
+    color: #9a8ab8;
+    font-weight: 400;
+  }
+
+  .input-group button {
+    background: #6D28D9;
+    border: none;
+    color: white;
+    padding: 10px 24px;
+    border-radius: 60px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    letter-spacing: 0.2px;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .input-group button:hover {
+    background: #5B21B6;
+    transform: scale(0.97);
+    box-shadow: 0 4px 14px rgba(109, 40, 217, 0.25);
+  }
+
+  .input-group button:active {
+    transform: scale(0.94);
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .btn-complete {
+    background: rgba(109, 40, 217, 0.06);
+    border: 1px solid #d5caff;
+    color: #4a2e7a;
+    padding: 10px 22px;
+    border-radius: 60px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    white-space: nowrap;
+    background: white;
+  }
+
+  .btn-complete i {
+    color: #6D28D9;
+  }
+
+  .btn-complete:hover {
+    background: #6D28D9;
+    color: white;
+    border-color: #6D28D9;
+    box-shadow: 0 4px 14px rgba(109, 40, 217, 0.18);
+  }
+
+  .btn-complete:hover i {
+    color: white;
+  }
+
+  .btn-complete:active {
+    transform: scale(0.95);
+  }
+
+  .btn-complete:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* scroll */
+  .chat-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+  .chat-messages::-webkit-scrollbar-track {
+    background: #ede9fe;
+    border-radius: 20px;
+  }
+  .chat-messages::-webkit-scrollbar-thumb {
+    background: #b8a6e8;
+    border-radius: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .chat-wrapper { height: 90vh; border-radius: 24px; margin: 12px; }
+    .chat-header { padding: 14px 16px; flex-wrap: wrap; gap: 6px; }
+    .header-left .info h3 { font-size: 1rem; }
+    .status-badge { font-size: 0.65rem; padding: 4px 12px; }
+    .msg { max-width: 88%; padding: 12px 14px; }
+    .input-group { padding-left: 14px; }
+    .input-group button { padding: 8px 16px; font-size: 0.8rem; }
+    .btn-complete { padding: 8px 14px; font-size: 0.75rem; }
+    .chat-footer { padding: 12px 16px 16px; gap: 8px; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-wrapper">
+  <!-- header -->
+  <div class="chat-header">
+    <div class="header-left">
+      <div class="avatar">
+        <i class="fas fa-headset"></i>
+      </div>
+      <div class="info">
+        <h3>Support Chat</h3>
+        <div class="booking-id">
+          <i class="fas fa-ticket-alt"></i> Booking #{{ room.booking.id }}
+          <span style="margin:0 4px;">·</span>
+          <i class="fas fa-car"></i> {{ room.booking.vehicle.vehicle_number }}
+        </div>
+      </div>
+    </div>
+    <div class="status-badge">
+      <span class="dot {% if room.status == 'Completed' %}inactive{% endif %}"></span>
+      <span id="statusLabel">{{ room.status|default:"Pending" }}</span>
+    </div>
+  </div>
+
+  <!-- messages -->
+  <div id="chatBox" class="chat-messages">
+    {% for msg in message_contents %}
+      <div class="msg {% if msg.sender == 'customer' %}msg-right{% else %}msg-left{% endif %}">
+        <div class="msg-sender">
+          <i class="fas {% if msg.sender == 'customer' %}fa-user-circle{% else %}fa-headset{% endif %}"></i>
+          {% if msg.sender == 'customer' %}You{% else %}Support{% endif %}
+        </div>
+        <div class="msg-text">{{ msg.message }}</div>
+        <div class="msg-time">
+          <i class="far fa-clock"></i> {{ msg.created_at|date:"d M Y H:i" }}
+        </div>
+      </div>
+    {% empty %}
+      <div style="text-align:center; color:#8b7bbd; padding:40px 0; font-weight:500;">
+        <i class="fas fa-comment-dots" style="font-size:2rem; display:block; margin-bottom:12px; opacity:0.5;"></i>
+        No messages yet. Start the conversation.
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- completed alert (dynamic) -->
+  {% if room.status == "Completed" %}
+    <div class="alert-completed" id="completedAlert">
+      <i class="fas fa-check-circle"></i> This chat has been completed.
+    </div>
+  {% else %}
+    <div class="alert-completed" id="completedAlert" style="display: none;">
+      <i class="fas fa-check-circle"></i> This chat has been completed.
+    </div>
+  {% endif %}
+
+  <!-- footer: only show if not completed -->
+  <div class="chat-footer" id="chatFooter" 
+       {% if room.status == "Completed" %}style="display:none;"{% endif %}>
+    <div class="input-group">
+      <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off">
+      <button id="sendBtn"><i class="fas fa-paper-plane"></i> Send</button>
+    </div>
+    <div class="action-buttons">
+      <form method="POST" action="{% url 'customer_complete_chat' room.id %}" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn-complete" id="completeBtn">
+          <i class="fas fa-check-double"></i> Complete
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    'use strict';
+
+    // ---- DOM refs ----
+    const chatBox = document.getElementById('chatBox');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const completeBtn = document.getElementById('completeBtn');
+    const completedAlert = document.getElementById('completedAlert');
+    const chatFooter = document.getElementById('chatFooter');
+    const statusLabel = document.getElementById('statusLabel');
+
+    // ---- WebSocket connection (dynamic room) ----
+    const roomId = '{{ room.id }}';
+    const wsScheme = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+    let socket = null;
+
+    function initWebSocket() {
+      try {
+        socket = new WebSocket(wsScheme + window.location.host + '/ws/chat/' + roomId + '/');
+        socket.onmessage = function(e) {
+          const data = JSON.parse(e.data);
+          // prevent duplicate if already rendered
+          addMessage(data.message, data.sender, data.created_at);
+        };
+        socket.onclose = function(e) {
+          console.warn('WebSocket closed, reconnecting in 3s...');
+          setTimeout(initWebSocket, 3000);
+        };
+        socket.onerror = function(err) {
+          console.error('WebSocket error:', err);
+        };
+      } catch (err) {
+        console.warn('WebSocket init failed, using fallback.');
+      }
+    }
+
+    // ---- add message to UI (dynamic) ----
+    function addMessage(text, sender, timeStr) {
+      // avoid duplicates if the message already exists (basic check)
+      const lastMsg = chatBox.lastElementChild;
+      if (lastMsg) {
+        const lastText = lastMsg.querySelector('.msg-text')?.innerText;
+        if (lastText === text) return; // simple dedup
+      }
+
+      const msgDiv = document.createElement('div');
+      const isCustomer = (sender === 'customer');
+      msgDiv.className = `msg ${isCustomer ? 'msg-right' : 'msg-left'}`;
+
+      const senderName = isCustomer ? 'You' : 'Support';
+      const icon = isCustomer ? 'fa-user-circle' : 'fa-headset';
+
+      // format time if not provided
+      if (!timeStr) {
+        const now = new Date();
+        timeStr = now.toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+      }
+
+      msgDiv.innerHTML = `
+        <div class="msg-sender"><i class="fas ${icon}"></i> ${senderName}</div>
+        <div class="msg-text">${text}</div>
+        <div class="msg-time"><i class="far fa-clock"></i> ${timeStr}</div>
+      `;
+      chatBox.appendChild(msgDiv);
+      scrollToBottom();
+    }
+
+    // ---- send message via WebSocket ----
+    function sendMessage() {
+      if (!socket || socket.readyState !== WebSocket.OPEN) {
+        // fallback: try to reconnect
+        initWebSocket();
+        setTimeout(() => {
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            doSend();
+          } else {
+            alert('Connection lost. Please refresh.');
+          }
+        }, 500);
+        return;
+      }
+      doSend();
+    }
+
+    function doSend() {
+      const text = messageInput.value.trim();
+      if (!text) return;
+      // optimistic UI
+      addMessage(text, 'customer');
+      // send via ws
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({ message: text }));
+      } else {
+        console.warn('WebSocket not ready, message queued (fallback).');
+        // fallback: POST? but we keep it simple.
+      }
+      messageInput.value = '';
+    }
+
+    // ---- scroll helper ----
+    function scrollToBottom() {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // ---- init ----
+    function init() {
+      // WebSocket
+      initWebSocket();
+
+      // scroll to bottom on load
+      scrollToBottom();
+
+      // event listeners
+      sendBtn.addEventListener('click', sendMessage);
+
+      messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      // if complete button exists (form submit) – we let the form handle it.
+      // but we also want to update UI optimistically
+      if (completeBtn) {
+        completeBtn.addEventListener('click', function(e) {
+          // show completed alert instantly (optimistic)
+          // the form will POST and reload, but we keep it smooth
+          if (completedAlert) {
+            completedAlert.style.display = 'block';
+          }
+          if (chatFooter) {
+            chatFooter.style.display = 'none';
+          }
+          if (statusLabel) {
+            statusLabel.innerHTML = 'Completed <i class="fas fa-check-circle" style="margin-left:6px;"></i>';
+          }
+          // disable input
+          messageInput.disabled = true;
+          sendBtn.disabled = true;
+          // the form will submit, but we don't prevent default.
+        });
+      }
+
+      // if completed from backend, hide footer
+      const isCompleted = "{{ room.status }}" === "Completed";
+
+    if (isCompleted) {
+        if (completedAlert) completedAlert.style.display = "block";
+        if (chatFooter) chatFooter.style.display = "none";
+        if (statusLabel) {
+            statusLabel.innerHTML =
+                'Completed <i class="fas fa-check-circle" style="margin-left:6px;"></i>';
+        }
+        messageInput.disabled = true;
+        sendBtn.disabled = true;
+        if (completeBtn) completeBtn.disabled = true;
+    }
+    }
+
+    // run
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
+{% endblock %}
